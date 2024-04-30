@@ -69,16 +69,32 @@ class clienteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        // Encontra um clienee no banco de dados com o ID fornecido
+        $cliente = Cliente::findOrFail($id);
+        // Atualiza os campos do cliente com os dados fornecidos no request
+        $cliente->nome = $request->input('cliente');
+        $cliente->telefone = $request->input('telefone');
+        $cliente->CPF = $request->input('CPF');
+        $cliente->CHN = $request->input('CHN');
+        $cliente->email = $request->input('email');
+        // Salva as alterações no cliente
+        $cliente->save();
+        // Redireciona para a rota 'clientes.index' após salvar
+        return redirect()->route('clientes.index')->with('success', 'Cliente alterado com sucesso!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        // Encontra um autor no banco de dados com o ID fornecido
+        $cliente = Cliente::findOrFail($id);
+        // Exclui o autor do banco de dados
+        $cliente->delete();
+        // Redireciona para a rota 'clientes.index' após excluir
+        return redirect()->route('clientes.index')->with('success', 'Cliente Excluido com sucesso!');
     }
 }
