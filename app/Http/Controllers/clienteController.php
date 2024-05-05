@@ -5,37 +5,36 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
 
-class clienteController extends Controller
+class ClienteController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Exibe uma lista de todos os clientes.
      */
     public function index()
     {
-        //obtem todos clientes do banco usando o modelo "cliente"
-        $clientes = cliente::all();
+        // Obtem todos os clientes do banco de dados
+        $clientes = Cliente::all();
 
-        //retorna a view dos cleintes.index
+        // Retorna a view 'clientes.index' com a lista de clientes
         return view('clientes.index', compact('clientes'));
-    }
+    }   
 
     /**
-     * Show the form for creating a new resource.
+     * Exibe o formulário para criar um novo cliente.
      */
     public function create()
     {
-        //retorna a view "clientes.create"
+        // Retorna a view 'clientes.create'
         return view('clientes.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Armazena um novo cliente no banco de dados.
      */
     public function store(Request $request)
     {
-        //cria um novo cliente ao modelo com os dados fornecidos no request
-
-        $cliente = new cliente([
+        // Cria uma nova instância de Cliente com dados do formulário
+        $cliente = new Cliente([
             'nome' => $request->input('nome'),
             'telefone' => $request->input('telefone'),
             'CPF' => $request->input('CPF'),
@@ -43,58 +42,73 @@ class clienteController extends Controller
             'email' => $request->input('email'),
         ]);
 
-        //salva o cliente no banco de dados
+        // Salva o cliente no banco de dados
         $cliente->save();
 
-        //redireciona para a rota 'clientes.index' apos salvar
-        return redirect()->route('clientes.index');
+        // Redireciona para a página 'clientes.index' após salvar
+        return redirect()->route('clientes.index')->with('success', 'Cliente criado com sucesso!');
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
+     * Exibe o formulário para editar um cliente existente.
      */
     public function edit(string $id)
     {
-        //
+        // Encontra o cliente pelo ID fornecido ou retorna 404 se não encontrado
+        $cliente = Cliente::findOrFail($id);
+
+        // Retorna a view 'clientes.edit' com o cliente para edição
+        return view('clientes.edit', compact('cliente'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Atualiza um cliente existente no banco de dados.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-        // Encontra um clienee no banco de dados com o ID fornecido
+        // Encontra o cliente pelo ID para atualização
         $cliente = Cliente::findOrFail($id);
-        // Atualiza os campos do cliente com os dados fornecidos no request
-        $cliente->nome = $request->input('cliente');
+
+        // Atualiza os campos do cliente com os dados do formulário
+
+        $cliente->nome = $request->input('nome');
         $cliente->telefone = $request->input('telefone');
         $cliente->CPF = $request->input('CPF');
         $cliente->CHN = $request->input('CHN');
         $cliente->email = $request->input('email');
-        // Salva as alterações no cliente
+
+        // Salva as alterações no banco de dados
         $cliente->save();
-        // Redireciona para a rota 'clientes.index' após salvar
+
+        // Redireciona para a página 'clientes.index' após a atualização
         return redirect()->route('clientes.index')->with('success', 'Cliente alterado com sucesso!');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove um cliente do banco de dados.
      */
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        // Encontra um autor no banco de dados com o ID fornecido
+        // Encontra o cliente pelo ID para exclusão
         $cliente = Cliente::findOrFail($id);
-        // Exclui o autor do banco de dados
+
+        // Exclui o cliente do banco de dados
         $cliente->delete();
-        // Redireciona para a rota 'clientes.index' após excluir
-        return redirect()->route('clientes.index')->with('success', 'Cliente Excluido com sucesso!');
+
+        // Redireciona para a página 'clientes.index' após exclusão
+        return redirect()->route('clientes.index')->with('success', 'Cliente excluído com sucesso!');
+    }
+
+    /**
+     * Mostra detalhes de um cliente específico.
+     */
+    public function show(string $id)
+    {
+        // Busca o cliente pelo ID ou retorna 404 se não encontrado
+        $cliente = Cliente::findOrFail($id);
+
+        // Retorna a view 'clientes.show' para exibir detalhes do cliente
+        return view('clientes.show', compact('cliente'));
     }
 }
+    

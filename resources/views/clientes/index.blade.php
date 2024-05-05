@@ -1,39 +1,56 @@
 <x-app-layout>
-    <head>
-        <link rel="stylesheet" href="{{ asset('css/clientes/edit.css') }}">
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Editar Cliente</title>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Editar Cliente</h1>
-            <form action="{{ route('clientes.update', $cliente->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="form-group">
-                    <label for="nome">Nome:</label>
-                    <input type="text" name="nome" value="{{ $cliente->nome }}">
-                </div>
-                <div class="form-group">
-                    <label for="telefone">Telefone:</label>
-                    <input type="number" name="telefone" value="{{ $cliente->telefone }}">
-                </div>
-                <div class="form-group">
-                    <label for="cpf">CPF:</label>
-                    <input type="number" name="cpf" value="{{ $cliente->cpf }}">
-                </div>
-                <div class="form-group">
-                    <label for="chn">CNH:</label>
-                    <input type="number" name="chn" value="{{ $cliente->chn }}">
-                </div>
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="text" name="email" value="{{ $cliente->email }}">
-                </div>
-                <button type="submit" class="btn btn-success">Salvar Alterações</button>
-                <a href="{{ route('clientes.index') }}" class="btn btn-secondary">Cancelar</a>
-            </form>
-        </div>
-    </body>
+    <link rel="stylesheet" href="{{ asset('css/clientes/index.css') }}">
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-white leading-tight">
+            {{ __('Lista de Clientes') }}
+        </h2>
+    </x-slot>
+
+    <div class="container">
+        <!-- Formulário de busca -->
+        <form action="{{ route('clientes.index') }}" method="GET" class="search-form">
+            <div class="search-container">  
+            </div>
+        </form>
+
+        <!-- Botão para adicionar um novo cliente -->
+        <a href="{{ route('clientes.create') }}" class="btn btn-primary">Novo Cliente</a>
+
+        <!-- Tabela de clientes -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>CPF</th>
+                    <th>CHN</th>
+                    <th>Email</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($clientes as $cliente)
+                    <tr>
+                        <td>{{ $cliente->id }}</td>
+                        <td>{{ $cliente->nome }}</td>
+                        <td>{{ $cliente->telefone }}</td>
+                        <td>{{ $cliente->CPF }}</td>
+                        <td>{{ $cliente->CHN}}</td>
+                        <td>{{ $cliente->email }}</td>
+                        <td>
+                            <!-- Botões de ações -->
+                            <a href="{{ route('clientes.show', $cliente->id) }}" class="btn btn-info">Detalhes</a>
+                            <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-warning">Editar</a>
+                            <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </x-app-layout>
