@@ -21,12 +21,12 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nome</th>
-                    <th>Telefone</th>
+                    <th>NOME</th>
+                    <th>TELEFONE</th>
                     <th>CPF</th>
-                    <th>CHN</th>
-                    <th>Email</th>
-                    <th>Ações</th>
+                    <th>CNH</th>
+                    <th>E-MAIL</th>
+                    <th>OPÇÕES</th>
                 </tr>
             </thead>
             <tbody>
