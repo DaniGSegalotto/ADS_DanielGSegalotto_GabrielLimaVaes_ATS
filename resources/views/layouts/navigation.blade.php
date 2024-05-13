@@ -15,7 +15,7 @@
                 <!-- Links de Navegação -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        {{ __('Principal') }}
                     </x-nav-link>
                     <!-- Link para Clientes -->
                     <x-nav-link :href="route('clientes.index')" :active="request()->routeIs('clientes.index')">
@@ -24,6 +24,9 @@
                     <!-- Link para Funcionários -->
                     <x-nav-link :href="route('funcionarios.index')" :active="request()->routeIs('funcionarios.index')">
                         {{ __('Funcionários') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('marcas.index')" :active="request()->routeIs('marcas.index')">
+                        {{ __('Marcas') }}
                     </x-nav-link>
                 </div>
             </div>

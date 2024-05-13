@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\FuncionarioController; // Adicionado o controlador FuncionarioController
 
 /*
@@ -33,5 +34,8 @@ Route::middleware('auth')->group(function () {
 Route::resource('clientes', ClienteController::class); // Corrigido o nome do controlador
 
 Route::resource('funcionarios', FuncionarioController::class); // Corrigido o nome do controlador
+
+Route::resource('marcas', MarcaController::class); // Corrigido o nome do controlador
+
 
 require __DIR__.'/auth.php';
