@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\clienteController;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\FuncionarioController; // Adicionado o controlador FuncionarioController
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('clientes', clienteController::class);
+Route::resource('clientes', ClienteController::class); // Corrigido o nome do controlador
+
+Route::resource('funcionarios', FuncionarioController::class); // Corrigido o nome do controlador
 
 require __DIR__.'/auth.php';
-    
