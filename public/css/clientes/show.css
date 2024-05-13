@@ -1,40 +1,40 @@
-.author-details {
+.cliente-details {
     max-width: 800px;
     margin: 0 auto;
     margin-top: 15px;
     padding: 20px;
-    background: #f3f3f3;
+    background: #ffffff;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   }
 
-  .author-title {
+  .cliente-title {
     text-align: center;
-    color: #333;
+    color: #ffffff;
     font-size: 2em;
     margin-bottom: 30px;
   }
 
-  .author-content {
-    background: white;
+  .cliente-content {
+    background: rgb(255, 255, 255);
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
   }
 
-  .author-meta {
+  .cliente-meta {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
   }
 
-  .author-label {
+  .cliente-label {
     width: 200px;
     font-weight: bold;
     color: #555;
   }
 
-  .author-info {
+  .cliente-info {
     flex: 1;
   }
 
@@ -43,7 +43,7 @@
     text-decoration: none;
     padding: 10px 20px;
     background-color: #007bff;
-    color: white;
+    color: rgb(0, 0, 0);
     border-radius: 5px;
     transition: background-color 0.3s;
   }
