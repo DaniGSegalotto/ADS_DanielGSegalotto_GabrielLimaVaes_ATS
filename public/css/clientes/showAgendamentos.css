@@ -1,0 +1,62 @@
+/* Estilos para o contêiner principal de detalhes do agendamento */
+.agendamento-details {
+    max-width: 800px; /* Largura máxima do contêiner */
+    margin: 0 auto; /* Centraliza horizontalmente */
+    margin-top: 15px; /* Margem superior de 15 pixels */
+    padding: 20px; /* Preenchimento interno de 20 pixels */
+    background: #ffffff; /* Cor de fundo branca */
+    border-radius: 10px; /* Borda arredondada com raio de 10 pixels */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Sombra do contêiner */
+  }
+  
+  /* Estilos para o título dos detalhes do agendamento */
+  .agendamento-title {
+    text-align: center; /* Alinhamento central do texto */
+    color: #ffffff; /* Cor do texto branco */
+    font-size: 2em; /* Tamanho da fonte */
+    margin-bottom: 30px; /* Margem inferior de 30 pixels */
+  }
+  
+  /* Estilos para o conteúdo dos detalhes do agendamento */
+  .agendamento-content {
+    background: rgb(255, 255, 255); /* Cor de fundo branca */
+    padding: 20px; /* Preenchimento interno de 20 pixels */
+    border-radius: 8px; /* Borda arredondada com raio de 8 pixels */
+    margin-bottom: 20px; /* Margem inferior de 20 pixels */
+  }
+  
+  /* Estilos para meta informações do agendamento */
+  .agendamento-meta {
+    display: flex; /* Exibe como um flex container */
+    align-items: center; /* Alinha os itens verticalmente */
+    margin-bottom: 10px; /* Margem inferior de 10 pixels */
+  }
+  
+  /* Estilos para rótulos das informações do agendamento */
+  .agendamento-label {
+    width: 200px; /* Largura fixa para os rótulos */
+    font-weight: bold; /* Texto em negrito */
+    color: #555; /* Cor do texto cinza escuro */
+  }
+  
+  /* Estilos para as informações do agendamento */
+  .agendamento-info {
+    flex: 1; /* Ocupa todo o espaço disponível */
+  }
+  
+  /* Estilos para o botão de retorno */
+  .btn-return {
+    display: inline-block; /* Exibe como um elemento de bloco */
+    text-decoration: none; /* Remove decoração de texto */
+    padding: 10px 20px; /* Preenchimento interno de 10 pixels na vertical e 20 pixels na horizontal */
+    background-color: #007bff; /* Cor de fundo azul */
+    color: rgb(255, 255, 255); /* Cor do texto branco */
+    border-radius: 5px; /* Borda arredondada com raio de 5 pixels */
+    transition: background-color 0.3s; /* Transição suave de cor de fundo */
+  }
+  
+  /* Estilos para o botão de retorno quando hover */
+  .btn-return:hover {
+    background-color: #0056b3; /* Cor de fundo azul mais escura */
+  }
+  

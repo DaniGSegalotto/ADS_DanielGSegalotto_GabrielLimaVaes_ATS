@@ -9,7 +9,7 @@
         <!-- Título da página -->
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             <!-- Exibe o título da página traduzido usando o helper de tradução '__' -->
-            {{ __('Marcas') }}
+            {{ __('Detalhes da Marca') }}
         </h2>
     </x-slot>
     <!-- Seção para exibir os detalhes da marca -->
