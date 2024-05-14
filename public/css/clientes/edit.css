@@ -1,43 +1,59 @@
+/* Estilos para o corpo da página */
 body {
-    background-color: #000000; /* Fundo branco */
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-}
-.form-group {
-    margin-bottom: 15px;
-}
-label {
-    display: block;
-    font-weight: bold;
-    color: #000000;
-}
-input[type="text"],
-input[type="date"] {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #000000;
-    border-radius: 4px;
-}
-.btn {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    color: #000000;
-}
-.btn-success {
-    background-color: #28a745;
-}
-.btn-secondary {
-    background-color: #6c757d;
+    background-color: #000000; /* Cor de fundo preta */
+    font-family: Arial, sans-serif; /* Fonte Arial ou uma fonte genérica sem serifa */
+    margin: 0; /* Remove as margens padrão */
+    padding: 0; /* Remove o preenchimento padrão */
 }
 
+/* Estilos para o contêiner principal */
+.container {
+    max-width: 600px; /* Largura máxima do contêiner */
+    margin: 0 auto; /* Centraliza horizontalmente */
+    padding: 20px; /* Preenchimento interno de 20 pixels */
+}
+
+/* Estilos para grupos de formulários */
+.form-group {
+    margin-bottom: 15px; /* Espaçamento inferior entre grupos de formulários */
+}
+
+/* Estilos para rótulos */
+label {
+    display: block; /* Exibe os rótulos como blocos */
+    font-weight: bold; /* Define a fonte em negrito */
+    color: #000000; /* Cor do texto preto */
+}
+
+/* Estilos para campos de entrada de texto e data */
+input[type="text"],
+input[type="date"] {
+    width: 100%; /* Largura total do elemento */
+    padding: 8px; /* Preenchimento interno de 8 pixels */
+    border: 1px solid #000000; /* Borda de 1 pixel sólido com cor preta */
+    border-radius: 4px; /* Borda arredondada com raio de 4 pixels */
+}
+
+/* Estilos para botões */
+.btn {
+    padding: 10px 15px; /* Preenchimento interno do botão */
+    border: none; /* Remove a borda */
+    border-radius: 4px; /* Borda arredondada com raio de 4 pixels */
+    cursor: pointer; /* Cursor do mouse */
+    color: #000000; /* Cor do texto preto */
+}
+
+/* Estilos para botões de sucesso */
+.btn-success {
+    background-color: #28a745; /* Cor de fundo verde para botões de sucesso */
+}
+
+/* Estilos para botões secundários */
+.btn-secondary {
+    background-color: #6c757d; /* Cor de fundo cinza para botões secundários */
+}
+
+/* Estilos para títulos de nível 1 */
 h1 {
-    color: rgb(0, 0, 0);
+    color: rgb(0, 0, 0); /* Cor do texto preto */
 }

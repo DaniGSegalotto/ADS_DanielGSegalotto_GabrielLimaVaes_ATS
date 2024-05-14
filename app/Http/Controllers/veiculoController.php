@@ -10,9 +10,7 @@ use App\Models\Marca;
 
 class VeiculoController extends Controller
 {
-    /**
-     * Exibe uma lista de todos os veiculos.
-     */
+    /* Exibe uma lista de todos os veiculos. */
     public function index()
     {
         // Obtem todos os veiculos do banco de dados
@@ -20,11 +18,9 @@ class VeiculoController extends Controller
 
         // Retorna a view 'veiculos.index' com a lista de veiculos
         return view('veiculos.index', compact('veiculos'));
-    }   
+    }
 
-    /**
-     * Exibe o formulário para criar um novo veiculo.
-     */
+    /* Exibe o formulário para criar um novo veiculo. */
     public function create()
     {
         // Retorna a view 'veiculos.create'
@@ -32,9 +28,7 @@ class VeiculoController extends Controller
         return view('veiculos.create', compact('marcas'));
     }
 
-    /**
-     * Armazena um novo veiculo no banco de dados.
-     */
+    /* Armazena um novo veiculo no banco de dados. */
     public function store(Request $request)
     {
         // Cria uma nova instância de Veiculo com dados do formulário
@@ -53,9 +47,7 @@ class VeiculoController extends Controller
         return redirect()->route('veiculos.index')->with('success', 'Veiculo criado com sucesso!');
     }
 
-    /**
-     * Exibe o formulário para editar um veiculo existente.
-     */
+    /* Exibe o formulário para editar um veiculo existente. */
     public function edit(string $id)
     {
         // Encontra o veiculo pelo ID fornecido ou retorna 404 se não encontrado
@@ -65,12 +57,10 @@ class VeiculoController extends Controller
 
         $marcas = Marca::all();
 
-        return view('veiculos.edit', compact('marcas','veiculo'));
+        return view('veiculos.edit', compact('marcas', 'veiculo'));
     }
 
-    /**
-     * Atualiza um veiculo existente no banco de dados.
-     */
+    /* Atualiza um veiculo existente no banco de dados. */
     public function update(Request $request, string $id)
     {
         // Encontra o veiculo pelo ID para atualização
@@ -91,9 +81,7 @@ class VeiculoController extends Controller
         return redirect()->route('veiculos.index')->with('success', 'Veiculo alterado com sucesso!');
     }
 
-    /**
-     * Remove um veiculo do banco de dados.
-     */
+    /* Remove um veiculo do banco de dados. */
     public function destroy(string $id)
     {
         // Encontra o veiculo pelo ID para exclusão
@@ -106,9 +94,7 @@ class VeiculoController extends Controller
         return redirect()->route('veiculos.index')->with('success', 'Veiculo excluído com sucesso!');
     }
 
-    /**
-     * Mostra detalhes de um veiculo específico.
-     */
+    /* Mostra detalhes de um veiculo específico. */
     public function show(string $id)
     {
         // Busca o veiculo pelo ID ou retorna 404 se não encontrado
@@ -118,4 +104,3 @@ class VeiculoController extends Controller
         return view('veiculos.show', compact('veiculo'));
     }
 }
-    

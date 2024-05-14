@@ -5,7 +5,7 @@
         <!-- Formulário para enviar os dados -->
 
         @csrf
-        <!-- Token de verificação de segurança -->
+        <!-- Token de verificação de segurança CSRF -->
 
         <!-- Token de Redefinição de Senha -->
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
@@ -13,7 +13,7 @@
         <!-- Endereço de E-mail -->
         <div>
             <!-- Campo para inserir o e-mail -->
-            <x-input-label for="email" :value="__('E-mail')" />
+            <x-input-label for="email" :value="__('Email')" />
             <!-- Componente de entrada de texto para o e-mail -->
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
             <!-- Mensagem de erro, se houver -->
@@ -23,7 +23,7 @@
         <!-- Senha -->
         <div class="mt-4">
             <!-- Campo para inserir a senha -->
-            <x-input-label for="password" :value="__('Senha')" />
+            <x-input-label for="password" :value="__('Password')" />
             <!-- Componente de entrada de texto para a senha -->
             <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
             <!-- Mensagem de erro, se houver -->
@@ -33,7 +33,7 @@
         <!-- Confirmar Senha -->
         <div class="mt-4">
             <!-- Campo para confirmar a senha -->
-            <x-input-label for="password_confirmation" :value="__('Confirmar Senha')" />
+            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
 
             <!-- Componente de entrada de texto para confirmar a senha -->
             <x-text-input id="password_confirmation" class="block mt-1 w-full"
@@ -48,7 +48,7 @@
         <div class="flex items-center justify-end mt-4">
             <!-- Botão primário -->
             <x-primary-button>
-                {{ __('Redefinir Senha') }}
+                {{ __('Reset Password') }}
             </x-primary-button>
         </div>
     </form>

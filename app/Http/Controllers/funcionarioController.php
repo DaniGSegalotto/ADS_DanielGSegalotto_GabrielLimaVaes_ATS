@@ -7,9 +7,7 @@ use App\Models\Funcionario;
 
 class FuncionarioController extends Controller
 {
-    /**
-     * Exibe uma lista de todos os funcionários.
-     */
+    /* Exibe uma lista de todos os funcionários. */
     public function index()
     {
         // Obtém todos os funcionários do banco de dados
@@ -17,20 +15,16 @@ class FuncionarioController extends Controller
 
         // Retorna a view 'funcionarios.index' com a lista de funcionários
         return view('funcionarios.index', compact('funcionarios'));
-    }   
+    }
 
-    /**
-     * Exibe o formulário para criar um novo funcionário.
-     */
+    /* Exibe o formulário para criar um novo funcionário. */
     public function create()
     {
         // Retorna a view 'funcionarios.create'
         return view('funcionarios.create');
     }
 
-    /**
-     * Armazena um novo funcionário no banco de dados.
-     */
+    /* Armazena um novo funcionário no banco de dados. */
     public function store(Request $request)
     {
         // Cria uma nova instância de Funcionario com dados do formulário
@@ -47,9 +41,7 @@ class FuncionarioController extends Controller
         return redirect()->route('funcionarios.index')->with('success', 'Funcionário criado com sucesso!');
     }
 
-    /**
-     * Exibe o formulário para editar um funcionário existente.
-     */
+    /* Exibe o formulário para editar um funcionário existente. */
     public function edit(string $id)
     {
         // Encontra o funcionário pelo ID fornecido ou retorna 404 se não encontrado
@@ -59,9 +51,7 @@ class FuncionarioController extends Controller
         return view('funcionarios.edit', compact('funcionario'));
     }
 
-    /**
-     * Atualiza um funcionário existente no banco de dados.
-     */
+    /* Atualiza um funcionário existente no banco de dados. */
     public function update(Request $request, string $id)
     {
         // Encontra o funcionário pelo ID para atualização
@@ -80,9 +70,7 @@ class FuncionarioController extends Controller
         return redirect()->route('funcionarios.index')->with('success', 'Funcionário alterado com sucesso!');
     }
 
-    /**
-     * Remove um funcionário do banco de dados.
-     */
+    /* Remove um funcionário do banco de dados. */
     public function destroy(string $id)
     {
         // Encontra o funcionário pelo ID para exclusão
@@ -95,9 +83,7 @@ class FuncionarioController extends Controller
         return redirect()->route('funcionarios.index')->with('success', 'Funcionário excluído com sucesso!');
     }
 
-    /**
-     * Mostra detalhes de um funcionário específico.
-     */
+    /* Mostra detalhes de um funcionário específico. */
     public function show(string $id)
     {
         // Busca o funcionário pelo ID ou retorna 404 se não encontrado

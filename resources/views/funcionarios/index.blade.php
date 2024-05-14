@@ -1,13 +1,16 @@
 <x-app-layout>
+    <!-- Importa um arquivo CSS específico para estilização do índice de funcionários -->
     <link rel="stylesheet" href="{{ asset('css/clientes/index.css') }}">
+    <!-- Define o cabeçalho da página -->
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-white leading-tight">
+            <!-- Exibe o título da página traduzido usando o helper de tradução '__' -->
             {{ __('Lista de Funcionários') }}
         </h2>
     </x-slot>
 
     <div class="container">
-        <!-- Formulário de busca -->
+        <!-- Formulário de busca (ainda não implementado) -->
         <form action="{{ route('funcionarios.index') }}" method="GET" class="search-form">
             <div class="search-container">  
             </div>
@@ -28,6 +31,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- Loop para exibir cada funcionário na tabela -->
                 @foreach ($funcionarios as $funcionario)
                     <tr>
                         <td>{{ $funcionario->id }}</td>
@@ -35,12 +39,13 @@
                         <td>{{ $funcionario->email }}</td>
                         <td>{{ $funcionario->sexo }}</td>
                         <td>
-                            <!-- Botões de ações -->
+                            <!-- Botões de ações para detalhes, edição e exclusão do funcionário -->
                             <a href="{{ route('funcionarios.show', $funcionario->id) }}" class="btn btn-info">Detalhes</a>
                             <a href="{{ route('funcionarios.edit', $funcionario->id) }}" class="btn btn-warning">Editar</a>
+                            <!-- Formulário para excluir o funcionário -->
                             <form action="{{ route('funcionarios.destroy', $funcionario->id) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
+                                @csrf <!-- Token CSRF para proteção contra ataques CSRF -->
+                                @method('DELETE') <!-- Método HTTP para indicar que é uma exclusão -->
                                 <button type="submit" class="btn btn-danger">Excluir</button>
                             </form>
                         </td>

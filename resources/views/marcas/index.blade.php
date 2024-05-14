@@ -21,7 +21,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>DESCRIÇÃO</th>
+                    <th>NOME</th>
                     <th>OBSERVAÇÃO</th>
                     <th>OPÇÕES</th>
                 </tr>

@@ -1,129 +1,143 @@
+/* Estilos para tabelas */
 .table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+    width: 100%; /* Largura total da tabela */
+    border-collapse: collapse; /* Colapso das bordas das células */
+    margin-top: 20px; /* Margem superior de 20 pixels */
 }
 
-.container{
-    max-width: 1200px;
-    margin: auto;
-    margin-top: 2%;
+/* Estilos para o contêiner principal */
+.container {
+    max-width: 1200px; /* Largura máxima do contêiner */
+    margin: auto; /* Centraliza horizontalmente */
+    margin-top: 2%; /* Margem superior de 2% */
 }
 
+/* Estilos para células de cabeçalho e dados da tabela */
 .table th, .table td {
-    padding: 8px;
-    background-color: white;
-    border: 1px solid #ccc;
-    text-align: left;
+    padding: 8px; /* Preenchimento interno de 8 pixels */
+    background-color: white; /* Cor de fundo branca */
+    border: 1px solid #ccc; /* Borda de 1 pixel sólido com cor cinza */
+    text-align: left; /* Alinhamento do texto à esquerda */
 }
 
+/* Estilos para células de cabeçalho da tabela */
 .table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
+    background-color: #f2f2f2; /* Cor de fundo cinza claro */
+    font-weight: bold; /* Texto em negrito */
 }
 
+/* Estilos para botões */
 .btn {
-    display: inline-block;
-    padding: 6px 12px;
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.42857143;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    cursor: pointer;
-    border: 1px solid transparent;
-    border-radius: 4px;
+    display: inline-block; /* Exibe como um elemento de bloco */
+    padding: 6px 12px; /* Preenchimento interno */
+    margin-bottom: 0; /* Margem inferior zero */
+    font-size: 14px; /* Tamanho da fonte */
+    font-weight: 400; /* Peso da fonte */
+    line-height: 1.42857143; /* Altura da linha */
+    text-align: center; /* Alinhamento central */
+    white-space: nowrap; /* Não quebra a linha */
+    vertical-align: middle; /* Alinhamento vertical central */
+    cursor: pointer; /* Cursor do mouse */
+    border: 1px solid transparent; /* Borda transparente */
+    border-radius: 4px; /* Borda arredondada com raio de 4 pixels */
 }
 
+/* Estilos para botões primários */
 .btn-primary {
-    color: #fff;
-    background-color: #337ab7;
-    border-color: #2e6da4;
+    color: #fff; /* Cor do texto branco */
+    background-color: #337ab7; /* Cor de fundo azul */
+    border-color: #2e6da4; /* Cor da borda azul mais escura */
 }
 
+/* Estilos para botões de informação */
 .btn-info {
-    color: #fff;
-    background-color: #5bc0de;
-    border-color: #46b8da;
+    color: #fff; /* Cor do texto branco */
+    background-color: #5bc0de; /* Cor de fundo azul claro */
+    border-color: #46b8da; /* Cor da borda azul mais clara */
 }
 
+/* Estilos para botões de aviso */
 .btn-warning {
-    color: #fff;
-    background-color: #f0ad4e;
-    border-color: #eea236;
+    color: #fff; /* Cor do texto branco */
+    background-color: #f0ad4e; /* Cor de fundo laranja */
+    border-color: #eea236; /* Cor da borda laranja mais clara */
 }
 
+/* Estilos para botões de perigo */
 .btn-danger {
-    color: #fff;
-    background-color: #d9534f;
-    border-color: #d43f3a;
+    color: #fff; /* Cor do texto branco */
+    background-color: #d9534f; /* Cor de fundo vermelho */
+    border-color: #d43f3a; /* Cor da borda vermelha mais escura */
 }
 
+/* Estilos para layout de detalhes do autor */
 .author-details-layout {
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: white; /* Cor de fundo branca */
+    display: flex; /* Exibe como um flex container */
+    flex-direction: column; /* Direção da disposição das caixas flexíveis (vertical) */
+    align-items: center; /* Alinhamento dos itens no centro horizontal */
+    justify-content: center; /* Alinhamento dos itens no centro vertical */
+    padding: 20px; /* Preenchimento interno de 20 pixels */
+    text-align: center; /* Alinhamento do texto centralizado */
+    border-radius: 10px; /* Borda arredondada com raio de 10 pixels */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra da caixa */
 }
 
 .author-details-layout h1 {
-    font-size: 24px;
-    margin-bottom: 15px;
+    font-size: 24px; /* Tamanho da fonte */
+    margin-bottom: 15px; /* Margem inferior de 15 pixels */
 }
 
 .author-details-layout ul {
-    list-style: none;
-    padding: 0;
+    list-style: none; /* Remove a lista padrão */
+    padding: 0; /* Remove o preenchimento padrão */
 }
 
 .author-details-layout li {
-    margin-bottom: 8px;
+    margin-bottom: 8px; /* Margem inferior de 8 pixels */
 }
 
 .author-details-layout strong {
-    font-weight: bold;
+    font-weight: bold; /* Texto em negrito */
 }
 
 .author-details-layout a.btn {
-    margin-top: 15px;
+    margin-top: 15px; /* Margem superior de 15 pixels */
 }
 
-h1{
-    color: white;
+/* Estilos para títulos de nível 1 */
+h1 {
+    color: white; /* Cor do texto branco */
 }
 
-
+/* Estilos para botão de pesquisa */
 .search-button {
-    background-color: #6f42c1;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 5px;
+    background-color: #6f42c1; /* Cor de fundo roxa */
+    color: white; /* Cor do texto branco */
+    padding: 8px 15px; /* Preenchimento interno */
+    border: none; /* Remove a borda */
+    border-radius: 4px; /* Borda arredondada com raio de 4 pixels */
+    cursor: pointer; /* Cursor do mouse */
+    margin-left: 5px; /* Margem à esquerda de 5 pixels */
 }
 
+/* Estilos para o botão de pesquisa quando hover */
 .search-button:hover {
-    background-color: #5936a2;
+    background-color: #5936a2; /* Cor de fundo roxa mais escura */
 }
 
+/* Estilos para o contêiner de pesquisa */
 .search-container {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* Margem inferior de 20 pixels */
+    display: flex; /* Exibe como um flex container */
+    justify-content: flex-end; /* Justifica os itens para o final à direita */
+    margin-bottom: 20px; /* Margem inferior de 20 pixels (repetido) */
 }
 
+/* Estilos para o campo de entrada de pesquisa */
 .search-input {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    margin-right: 5px;
+    padding: 8px; /* Preenchimento interno de 8 pixels */
+    border-radius: 4px; /* Borda arredondada com raio de 4 pixels */
+    border: 1px solid #ccc; /* Borda de 1 pixel sólido com cor cinza */
+    margin-right: 5px; /* Margem à direita de 5 pixels */
 }

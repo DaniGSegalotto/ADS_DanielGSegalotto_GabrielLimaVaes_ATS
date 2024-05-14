@@ -1,24 +1,36 @@
 <x-guest-layout>
+    <!-- Layout para usuários não autenticados -->
+
     <div class="mb-4 text-sm text-gray-600">
-        {{ __("Esqueceu sua senha? Sem problemas. Basta nos informar seu endereço de e-mail e nós enviaremos para você um link de redefinição de senha por e-mail que permitirá que você escolha uma nova.") }}
+        <!-- Mensagem informando que esta é uma área segura da aplicação -->
+        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
     </div>
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <!-- Formulário para confirmar a senha -->
+    <form method="POST" action="{{ route('password.confirm') }}">
+        <!-- Formulário enviando dados via método POST para a rota 'password.confirm' -->
 
-    <form method="POST" action="{{ route('password.email') }}">
         @csrf
+        <!-- Token de verificação CSRF -->
 
-        <!-- Email Address -->
+        <!-- Senha -->
         <div>
-            <x-input-label for="email" :value="__('E-mail')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <!-- Rótulo para o campo de senha -->
+            <x-input-label for="password" :value="__('Password')" />
+
+            <!-- Campo de entrada de texto para a senha -->
+            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required
+                autocomplete="current-password" />
+
+            <!-- Exibição de erros, se houver -->
+            <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <!-- Botão de confirmação -->
+        <div class="flex justify-end mt-4">
+            <!-- Botão primário para confirmar a senha -->
             <x-primary-button>
-                {{ __('Enviar Link') }}
+                {{ __('Confirm') }}
             </x-primary-button>
         </div>
     </form>

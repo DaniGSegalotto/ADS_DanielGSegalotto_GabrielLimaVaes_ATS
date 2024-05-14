@@ -8,9 +8,7 @@ use App\Models\Marca;
 
 class MarcaController extends Controller
 {
-    /**
-     * Exibe uma lista de todos as marcas.
-     */
+    /* Exibe uma lista de todos as marcas. */
     public function index()
     {
         // Obtem todos as marcas do banco de dados
@@ -18,21 +16,17 @@ class MarcaController extends Controller
 
         // Retorna a view 'marca.index' com a lista de marcas
         return view('marcas.index', compact('marcas'));
-    }   
+    }
 
-    /**
-     * Exibe o formulário para criar uma nova marca.
-     */
+    /* Exibe o formulário para criar uma nova marca. */
     public function create()
     {
         // Retorna a view 'marcas.create'
 
-        return view('marcas.create') ;
+        return view('marcas.create');
     }
 
-    /**
-     * Armazena uma nova marca no banco de dados.
-     */
+    /* Armazena uma nova marca no banco de dados. */
     public function store(Request $request)
     {
         // Cria uma nova instância de Marcas com dados do formulário
@@ -48,9 +42,7 @@ class MarcaController extends Controller
         return redirect()->route('marcas.index')->with('success', 'Marca criada com sucesso!');
     }
 
-    /**
-     * Exibe o formulário para editar uma marca existente.
-     */
+    /* Exibe o formulário para editar uma marca existente. */
     public function edit(string $id)
     {
         // Encontra a marca pelo ID fornecido ou retorna 404 se não encontrado
@@ -60,9 +52,7 @@ class MarcaController extends Controller
         return view('marcas.edit', compact('marca'));
     }
 
-    /**
-     * Atualiza uma marca existente no banco de dados.
-     */
+    /* Atualiza uma marca existente no banco de dados. */
     public function update(Request $request, string $id)
     {
         // Encontra a marca pelo ID para atualização
@@ -80,9 +70,7 @@ class MarcaController extends Controller
         return redirect()->route('marcas.index')->with('success', 'Marca alterada com sucesso!');
     }
 
-    /**
-     * Remove uma marca do banco de dados.
-     */
+    /* Remove uma marca do banco de dados. */
     public function destroy(string $id)
     {
         // Encontra a marca pelo ID para exclusão
@@ -95,9 +83,7 @@ class MarcaController extends Controller
         return redirect()->route('marcas.index')->with('success', 'Marca excluída com sucesso!');
     }
 
-    /**
-     * Mostra detalhes de uma marca específica.
-     */
+    /* Mostra detalhes de uma marca específica. */
     public function show(string $id)
     {
         // Busca a marca pelo ID ou retorna 404 se não encontrado
@@ -107,4 +93,3 @@ class MarcaController extends Controller
         return view('marcas.show', compact('marca'));
     }
 }
-    
