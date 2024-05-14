@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\VeiculoController;
-use App\Http\Controllers\FuncionarioController; // Importação do controlador FuncionarioController
+use App\Http\Controllers\FuncionarioController;
+use App\Http\Controllers\AgendamentoController; // Importação do controlador AgendamentoController
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,9 @@ Route::resource('marcas', MarcaController::class);
 
 // Rotas para o recurso 'veiculos', utilizando o controlador 'VeiculoController'
 Route::resource('veiculos', VeiculoController::class);
+
+// Rotas para o recurso 'agendamentos', utilizando o controlador 'AgendamentoController'
+Route::resource('agendamentos', AgendamentoController::class);
 
 // Inclui as rotas de autenticação do Laravel, como login, registro, recuperação de senha, etc.
 require __DIR__.'/auth.php';
