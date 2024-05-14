@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\MarcaController;
+use App\Http\Controllers\VeiculoController;
 use App\Http\Controllers\FuncionarioController; // Adicionado o controlador FuncionarioController
 
 /*
@@ -37,5 +38,6 @@ Route::resource('funcionarios', FuncionarioController::class); // Corrigido o no
 
 Route::resource('marcas', MarcaController::class); // Corrigido o nome do controlador
 
+Route::resource('veiculos', VeiculoController::class); // Corrigido o nome do controlador
 
 require __DIR__.'/auth.php';

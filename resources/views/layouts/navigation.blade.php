@@ -28,6 +28,9 @@
                     <x-nav-link :href="route('marcas.index')" :active="request()->routeIs('marcas.index')">
                         {{ __('Marcas') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('veiculos.index')" :active="request()->routeIs('veiculos.index')">
+                        {{ __('Veículos') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -91,6 +94,7 @@
             <x-responsive-nav-link :href="route('funcionarios.index')" :active="request()->routeIs('funcionarios.index')">
                 {{ __('Funcionários') }}
             </x-responsive-nav-link>
+
         </div>
 
         <!-- Opções de Configurações Responsivas -->

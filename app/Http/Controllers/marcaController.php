@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Marca;
 
+
 class MarcaController extends Controller
 {
     /**
@@ -25,7 +26,8 @@ class MarcaController extends Controller
     public function create()
     {
         // Retorna a view 'marcas.create'
-        return view('marcas.create');
+
+        return view('marcas.create') ;
     }
 
     /**
