@@ -1,6 +1,8 @@
 <x-app-layout>
     <!-- Importa um arquivo CSS específico para estilização do índice de funcionários -->
     <link rel="stylesheet" href="{{ asset('css/clientes/index.css') }}">
+    <script src="{{ asset('js/funcionarios.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Define o cabeçalho da página -->
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-white leading-tight">
@@ -43,10 +45,10 @@
                             <a href="{{ route('funcionarios.show', $funcionario->id) }}" class="btn btn-info">Detalhes</a>
                             <a href="{{ route('funcionarios.edit', $funcionario->id) }}" class="btn btn-warning">Editar</a>
                             <!-- Formulário para excluir o funcionário -->
-                            <form action="{{ route('funcionarios.destroy', $funcionario->id) }}" method="POST" style="display: inline;">
+                            <form id="form-{{ $funcionario->id }}" action="{{ route('funcionarios.destroy', $funcionario->id) }}" method="POST" style="display: inline;">
                                 @csrf <!-- Token CSRF para proteção contra ataques CSRF -->
                                 @method('DELETE') <!-- Método HTTP para indicar que é uma exclusão -->
-                                <button type="submit" class="btn btn-danger">Excluir</button>
+                                <button type="button" onclick="deletarFuncionarios({{ $funcionario->id }})" class="btn btn-danger">Excluir</button>
                             </form>
                         </td>
                     </tr>
