@@ -1,7 +1,10 @@
 <x-app-layout>
-    <!-- Importa um arquivo CSS específico para estilização do índice de clientes -->
-    <link rel="stylesheet" href="{{ asset('css/clientes/index.css') }}">
-
+    <!-- Importa um arquivo CSS/JS específico para estilização/interação do índice de clientes -->
+    <head>
+        <link rel="stylesheet" href="{{ asset('css/clientes/index.css') }}">
+        <script src="{{ asset('js/clientes.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
     <!-- Define o cabeçalho da página -->
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-white leading-tight">
@@ -48,11 +51,12 @@
                             <a href="{{ route('clientes.show', $cliente->id) }}" class="btn btn-info">Detalhes</a>
                             <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-warning">Editar</a>
                             <!-- Formulário para excluir o cliente -->
-                            <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST"
+                            <form id="form-{{ $cliente->id }}" action="{{ route('clientes.destroy', $cliente->id) }}" method="POST"
                                 style="display: inline;">
                                 @csrf <!-- Token CSRF para proteção contra ataques CSRF -->
                                 @method('DELETE') <!-- Método HTTP para indicar que é uma exclusão -->
-                                <button type="submit" class="btn btn-danger">Excluir</button>
+                                <button type="button" class="btn btn-danger" onclick="deletarCliente({{ $cliente->id }})">Excluir</button>
+                                <button type="button" class="btn btn-info2" onclick="infoCliente({{ $cliente->id }})">Informação</button>
                             </form>
                         </td>
                     </tr>

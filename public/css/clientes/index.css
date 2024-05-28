@@ -70,6 +70,12 @@
     border-color: #d43f3a; /* Cor da borda vermelha mais escura */
 }
 
+.btn-info2 {
+    color: #fff; /* Cor do texto branco */
+    background-color: #0aaf41; /* Cor de fundo vermelho */
+    border-color: #004d13; /* Cor da borda vermelha mais escura */
+}
+
 /* Estilos para layout de detalhes do autor */
 .author-details-layout {
     background-color: white; /* Cor de fundo branca */
