@@ -11,6 +11,16 @@
     <div class="container">
         <!-- Formulário de busca -->
         <form action="{{ route('marcas.index') }}" method="GET" class="search-form">
+            <div class="search-container">
+                <!-- Adicione campos de busca aqui, por exemplo: -->
+                <input type="text" name="query" placeholder="Buscar Marcas">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+        </form>
+
+    <div class="container">
+        <!-- Formulário de busca -->
+        <form action="{{ route('marcas.index') }}" method="GET" class="search-form">
             <div class="search-container">  
             </div>
         </form>
@@ -42,6 +52,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" onclick="deletarMarca({{ $marca->id }})" class="btn btn-danger">Excluir</button>
+                                <button type="button" class="btn btn-info2" onclick="infoMarca({{ $marca->id }})">Informação</button>
                             </form>
                         </td>
                     </tr>

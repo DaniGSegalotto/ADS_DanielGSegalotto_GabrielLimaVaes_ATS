@@ -1,8 +1,10 @@
 <x-app-layout>
-    <!-- Importa um arquivo CSS específico para estilização do índice de funcionários -->
-    <link rel="stylesheet" href="{{ asset('css/clientes/index.css') }}">
-    <script src="{{ asset('js/funcionarios.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Importa um arquivo CSS/JS específico para estilização/interação do índice de clientes -->
+    <head>
+        <link rel="stylesheet" href="{{ asset('css/clientes/index.css') }}">
+        <script src="{{ asset('js/funcionarios.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
     <!-- Define o cabeçalho da página -->
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-white leading-tight">
@@ -10,6 +12,16 @@
             {{ __('Lista de Funcionários') }}
         </h2>
     </x-slot>
+
+    <div class="container">
+        <!-- Formulário de busca -->
+        <form action="{{ route('funcionarios.index') }}" method="GET" class="search-form">
+            <div class="search-container">
+                <!-- Adicione campos de busca aqui, por exemplo: -->
+                <input type="text" name="query" placeholder="Buscar Funcionários">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+        </form>
 
     <div class="container">
         <!-- Formulário de busca (ainda não implementado) -->
@@ -48,7 +60,8 @@
                             <form id="form-{{ $funcionario->id }}" action="{{ route('funcionarios.destroy', $funcionario->id) }}" method="POST" style="display: inline;">
                                 @csrf <!-- Token CSRF para proteção contra ataques CSRF -->
                                 @method('DELETE') <!-- Método HTTP para indicar que é uma exclusão -->
-                                <button type="button" onclick="deletarFuncionarios({{ $funcionario->id }})" class="btn btn-danger">Excluir</button>
+                                <button type="button" onclick="deletarFuncionario({{ $funcionario->id }})" class="btn btn-danger">Excluir</button>
+                                <button type="button" class="btn btn-info2" onclick="infoFuncionario({{ $funcionario->id }})">Informação</button>
                             </form>
                         </td>
                     </tr>

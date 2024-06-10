@@ -14,6 +14,16 @@
     </x-slot>
 
     <div class="container">
+        <!-- Formulário de busca -->
+        <form action="{{ route('clientes.index') }}" method="GET" class="search-form">
+            <div class="search-container">
+                <!-- Adicione campos de busca aqui, por exemplo: -->
+                <input type="text" name="query" placeholder="Buscar Clientes">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+        </form>
+
+    <div class="container">
         <!-- Formulário de busca (ainda não implementado) -->
         <form action="{{ route('clientes.index') }}" method="GET" class="search-form">
             <div class="search-container">

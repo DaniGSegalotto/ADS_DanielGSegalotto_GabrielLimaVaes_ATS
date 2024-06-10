@@ -1,6 +1,10 @@
 <x-app-layout>
     <!-- Inclui um arquivo CSS específico para estilização da página de índice de veículos -->
     <link rel="stylesheet" href="{{ asset('css/clientes/index.css') }}">
+    <head>
+        <script src="{{ asset('js/agendamentos.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
     <!-- Cabeçalho da página -->
     <x-slot name="header">
         <!-- Título da página -->
@@ -25,9 +29,9 @@
                 <tr>
                     <th>ID</th>
                     <th>DATA</th>
-                    <th>HORARIO</th>
-                    <th>FUNCIONARIO</th>
-                    <th>VEICULO</th>
+                    <th>HORÁRIO</th>
+                    <th>FUNCIONÁRIO</th>
+                    <th>VEÍCULO</th>
                     <th>CLIENTE</th>
                     <th>OPÇÕES</th>
                 </tr>
@@ -55,10 +59,11 @@
                             <!-- Botão para editar o agendamento -->
                             <a href="{{ route('agendamentos.edit', $agendamento->id) }}" class="btn btn-warning">Editar</a>
                             <!-- Formulário para excluir o agendamento -->
-                            <form action="{{ route('agendamentos.destroy', $agendamento->id) }}" method="POST" style="display: inline;">
+                            <form id="form-{{ $agendamento->id }}" action="{{ route('agendamentos.destroy', $agendamento->id) }}" method="POST" style="display: inline;">
                                 @csrf <!-- Token CSRF para proteção contra ataques CSRF -->
                                 @method('DELETE') <!-- Método HTTP DELETE para exclusão -->
-                                <button type="submit" class="btn btn-danger">Excluir</button>
+                                <button type="button" onclick="deletarAgendamento({{ $agendamento->id }})" class="btn btn-danger">Excluir</button>
+                                <button type="button" class="btn btn-info2" onclick="infoAgendamento({{ $agendamento->id }})">Informação</button>
                             </form>
                         </td>
                     </tr>
