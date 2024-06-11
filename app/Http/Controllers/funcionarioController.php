@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Funcionario;
+use App\Models\Agendamento;
 
 class FuncionarioController extends Controller
 {
@@ -27,6 +28,13 @@ class FuncionarioController extends Controller
     /* Armazena um novo funcionário no banco de dados. */
     public function store(Request $request)
     {
+        // Validação dos dados do formulário
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'email' => 'nullable|string|email|max:255|unique:funcionarios',
+            'sexo' => 'required|string|in:M,F', // Supondo que o sexo seja M (Masculino) ou F (Feminino)
+        ]);
+
         // Cria uma nova instância de Funcionario com dados do formulário
         $funcionario = new Funcionario([
             'nome' => $request->input('nome'),
@@ -57,8 +65,14 @@ class FuncionarioController extends Controller
         // Encontra o funcionário pelo ID para atualização
         $funcionario = Funcionario::findOrFail($id);
 
-        // Atualiza os campos do funcionário com os dados do formulário
+        // Validação dos dados do formulário
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'email' => 'nullable|string|email|max:255|unique:funcionarios,email,'.$funcionario->id,
+            'sexo' => 'required|string|in:M,F', // Supondo que o sexo seja M (Masculino) ou F (Feminino)
+        ]);
 
+        // Atualiza os campos do funcionário com os dados do formulário
         $funcionario->nome = $request->input('nome');
         $funcionario->email = $request->input('email');
         $funcionario->sexo = $request->input('sexo');
@@ -76,7 +90,15 @@ class FuncionarioController extends Controller
         // Encontra o funcionário pelo ID para exclusão
         $funcionario = Funcionario::findOrFail($id);
 
-        // Exclui o funcionário do banco de dados
+        // Verifica se o funcionário está vinculado a algum agendamento
+        $agendamentos = Agendamento::where('funcionario_id', $funcionario->id)->exists();
+
+        // Se estiver vinculado a algum agendamento, redireciona de volta com mensagem de erro
+        if ($agendamentos) {
+            return redirect()->route('funcionarios.index')->with('error', 'Não é possível excluir o funcionário, pois está vinculado a um agendamento.');
+        }
+
+        // Caso não esteja vinculado a agendamentos, exclui o funcionário
         $funcionario->delete();
 
         // Redireciona para a página 'funcionarios.index' após exclusão

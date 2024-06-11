@@ -21,21 +21,23 @@
     @endif
     <div class="container">
         <!-- Formulário para adicionar um novo funcionário -->
-        <form action="{{ route('funcionarios.store') }}" method="POST">
+        <form id="formNovoFuncionario" action="{{ route('funcionarios.store') }}" method="POST">
             <!-- Token CSRF para proteção contra ataques CSRF -->
             @csrf
             <div class="form-group">
                 <label for="nome">Nome:</label>
-                <input type="text" name="nome">
+                <input type="text" name="nome" id="nome">
+                <div id="error-nome" class="error-message"></div>
             </div>
             <div class="form-group">
                 <label for="email">E-mail:</label>
-                <input type="text" name="email">
+                <input type="email" name="email" id="email">
+                <div id="error-email" class="error-message"></div>
             </div>
             <div class="form-group">
                 <label for="sexo">Sexo:</label>
                 <!-- Menu suspenso para selecionar o sexo do funcionário -->
-                <select name="sexo">
+                <select name="sexo" id="sexo">
                     <option value="Masculino">Masculino</option>
                     <option value="Feminino">Feminino</option>
                 </select>
@@ -46,4 +48,52 @@
             <a href="{{ route('funcionarios.index') }}" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
+
+    <!-- Script para validação do formulário -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('formNovoFuncionario');
+
+            form.addEventListener('submit', function (event) {
+                // Resetar mensagens de erro
+                clearErrors();
+
+                // Validar campos
+                let valid = true;
+
+                const nome = document.getElementById('nome').value.trim();
+                if (nome === '') {
+                    showError('nome', 'Por favor, insira o nome.');
+                    valid = false;
+                }
+
+                const email = document.getElementById('email').value.trim();
+                if (!validateEmail(email)) {
+                    showError('email', 'Por favor, insira um e-mail válido.');
+                    valid = false;
+                }
+
+                if (!valid) {
+                    event.preventDefault(); // Impede o envio do formulário se houver erros
+                }
+            });
+
+            function showError(field, message) {
+                const errorDiv = document.getElementById(`error-${field}`);
+                errorDiv.textContent = message;
+            }
+
+            function clearErrors() {
+                const errorMessages = document.querySelectorAll('.error-message');
+                errorMessages.forEach(function (element) {
+                    element.textContent = '';
+                });
+            }
+
+            function validateEmail(email) {
+                // Verifica se o formato do e-mail é válido
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            }
+        });
+    </script>
 </x-app-layout>

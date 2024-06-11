@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cliente;
+use App\Models\Agendamento;
 
 class ClienteController extends Controller
 {
@@ -28,6 +29,15 @@ class ClienteController extends Controller
     /* Armazena um novo cliente no banco de dados. */
     public function store(Request $request)
     {
+        // Validação dos dados do formulário
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'telefone' => 'required|string|max:20',
+            'CPF' => 'required|string|max:11|unique:clientes',
+            'CHN' => 'nullable|string|max:20',
+            'email' => 'nullable|string|email|max:255|unique:clientes',
+        ]);
+
         // Cria uma nova instância de Cliente com dados do formulário
         $cliente = new Cliente([
             'nome' => $request->input('nome'),
@@ -60,6 +70,15 @@ class ClienteController extends Controller
         // Encontra o cliente pelo ID para atualização
         $cliente = Cliente::findOrFail($id);
 
+        // Validação dos dados do formulário
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'telefone' => 'required|string|max:20',
+            'CPF' => 'required|string|max:11|unique:clientes,CPF,'.$cliente->id,
+            'CHN' => 'nullable|string|max:20',
+            'email' => 'nullable|string|email|max:255|unique:clientes,email,'.$cliente->id,
+        ]);
+
         // Atualiza os campos do cliente com os dados do formulário
         $cliente->nome = $request->input('nome');
         $cliente->telefone = $request->input('telefone');
@@ -80,7 +99,15 @@ class ClienteController extends Controller
         // Encontra o cliente pelo ID para exclusão
         $cliente = Cliente::findOrFail($id);
 
-        // Exclui o cliente do banco de dados
+        // Verifica se o cliente está vinculado a algum agendamento
+        $agendamentos = Agendamento::where('cliente_id', $cliente->id)->exists();
+
+        // Se estiver vinculado a algum agendamento, redireciona de volta com mensagem de erro
+        if ($agendamentos) {
+            return redirect()->route('clientes.index')->with('error', 'Não é possível excluir o cliente, pois está vinculado a um agendamento.');
+        }
+
+        // Caso não esteja vinculado a agendamentos, exclui o cliente
         $cliente->delete();
 
         // Redireciona para a página 'clientes.index' após exclusão

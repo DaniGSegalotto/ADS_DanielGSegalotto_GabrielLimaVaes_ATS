@@ -4,17 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Marca;
-
+use App\Models\Veiculo;
 
 class MarcaController extends Controller
 {
-    /* Exibe uma lista de todos as marcas. */
+    /* Exibe uma lista de todas as marcas. */
     public function index()
     {
-        // Obtem todos as marcas do banco de dados
+        // Obtém todas as marcas do banco de dados
         $marcas = Marca::all();
 
-        // Retorna a view 'marca.index' com a lista de marcas
+        // Retorna a view 'marcas.index' com a lista de marcas
         return view('marcas.index', compact('marcas'));
     }
 
@@ -22,14 +22,19 @@ class MarcaController extends Controller
     public function create()
     {
         // Retorna a view 'marcas.create'
-
         return view('marcas.create');
     }
 
     /* Armazena uma nova marca no banco de dados. */
     public function store(Request $request)
     {
-        // Cria uma nova instância de Marcas com dados do formulário
+        // Validação dos dados do formulário
+        $request->validate([
+            'descricao' => 'required|string|max:255',
+            'observacao' => 'nullable|string',
+        ]);
+
+        // Cria uma nova instância de Marca com dados do formulário
         $marca = new Marca([
             'descricao' => $request->input('descricao'),
             'observacao' => $request->input('observacao'),
@@ -58,8 +63,13 @@ class MarcaController extends Controller
         // Encontra a marca pelo ID para atualização
         $marca = Marca::findOrFail($id);
 
-        // Atualiza os campos da marca com os dados do formulário
+        // Validação dos dados do formulário
+        $request->validate([
+            'descricao' => 'required|string|max:255',
+            'observacao' => 'nullable|string',
+        ]);
 
+        // Atualiza os campos da marca com os dados do formulário
         $marca->descricao = $request->input('descricao');
         $marca->observacao = $request->input('observacao');
 
@@ -76,7 +86,15 @@ class MarcaController extends Controller
         // Encontra a marca pelo ID para exclusão
         $marca = Marca::findOrFail($id);
 
-        // Exclui a marca do banco de dados
+        // Verifica se existem veículos associados à marca
+        $veiculos = Veiculo::where('marca_id', $marca->id)->exists();
+
+        // Se existirem veículos associados, redireciona de volta com mensagem de erro
+        if ($veiculos) {
+            return redirect()->route('marcas.index')->with('error', 'Não é possível excluir a marca, pois está vinculada a um veículo.');
+        }
+
+        // Caso não haja veículos associados, exclui a marca
         $marca->delete();
 
         // Redireciona para a página 'marcas.index' após exclusão

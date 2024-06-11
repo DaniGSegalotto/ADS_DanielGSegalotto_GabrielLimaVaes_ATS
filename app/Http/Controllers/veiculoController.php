@@ -4,33 +4,40 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Veiculo;
-use App\Models\Marca;
-
-
+use App\Models\Agendamento;
 
 class VeiculoController extends Controller
 {
-    /* Exibe uma lista de todos os veiculos. */
+    /* Exibe uma lista de todos os veículos. */
     public function index()
     {
-        // Obtem todos os veiculos do banco de dados
+        // Obtém todos os veículos do banco de dados
         $veiculos = Veiculo::all();
 
-        // Retorna a view 'veiculos.index' com a lista de veiculos
+        // Retorna a view 'veiculos.index' com a lista de veículos
         return view('veiculos.index', compact('veiculos'));
     }
 
-    /* Exibe o formulário para criar um novo veiculo. */
+    /* Exibe o formulário para criar um novo veículo. */
     public function create()
     {
-        // Retorna a view 'veiculos.create'
-        $marcas = Marca::all();
+        // Retorna a view 'veiculos.create' com as marcas disponíveis
+        $marcas = \App\Models\Marca::all();
         return view('veiculos.create', compact('marcas'));
     }
 
-    /* Armazena um novo veiculo no banco de dados. */
+    /* Armazena um novo veículo no banco de dados. */
     public function store(Request $request)
     {
+        // Validação dos dados do formulário
+        $request->validate([
+            'modelo' => 'required|string|max:255',
+            'categoria' => 'required|string|max:255',
+            'placa' => 'required|string|max:10|unique:veiculos,placa',
+            'ano' => 'required|integer|min:1900',
+            'marca_id' => 'required|exists:marcas,id',
+        ]);
+
         // Cria uma nova instância de Veiculo com dados do formulário
         $veiculo = new Veiculo([
             'modelo' => $request->input('modelo'),
@@ -40,34 +47,42 @@ class VeiculoController extends Controller
             'marca_id' => $request->input('marca_id'),
         ]);
 
-        // Salva o veiculo no banco de dados
+        // Salva o veículo no banco de dados
         $veiculo->save();
 
         // Redireciona para a página 'veiculos.index' após salvar
-        return redirect()->route('veiculos.index')->with('success', 'Veiculo criado com sucesso!');
+        return redirect()->route('veiculos.index')->with('success', 'Veículo criado com sucesso!');
     }
 
-    /* Exibe o formulário para editar um veiculo existente. */
+    /* Exibe o formulário para editar um veículo existente. */
     public function edit(string $id)
     {
-        // Encontra o veiculo pelo ID fornecido ou retorna 404 se não encontrado
+        // Encontra o veículo pelo ID fornecido ou retorna 404 se não encontrado
         $veiculo = Veiculo::findOrFail($id);
 
-        // Retorna a view 'veiculos.edit' com o cliente para edição
+        // Obtém todas as marcas para o dropdown de marcas
+        $marcas = \App\Models\Marca::all();
 
-        $marcas = Marca::all();
-
-        return view('veiculos.edit', compact('marcas', 'veiculo'));
+        // Retorna a view 'veiculos.edit' com o veículo e as marcas para edição
+        return view('veiculos.edit', compact('veiculo', 'marcas'));
     }
 
-    /* Atualiza um veiculo existente no banco de dados. */
+    /* Atualiza um veículo existente no banco de dados. */
     public function update(Request $request, string $id)
     {
-        // Encontra o veiculo pelo ID para atualização
+        // Encontra o veículo pelo ID para atualização
         $veiculo = Veiculo::findOrFail($id);
 
-        // Atualiza os campos do veiculo com os dados do formulário
+        // Validação dos dados do formulário
+        $request->validate([
+            'modelo' => 'required|string|max:255',
+            'categoria' => 'required|string|max:255',
+            'placa' => 'required|string|max:10|unique:veiculos,placa,' . $veiculo->id,
+            'ano' => 'required|integer|min:1900',
+            'marca_id' => 'required|exists:marcas,id',
+        ]);
 
+        // Atualiza os campos do veículo com os dados do formulário
         $veiculo->modelo = $request->input('modelo');
         $veiculo->categoria = $request->input('categoria');
         $veiculo->placa = $request->input('placa');
@@ -78,29 +93,37 @@ class VeiculoController extends Controller
         $veiculo->save();
 
         // Redireciona para a página 'veiculos.index' após a atualização
-        return redirect()->route('veiculos.index')->with('success', 'Veiculo alterado com sucesso!');
+        return redirect()->route('veiculos.index')->with('success', 'Veículo alterado com sucesso!');
     }
 
-    /* Remove um veiculo do banco de dados. */
+    /* Remove um veículo do banco de dados. */
     public function destroy(string $id)
     {
-        // Encontra o veiculo pelo ID para exclusão
+        // Encontra o veículo pelo ID para exclusão
         $veiculo = Veiculo::findOrFail($id);
 
-        // Exclui o veiculo do banco de dados
+        // Verifica se existem agendamentos associados ao veículo
+        $agendamentos = Agendamento::where('veiculo_id', $veiculo->id)->exists();
+
+        // Se existirem agendamentos associados, redireciona de volta com mensagem de erro
+        if ($agendamentos) {
+            return redirect()->route('veiculos.index')->with('error', 'Não é possível excluir o veículo, pois está vinculado a um agendamento.');
+        }
+
+        // Caso não haja agendamentos associados, exclui o veículo
         $veiculo->delete();
 
         // Redireciona para a página 'veiculos.index' após exclusão
-        return redirect()->route('veiculos.index')->with('success', 'Veiculo excluído com sucesso!');
+        return redirect()->route('veiculos.index')->with('success', 'Veículo excluído com sucesso!');
     }
 
-    /* Mostra detalhes de um veiculo específico. */
+    /* Mostra detalhes de um veículo específico. */
     public function show(string $id)
     {
-        // Busca o veiculo pelo ID ou retorna 404 se não encontrado
+        // Busca o veículo pelo ID ou retorna 404 se não encontrado
         $veiculo = Veiculo::findOrFail($id);
 
-        // Retorna a view 'veiculos.show' para exibir detalhes do veiculo
+        // Retorna a view 'veiculos.show' para exibir detalhes do veículo
         return view('veiculos.show', compact('veiculo'));
     }
 }
