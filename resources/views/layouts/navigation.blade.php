@@ -7,15 +7,15 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    <a href="{{ route('ATS') }}">
+                        <img src="/img/ATS.png" class="block h-9 w-auto fill-current text-gray-800" alt="ats">
                     </a>
                 </div>
 
                 <!-- Links de Navegação -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Principal') }}
+                    <x-nav-link :href="route('ATS')" :active="request()->routeIs('ATS')">
+                        {{ __('Início') }}
                     </x-nav-link>
                     <!-- Link para Clientes -->
                     <x-nav-link :href="route('clientes.index')" :active="request()->routeIs('clientes.index')">
@@ -89,8 +89,8 @@
     <!-- Menu de Navegação Responsivo -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+            <x-responsive-nav-link :href="route('ATS')" :active="request()->routeIs('ATS')">
+                {{ __('ATS') }}
             </x-responsive-nav-link>
             <!-- Link para Clientes -->
             <x-responsive-nav-link :href="route('clientes.index')" :active="request()->routeIs('clientes.index')">

@@ -24,10 +24,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Rota que retorna a view 'dashboard' requerendo autenticação e verificação de e-mail
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Rota que retorna a view 'ATS' requerendo autenticação e verificação de e-mail
+Route::get('/ATS', function () {
+    return view('ATS');
+})->middleware(['auth', 'verified'])->name('ATS');
 
 // Grupo de rotas protegidas pelo middleware 'auth'
 Route::middleware('auth')->group(function () {
