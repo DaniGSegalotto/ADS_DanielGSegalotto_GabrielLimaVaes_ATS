@@ -1,26 +1,38 @@
 <x-app-layout>
-    <!-- Importa um arquivo CSS/JS específico para estilização/interação do índice de clientes -->
 
     <head>
         <link rel="stylesheet" href="{{ asset('css/clientes/index.css') }}">
         <script src="{{ asset('js/veiculos.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <title>Lista de Veículos</title>
     </head>
 
-    <!-- Cabeçalho da página -->
     <x-slot name="header">
-        <!-- Título da página -->
         <h2 class="font-semibold text-xl text-white leading-tight">
             {{ __('Lista de Veículos') }}
         </h2>
     </x-slot>
 
     <div class="container">
+
+        {{-- Flash messages --}}
+        @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                <strong class="font-bold">Sucesso!</strong>
+                <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <strong class="font-bold">Atenção!</strong>
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
+        @endif
+
         <!-- Formulário de busca -->
         <form action="{{ route('veiculos.index') }}" method="GET" class="search-form">
             <div class="search-container">
-                <!-- Adicione campos de busca aqui, por exemplo: -->
-                <input type="text" name="query" placeholder="Buscar Veículos">
+                <input type="text" name="query" placeholder="Buscar Veículos" value="{{ request('query') }}">
                 <button type="submit" class="btn btn-primary">Buscar</button>
             </div>
         </form>
@@ -39,43 +51,55 @@
                     <th>ANO</th>
                     <th>MARCA</th>
                     <th>OPÇÕES</th>
+                    <th>STATUS</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Loop através dos veículos para exibir informações na tabela -->
-                @foreach ($veiculos as $veiculo)
+                @forelse ($veiculos as $veiculo)
                     <tr>
-                        <!-- Exibe o ID do veículo -->
                         <td>{{ $veiculo->id }}</td>
-                        <!-- Exibe o modelo do veículo -->
                         <td>{{ $veiculo->modelo }}</td>
-                        <!-- Exibe a categoria do veículo -->
                         <td>{{ $veiculo->categoria }}</td>
-                        <!-- Exibe a placa do veículo -->
                         <td>{{ $veiculo->placa }}</td>
-                        <!-- Exibe o ano do veículo -->
                         <td>{{ $veiculo->ano }}</td>
-                        <!-- Exibe o ID da marca do veículo (é recomendável exibir o nome da marca) -->
-                        <td>{{ $veiculo->marca_id }}</td>
+
+                        <!-- Marca por descrição -->
+                        <td>{{ $veiculo->marca->descricao ?? '—' }}</td>
+
                         <td>
-                            <!-- Botões de ações para cada veículo -->
-                            <!-- Botão para ver detalhes do veículo -->
                             <a href="{{ route('veiculos.show', $veiculo->id) }}" class="btn btn-info">Detalhes</a>
-                            <!-- Botão para editar o veículo -->
                             <a href="{{ route('veiculos.edit', $veiculo->id) }}" class="btn btn-warning">Editar</a>
-                            <!-- Formulário para excluir o veículo -->
-                            <form id="delete-form-{{ $veiculo->id }}" action="{{ route('veiculos.destroy', $veiculo->id) }}"
-                                method="POST" style="display: inline;">
-                                @csrf <!-- Token CSRF para proteção contra ataques CSRF -->
-                                @method('DELETE') <!-- Método HTTP DELETE para exclusão -->
-                                <button type="button" onclick="confirmDelete({{ $veiculo->id }})"
-                                    class="btn btn-danger">Excluir</button>
-                                <button type="button" class="btn btn-info2"
-                                    onclick="infoVeiculo({{ $veiculo->id }})">Informação</button>
+
+                            <form id="delete-form-{{ $veiculo->id }}"
+                                  action="{{ route('veiculos.destroy', $veiculo->id) }}"
+                                  method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" onclick="confirmDelete({{ $veiculo->id }})" class="btn btn-danger">Excluir</button>
+                                <button type="button" class="btn btn-info2" onclick="infoVeiculo({{ $veiculo->id }})">Informação</button>
                             </form>
                         </td>
+
+                        <!-- Status com badge (usa relacionamento 'status') -->
+                        <td>
+                            @php
+                                $statusDesc = $veiculo->status?->descricao ?? 'Não definido';
+                                $badgeClass = match ($statusDesc) {
+                                    'Ativo'          => 'badge badge-ativo',
+                                    'Vendido'        => 'badge badge-vendido',
+                                    'Indisponível'   => 'badge badge-indisponivel',
+                                    'Em manutenção'  => 'badge badge-em-manutencao',
+                                    default          => 'badge badge-default',
+                                };
+                            @endphp
+                            <span class="{{ $badgeClass }}">{{ $statusDesc }}</span>
+                        </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="8">Nenhum veículo encontrado.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

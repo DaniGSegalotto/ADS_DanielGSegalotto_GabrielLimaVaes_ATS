@@ -7,12 +7,31 @@ use Illuminate\Database\Eloquent\Model;
 
 class Veiculo extends Model
 {
-   protected $table = 'veiculos'; // Define o nome da tabela no banco de dados associada a este modelo
-   protected $fillable = ['modelo', 'categoria', 'placa', 'ano', 'marca_id']; // Define os campos que podem ser atribuídos em massa
+    use HasFactory;
 
-   // Define o relacionamento "pertence a" com o modelo Marca
-   public function marca() {
-      return $this->belongsTo(Marca::class);
-   }
+    protected $table = 'veiculos';
+
+    protected $fillable = [
+        'modelo',
+        'categoria',
+        'placa',
+        'ano',
+        'marca_id',
+        'status_id', // <- campo correto
+    ];
+
+    // Removido o cast antigo de 'status' (não é mais boolean)
+    protected $casts = [];
+
+    // Relacionamento com Marca
+    public function marca()
+    {
+        return $this->belongsTo(Marca::class);
+    }
+
+    // Relacionamento com Status (FK = status_id)
+    public function status()
+    {
+        return $this->belongsTo(Status::class, 'status_id');
+    }
 }
-
