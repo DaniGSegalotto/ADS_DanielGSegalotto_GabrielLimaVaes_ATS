@@ -1,106 +1,137 @@
 <x-app-layout>
-
-    <head>
-        <link rel="stylesheet" href="{{ asset('css/clientes/index.css') }}">
-        <script src="{{ asset('js/veiculos.js') }}"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <title>Lista de Veículos</title>
-    </head>
-
+    <!-- 🔹 Cabeçalho -->
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-white leading-tight">
+        <h2 class="text-2xl font-semibold text-white leading-tight">
             {{ __('Lista de Veículos') }}
         </h2>
     </x-slot>
 
-    <div class="container">
+    <!-- 🔹 Mensagens de feedback -->
+    @if(session('success'))
+        <div class="card" style="background:rgba(76,175,80,0.2); border:1px solid rgba(76,175,80,0.4); color:#caffca; margin:auto; margin-bottom:20px; max-width:900px; padding:10px; border-radius:12px;">
+            <strong>✔ Sucesso:</strong> {{ session('success') }}
+        </div>
+    @endif
 
-        {{-- Flash messages --}}
-        @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                <strong class="font-bold">Sucesso!</strong>
-                <span class="block sm:inline">{{ session('success') }}</span>
-            </div>
-        @endif
-        @if(session('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                <strong class="font-bold">Atenção!</strong>
-                <span class="block sm:inline">{{ session('error') }}</span>
-            </div>
-        @endif
+    @if(session('error'))
+        <div class="card" style="background:rgba(255,82,82,0.15); border:1px solid rgba(255,82,82,0.4); color:#ffbaba; margin:auto; margin-bottom:20px; max-width:900px; padding:10px; border-radius:12px;">
+            <strong>⚠ Atenção:</strong> {{ session('error') }}
+        </div>
+    @endif
 
-        <!-- Formulário de busca -->
-        <form action="{{ route('veiculos.index') }}" method="GET" class="search-form">
-            <div class="search-container">
-                <input type="text" name="query" placeholder="Buscar Veículos" value="{{ request('query') }}">
-                <button type="submit" class="btn btn-primary">Buscar</button>
-            </div>
+    <!-- 🔹 Conteúdo -->
+    <div class="card" style="max-width:900px; margin:auto;">
+
+        <!-- 🔸 Barra de busca -->
+        <form action="{{ route('veiculos.index') }}" method="GET" 
+              style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <input type="text" name="query" placeholder="Buscar veículos..." value="{{ request('query') }}"
+                   style="flex:1; padding:10px; border-radius:12px; border:none; background:rgba(255,255,255,0.12); color:#fff;">
+            <button type="submit"
+                    style="margin-left:10px; background:linear-gradient(90deg,#ff512f,#f09819);
+                           border:none; color:white; padding:10px 18px; border-radius:12px; font-weight:600;">
+                Buscar
+            </button>
         </form>
 
-        <!-- Botão para adicionar um novo veículo -->
-        <a href="{{ route('veiculos.create') }}" class="btn btn-primary">Novo Veículo</a>
+        <!-- 🔸 Botão Novo -->
+        <div style="margin-bottom:20px; text-align:right;">
+            <a href="{{ route('veiculos.create') }}" 
+               style="background:linear-gradient(90deg,#ff512f,#f09819); 
+                      color:white; padding:10px 16px; border-radius:12px; text-decoration:none; font-weight:600;">
+                + Novo Veículo
+            </a>
+        </div>
 
-        <!-- Tabela de veículos -->
-        <table class="table">
+        <!-- 🔸 Tabela -->
+        <table style="width:100%; border-collapse:collapse; text-align:left;">
             <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>MODELO</th>
-                    <th>CATEGORIA</th>
-                    <th>PLACA</th>
-                    <th>ANO</th>
-                    <th>MARCA</th>
-                    <th>OPÇÕES</th>
-                    <th>STATUS</th>
+                <tr style="background:rgba(255,255,255,0.08); color:#ffb84d;">
+                    <th style="padding:10px;">ID</th>
+                    <th style="padding:10px;">Modelo</th>
+                    <th style="padding:10px;">Categoria</th>
+                    <th style="padding:10px;">Placa</th>
+                    <th style="padding:10px;">Ano</th>
+                    <th style="padding:10px;">Marca</th>
+                    <th style="padding:10px;">Status</th>
+                    <th style="padding:10px;">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($veiculos as $veiculo)
-                    <tr>
-                        <td>{{ $veiculo->id }}</td>
-                        <td>{{ $veiculo->modelo }}</td>
-                        <td>{{ $veiculo->categoria }}</td>
-                        <td>{{ $veiculo->placa }}</td>
-                        <td>{{ $veiculo->ano }}</td>
+                    @php
+                        $statusDesc = $veiculo->status?->descricao ?? 'Não definido';
+                        $badgeColor = match ($statusDesc) {
+                            'Ativo'          => '#00e676',
+                            'Vendido'        => '#ffa000',
+                            'Indisponível'   => '#e53935',
+                            'Em manutenção'  => '#29b6f6',
+                            default          => '#bdbdbd',
+                        };
+                    @endphp
 
-                        <!-- Marca por descrição -->
-                        <td>{{ $veiculo->marca->descricao ?? '—' }}</td>
-
-                        <td>
-                            <a href="{{ route('veiculos.show', $veiculo->id) }}" class="btn btn-info">Detalhes</a>
-                            <a href="{{ route('veiculos.edit', $veiculo->id) }}" class="btn btn-warning">Editar</a>
-
-                            <form id="delete-form-{{ $veiculo->id }}"
-                                  action="{{ route('veiculos.destroy', $veiculo->id) }}"
-                                  method="POST" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" onclick="confirmDelete({{ $veiculo->id }})" class="btn btn-danger">Excluir</button>
-                                <button type="button" class="btn btn-info2" onclick="infoVeiculo({{ $veiculo->id }})">Informação</button>
-                            </form>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1); color:#fff;">
+                        <td style="padding:10px;">{{ $veiculo->id }}</td>
+                        <td style="padding:10px;">{{ $veiculo->modelo }}</td>
+                        <td style="padding:10px;">{{ $veiculo->categoria }}</td>
+                        <td style="padding:10px;">{{ $veiculo->placa }}</td>
+                        <td style="padding:10px;">{{ $veiculo->ano }}</td>
+                        <td style="padding:10px;">{{ $veiculo->marca->descricao ?? '—' }}</td>
+                        <td style="padding:10px;">
+                            <span style="background:{{ $badgeColor }}33; border:1px solid {{ $badgeColor }}88;
+                                         color:{{ $badgeColor }}; padding:4px 10px; border-radius:8px; font-weight:600;">
+                                {{ $statusDesc }}
+                            </span>
                         </td>
 
-                        <!-- Status com badge (usa relacionamento 'status') -->
-                        <td>
-                            @php
-                                $statusDesc = $veiculo->status?->descricao ?? 'Não definido';
-                                $badgeClass = match ($statusDesc) {
-                                    'Ativo'          => 'badge badge-ativo',
-                                    'Vendido'        => 'badge badge-vendido',
-                                    'Indisponível'   => 'badge badge-indisponivel',
-                                    'Em manutenção'  => 'badge badge-em-manutencao',
-                                    default          => 'badge badge-default',
-                                };
-                            @endphp
-                            <span class="{{ $badgeClass }}">{{ $statusDesc }}</span>
+                        <td style="padding:10px;">
+                            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                <a href="{{ route('veiculos.show', $veiculo->id) }}" 
+                                   style="background:#2196F3; padding:6px 10px; border-radius:8px; color:#fff; text-decoration:none; font-weight:500;">
+                                   Detalhes
+                                </a>
+                                <a href="{{ route('veiculos.edit', $veiculo->id) }}" 
+                                   style="background:#ffb84d; padding:6px 10px; border-radius:8px; color:#000; text-decoration:none; font-weight:500;">
+                                   Editar
+                                </a>
+                                <form id="delete-{{ $veiculo->id }}" action="{{ route('veiculos.destroy', $veiculo->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" onclick="confirmDelete({{ $veiculo->id }})"
+                                            style="background:#e53935; color:white; padding:6px 10px; border-radius:8px; border:none; font-weight:500; cursor:pointer;">
+                                        Excluir
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8">Nenhum veículo encontrado.</td>
+                        <td colspan="8" style="text-align:center; padding:15px; color:#ccc;">Nenhum veículo encontrado.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
+
+    <!-- 🔹 Script SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: 'Essa ação não pode ser desfeita.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e53935',
+                cancelButtonColor: '#555',
+                confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(`delete-${id}`).submit();
+                }
+            });
+        }
+    </script>
 </x-app-layout>

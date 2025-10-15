@@ -7,13 +7,15 @@ use App\Models\Status;
 
 class StatusSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        foreach (['Ativo', 'Indisponível', 'Vendido', 'Em manutenção'] as $nome) {
-            Status::firstOrCreate(['descricao' => $nome]);
+        // Evita duplicações se rodar mais de uma vez
+        if (Status::count() === 0) {
+            Status::insert([
+                ['descricao' => 'Ativo'],
+                ['descricao' => 'Inativo'],
+                ['descricao' => 'Em manutenção'],
+            ]);
         }
     }
 }

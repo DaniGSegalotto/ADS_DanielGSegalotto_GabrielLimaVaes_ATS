@@ -1,44 +1,56 @@
 <x-app-layout>
-    <head>
-        <!-- Importa um arquivo CSS específico para estilização de detalhes de clientes -->
-        <link rel="stylesheet" href="{{ asset('css/clientes/showClientes.css') }}">
-    </head>
-    <!-- Define o cabeçalho da página -->
+    <!-- 🔹 Cabeçalho -->
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            <!-- Exibe o título da página traduzido usando o helper de tradução '__' -->
+        <h2 class="text-2xl font-semibold text-white leading-tight">
             {{ __('Detalhes do Cliente') }}
         </h2>
     </x-slot>
-    <section class="cliente-details">
-        <div class="cliente-content">
-            <!-- Exibe os detalhes do cliente -->
-            <div class="cliente-meta">
-                <span class="cliente-label">ID:</span>
-                <span class="cliente-info">{{ $cliente->id }}</span>
+
+    <!-- 🔹 Container -->
+    <div class="card" style="max-width: 600px; margin: auto;">
+
+        <h3 style="font-size:20px; margin-bottom:20px;">Informações do Cliente</h3>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
+                <span style="color:#ffb84d;">ID:</span>
+                <span style="color:#fff;">{{ $cliente->id }}</span>
             </div>
-            <div class="cliente-meta">
-                <span class="cliente-label">Nome:</span>
-                <span class="cliente-info">{{ $cliente->nome }}</span>
+
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
+                <span style="color:#ffb84d;">Nome:</span>
+                <span style="color:#fff;">{{ $cliente->nome }}</span>
             </div>
-            <div class="cliente-meta">
-                <span class="cliente-label">Telefone:</span>
-                <span class="cliente-info">{{ $cliente->telefone }}</span>
+
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
+                <span style="color:#ffb84d;">Telefone:</span>
+                <span style="color:#fff;">{{ $cliente->telefone }}</span>
             </div>
-            <div class="cliente-meta">
-                <span class="cliente-label">CPF:</span>
-                <span class="cliente-info">{{ $cliente->CPF }}</span>
+
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
+                <span style="color:#ffb84d;">CPF:</span>
+                <span style="color:#fff;">{{ $cliente->CPF }}</span>
             </div>
-            <div class="cliente-meta">
-                <span class="cliente-label">CNH:</span>
-                <span class="cliente-info">{{ $cliente->CHN }}</span>
+
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
+                <span style="color:#ffb84d;">CNH:</span>
+                <span style="color:#fff;">{{ $cliente->CHN }}</span>
             </div>
-            <div class="cliente-meta">
-                <span class="cliente-label">E-MAIL:</span>
-                <span class="cliente-info">{{ $cliente->email }}</span>
+
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
+                <span style="color:#ffb84d;">E-mail:</span>
+                <span style="color:#fff;">{{ $cliente->email }}</span>
             </div>
         </div>
-        <!-- Link para voltar à página de índice de clientes -->
-        <a href="{{ route('clientes.index') }}" class="btn-return">Voltar</a>
-    </section>
+
+        <!-- 🔸 Botão Voltar -->
+        <div style="margin-top:24px; text-align:right;">
+            <a href="{{ route('clientes.index') }}"
+               style="padding:10px 16px; border-radius:12px;
+                      background:linear-gradient(90deg, #ff512f, #f09819);
+                      color:#fff; font-weight:600; text-decoration:none;">
+                Voltar
+            </a>
+        </div>
+    </div>
 </x-app-layout>

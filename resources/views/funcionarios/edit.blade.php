@@ -1,39 +1,58 @@
 <x-app-layout>
-    <!-- Define o cabeçalho da página -->
+    <!-- 🔹 Cabeçalho -->
     <x-slot name="header">
-        <!-- Importa um arquivo CSS específico para estilização de edição de funcionários -->
-        <link rel="stylesheet" href="{{ asset('css/clientes/edit.css') }}">
-        <h2 class="font-semibold text-xl text-white leading-tight">
-            Editar Funcionário
+        <h2 class="text-2xl font-semibold text-white leading-tight">
+            {{ __('Editar Funcionário') }}
         </h2>
     </x-slot>
-    <div class="container">
-        <!-- Formulário para editar informações do funcionário -->
-        <form action="{{ route('funcionarios.update', $funcionario->id) }}" method="POST">
-            @csrf <!-- Token CSRF para proteção contra ataques CSRF -->
-            @method('PUT') <!-- Método HTTP para indicar que é uma atualização -->
-            <div class="form-group">
-                <label for="nome">Nome:</label>
-                <input type="text" name="nome" value="{{ $funcionario->nome }}">
+
+    <!-- 🔹 Container principal -->
+    <div class="card" style="max-width: 700px; margin: auto;">
+        <h3 style="font-size:20px; margin-bottom:16px;">Atualizar informações do funcionário</h3>
+
+        <!-- 🔸 Formulário -->
+        <form action="{{ route('funcionarios.update', $funcionario->id) }}" method="POST" 
+              style="display:flex; flex-direction:column; gap:16px;">
+            @csrf
+            @method('PUT')
+
+            <div>
+                <label for="nome">Nome:</label><br>
+                <input type="text" name="nome" id="nome" value="{{ $funcionario->nome }}" required>
             </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" name="email" value="{{ $funcionario->email }}">
+
+            <div>
+                <label for="email">Email:</label><br>
+                <input type="email" name="email" id="email" value="{{ $funcionario->email }}" required>
             </div>
-            <div class="form-group">
-                <label for="sexo">Sexo:</label>
-                <!-- Menu suspenso para selecionar o sexo do funcionário -->
-                <select name="sexo">
-                    <!-- Define opções de seleção para sexo, com uma verificação para selecionar a opção correta com base no sexo atual do funcionário -->
+
+            <div>
+                <label for="sexo">Sexo:</label><br>
+                <select name="sexo" id="sexo" required>
                     <option value="M" {{ $funcionario->sexo == 'M' ? 'selected' : '' }}>Masculino</option>
                     <option value="F" {{ $funcionario->sexo == 'F' ? 'selected' : '' }}>Feminino</option>
                 </select>
             </div>
-            <!-- Adicione outros campos conforme necessário -->
-            <!-- Botão para submeter o formulário e salvar as alterações -->
-            <button type="submit" class="btn btn-success">Salvar Alterações</button>
-            <!-- Link para cancelar a operação e voltar à página de índice de funcionários -->
-            <a href="{{ route('funcionarios.index') }}" class="btn btn-secondary">Cancelar</a>
+
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button type="submit">Salvar Alterações</button>
+                <a href="{{ route('funcionarios.index') }}" class="btn" style="background:#666;">Cancelar</a>
+            </div>
         </form>
     </div>
+
+    <!-- 🔹 Script opcional: validação leve -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', (e) => {
+                const nome = document.getElementById('nome').value.trim();
+                const email = document.getElementById('email').value.trim();
+                if (nome === '' || email === '') {
+                    e.preventDefault();
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                }
+            });
+        });
+    </script>
 </x-app-layout>

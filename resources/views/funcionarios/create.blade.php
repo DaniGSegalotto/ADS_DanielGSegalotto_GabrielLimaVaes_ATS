@@ -1,64 +1,70 @@
 <x-app-layout>
-    <head>
-        <!-- Importa um arquivo CSS específico para estilização de funcionários -->
-        <link rel="stylesheet" href="{{ asset('css/clientes/clientes.css') }}">
-        <!-- Define o título da página -->
-        <title>Novo Funcionário</title>
-    </head>
-    <!-- Define o cabeçalho da página -->
+    <!-- 🔹 Cabeçalho -->
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-white leading-tight">
-            <!-- Exibe o título da página traduzido usando o helper de tradução '__' -->
-            {{ __('Criar Funcionário') }}
+        <h2 class="text-2xl font-semibold text-white leading-tight">
+            {{ __('Cadastrar Funcionário') }}
         </h2>
     </x-slot>
-    <!-- Verifica se há uma mensagem de sucesso na sessão e a exibe -->
+
+    <!-- 🔹 Mensagem de sucesso -->
     @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            <strong class="font-bold">Sucesso!</strong>
-            <span class="block sm:inline">{{ session('success') }}</span>
+        <div style="
+            background: rgba(119, 255, 168, .16);
+            border: 1px solid rgba(119, 255, 168, .45);
+            color: #c9ffd9;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-align: center;
+        ">
+            <strong>Sucesso!</strong> {{ session('success') }}
         </div>
     @endif
-    <div class="container">
-        <!-- Formulário para adicionar um novo funcionário -->
-        <form id="formNovoFuncionario" action="{{ route('funcionarios.store') }}" method="POST">
-            <!-- Token CSRF para proteção contra ataques CSRF -->
+
+    <!-- 🔹 Formulário -->
+    <div class="card" style="max-width: 700px; margin: auto;">
+        <h3 style="font-size:20px; margin-bottom:16px;">Novo Funcionário</h3>
+
+        <form id="formNovoFuncionario" action="{{ route('funcionarios.store') }}" method="POST" 
+              style="display:flex; flex-direction:column; gap:16px;">
             @csrf
-            <div class="form-group">
-                <label for="nome">Nome:</label>
-                <input type="text" name="nome" id="nome">
-                <div id="error-nome" class="error-message"></div>
+
+            <div>
+                <label for="nome">Nome:</label><br>
+                <input type="text" name="nome" id="nome" placeholder="Digite o nome completo" required>
+                <div id="error-nome" style="color:#ffb3b3; font-size:13px; margin-top:4px;"></div>
             </div>
-            <div class="form-group">
-                <label for="email">E-mail:</label>
-                <input type="email" name="email" id="email">
-                <div id="error-email" class="error-message"></div>
+
+            <div>
+                <label for="email">E-mail:</label><br>
+                <input type="email" name="email" id="email" placeholder="exemplo@email.com" required>
+                <div id="error-email" style="color:#ffb3b3; font-size:13px; margin-top:4px;"></div>
             </div>
-            <div class="form-group">
-                <label for="sexo">Sexo:</label>
-                <!-- Menu suspenso para selecionar o sexo do funcionário -->
-                <select name="sexo" id="sexo">
+
+            <div>
+                <label for="sexo">Sexo:</label><br>
+                <select name="sexo" id="sexo" required>
+                    <option value="" disabled selected>Selecione o sexo</option>
                     <option value="Masculino">Masculino</option>
                     <option value="Feminino">Feminino</option>
                 </select>
             </div>
-            <!-- Botão para submeter o formulário e salvar o novo funcionário -->
-            <button type="submit" class="btn btn-success">Salvar</button>
-            <!-- Link para cancelar a operação e voltar à página de índice de funcionários -->
-            <a href="{{ route('funcionarios.index') }}" class="btn btn-secondary">Cancelar</a>
+
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button type="submit">Salvar</button>
+                <a href="{{ route('funcionarios.index') }}" class="btn" style="background:#666;">Cancelar</a>
+            </div>
         </form>
     </div>
 
-    <!-- Script para validação do formulário -->
+    <!-- 🔹 Script de validação -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('formNovoFuncionario');
 
-            form.addEventListener('submit', function (event) {
-                // Resetar mensagens de erro
+            form.addEventListener('submit', (event) => {
                 clearErrors();
-
-                // Validar campos
                 let valid = true;
 
                 const nome = document.getElementById('nome').value.trim();
@@ -73,25 +79,19 @@
                     valid = false;
                 }
 
-                if (!valid) {
-                    event.preventDefault(); // Impede o envio do formulário se houver erros
-                }
+                if (!valid) event.preventDefault();
             });
 
             function showError(field, message) {
                 const errorDiv = document.getElementById(`error-${field}`);
-                errorDiv.textContent = message;
+                if (errorDiv) errorDiv.textContent = message;
             }
 
             function clearErrors() {
-                const errorMessages = document.querySelectorAll('.error-message');
-                errorMessages.forEach(function (element) {
-                    element.textContent = '';
-                });
+                document.querySelectorAll('[id^="error-"]').forEach(el => el.textContent = '');
             }
 
             function validateEmail(email) {
-                // Verifica se o formato do e-mail é válido
                 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
             }
         });

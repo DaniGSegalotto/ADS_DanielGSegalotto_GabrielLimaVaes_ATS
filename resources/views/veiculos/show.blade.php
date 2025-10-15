@@ -1,65 +1,72 @@
 <x-app-layout>
-    <!-- Cabeçalho da página -->
+    <!-- 🔹 Cabeçalho -->
     <x-slot name="header">
-        <link rel="stylesheet" href="{{ asset('css/clientes/showVeiculos.css') }}">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="text-2xl font-semibold text-white leading-tight">
             {{ __('Detalhes do Veículo') }}
         </h2>
     </x-slot>
 
-    <!-- Seção de detalhes do veículo -->
-    <section class="veiculo-details">
-        <div class="veiculo-content">
-            <!-- ID -->
-            <div class="veiculo-meta">
-                <span class="veiculo-label">ID:</span>
-                <span class="veiculo-info">{{ $veiculo->id }}</span>
+    <!-- 🔹 Conteúdo -->
+    <div class="card" style="max-width:750px; margin:auto; text-align:left;">
+        <h3 style="font-size:20px; margin-bottom:16px;">Informações do Veículo</h3>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <div>
+                <span style="color:#ffb84d; font-weight:600;">ID:</span><br>
+                <span style="color:#fff;">{{ $veiculo->id }}</span>
             </div>
 
-            <!-- Modelo -->
-            <div class="veiculo-meta">
-                <span class="veiculo-label">Modelo:</span>
-                <span class="veiculo-info">{{ $veiculo->modelo }}</span>
+            <div>
+                <span style="color:#ffb84d; font-weight:600;">Modelo:</span><br>
+                <span style="color:#fff;">{{ $veiculo->modelo }}</span>
             </div>
 
-            <!-- Marca -->
-            <div class="veiculo-meta">
-                <span class="veiculo-label">Marca:</span>
-                <span class="veiculo-info">{{ $veiculo->marca->descricao ?? '—' }}</span>
+            <div>
+                <span style="color:#ffb84d; font-weight:600;">Categoria:</span><br>
+                <span style="color:#fff;">{{ $veiculo->categoria }}</span>
             </div>
 
-            <!-- Ano -->
-            <div class="veiculo-meta">
-                <span class="veiculo-label">Ano:</span>
-                <span class="veiculo-info">{{ $veiculo->ano }}</span>
+            <div>
+                <span style="color:#ffb84d; font-weight:600;">Marca:</span><br>
+                <span style="color:#fff;">{{ $veiculo->marca->descricao ?? '—' }}</span>
             </div>
 
-            <!-- Placa -->
-            <div class="veiculo-meta">
-                <span class="veiculo-label">Placa:</span>
-                <span class="veiculo-info">{{ $veiculo->placa }}</span>
+            <div>
+                <span style="color:#ffb84d; font-weight:600;">Ano:</span><br>
+                <span style="color:#fff;">{{ $veiculo->ano }}</span>
             </div>
 
-            <!-- Status -->
-            <div class="veiculo-meta">
-                <span class="veiculo-label">Status:</span>
-                <span class="veiculo-info">
-                    @php
-                        $statusDesc = $veiculo->status?->descricao ?? 'Não definido';
-                        $badgeClass = match($statusDesc) {
-                            'Ativo'          => 'bg-green-500 text-white',
-                            'Vendido'        => 'bg-gray-500 text-white',
-                            'Indisponível'   => 'bg-yellow-600 text-white',
-                            'Em manutenção'  => 'bg-red-500 text-white',
-                            default          => 'bg-gray-300 text-black',
-                        };
-                    @endphp
-                    <span class="px-2 py-1 rounded {{ $badgeClass }}">{{ $statusDesc }}</span>
+            <div>
+                <span style="color:#ffb84d; font-weight:600;">Placa:</span><br>
+                <span style="color:#fff;">{{ $veiculo->placa }}</span>
+            </div>
+
+            <div>
+                <span style="color:#ffb84d; font-weight:600;">Status:</span><br>
+                @php
+                    $statusDesc = $veiculo->status?->descricao ?? 'Não definido';
+                    $badgeColor = match($statusDesc) {
+                        'Ativo'          => '#00e676',
+                        'Vendido'        => '#ffa000',
+                        'Indisponível'   => '#e53935',
+                        'Em manutenção'  => '#29b6f6',
+                        default          => '#bdbdbd',
+                    };
+                @endphp
+                <span style="background:{{ $badgeColor }}33; border:1px solid {{ $badgeColor }}99;
+                             color:{{ $badgeColor }}; padding:4px 10px; border-radius:8px; font-weight:600;">
+                    {{ $statusDesc }}
                 </span>
             </div>
         </div>
 
-        <!-- Botão de retorno -->
-        <a href="{{ route('veiculos.index') }}" class="btn-return">Voltar</a>
-    </section>
+        <!-- 🔸 Botão de retorno -->
+        <div style="margin-top:24px; text-align:right;">
+            <a href="{{ route('veiculos.index') }}" 
+               style="background:linear-gradient(90deg,#ff512f,#f09819);
+                      padding:10px 18px; border-radius:12px; color:#fff; text-decoration:none; font-weight:600;">
+                Voltar
+            </a>
+        </div>
+    </div>
 </x-app-layout>

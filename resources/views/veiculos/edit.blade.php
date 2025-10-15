@@ -1,85 +1,114 @@
 <x-app-layout>
-    <head>
-        <link rel="stylesheet" href="{{ asset('css/clientes/edit.css') }}">
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Editar Veículo</title>
-    </head>
+    <!-- 🔹 Cabeçalho -->
+    <x-slot name="header">
+        <h2 class="text-2xl font-semibold text-white leading-tight">
+            {{ __('Editar Veículo') }}
+        </h2>
+    </x-slot>
 
-    <body>
-        <div class="container">
-            <h1>Editar Veículo</h1>
-
-            {{-- Mensagens de sucesso ou erro --}}
-            @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                    <strong class="font-bold">Sucesso!</strong>
-                    <span class="block sm:inline">{{ session('success') }}</span>
-                </div>
-            @endif
-
-            @if ($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                    <strong class="font-bold">Erro!</strong>
-                    <ul class="mt-2 list-disc list-inside">
-                        @foreach ($errors->all() as $e)
-                            <li>{{ $e }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <form action="{{ route('veiculos.update', $veiculo->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-
-                <div class="form-group">
-                    <label for="modelo">Modelo:</label>
-                    <input type="text" name="modelo" id="modelo" value="{{ old('modelo', $veiculo->modelo) }}">
-                </div>
-
-                <div class="form-group">
-                    <label for="categoria">Categoria:</label>
-                    <input type="text" name="categoria" id="categoria" value="{{ old('categoria', $veiculo->categoria) }}">
-                </div>
-
-                <div class="form-group">
-                    <label for="placa">Placa:</label>
-                    <input type="text" name="placa" id="placa" value="{{ old('placa', $veiculo->placa) }}">
-                </div>
-
-                <div class="form-group">
-                    <label for="ano">Ano:</label>
-                    <input type="number" name="ano" id="ano" value="{{ old('ano', $veiculo->ano) }}">
-                </div>
-
-                <div class="form-group">
-                    <label for="marca_id">Marca:</label>
-                    <select name="marca_id" id="marca_id" required>
-                        <option value="">Selecione uma marca</option>
-                        @foreach ($marcas as $marca)
-                            <option value="{{ $marca->id }}" {{ old('marca_id', $veiculo->marca_id) == $marca->id ? 'selected' : '' }}>
-                                {{ $marca->descricao }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="status_id">Status:</label>
-                    <select name="status_id" id="status_id" required>
-                        <option value="">Selecione um status</option>
-                        @foreach ($statuses as $statu)
-                            <option value="{{ $statu->id }}" {{ old('status_id', $veiculo->status_id) == $statu->id ? 'selected' : '' }}>
-                                {{ $statu->descricao }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <button type="submit" class="btn btn-success">Salvar Alterações</button>
-                <a href="{{ route('veiculos.index') }}" class="btn btn-secondary">Cancelar</a>
-            </form>
+    <!-- 🔹 Mensagens de feedback -->
+    @if(session('success'))
+        <div class="card" style="background:rgba(76,175,80,0.2); border:1px solid rgba(76,175,80,0.4); color:#caffca; margin:auto; margin-bottom:20px; max-width:700px; padding:10px; border-radius:12px;">
+            <strong>✔ Sucesso:</strong> {{ session('success') }}
         </div>
-    </body>
+    @endif
+
+    @if ($errors->any())
+        <div class="card" style="background:rgba(255,82,82,0.15); border:1px solid rgba(255,82,82,0.4); color:#ffbaba; margin:auto; margin-bottom:20px; max-width:700px; padding:10px; border-radius:12px;">
+            <strong>⚠ Erros encontrados:</strong>
+            <ul style="margin-left:15px;">
+                @foreach ($errors->all() as $e)
+                    <li>{{ $e }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- 🔹 Formulário -->
+    <div class="card" style="max-width:700px; margin:auto;">
+        <h3 style="font-size:20px; margin-bottom:16px;">Atualizar Informações do Veículo</h3>
+
+        <form action="{{ route('veiculos.update', $veiculo->id) }}" method="POST"
+              style="display:flex; flex-direction:column; gap:16px;">
+            @csrf
+            @method('PUT')
+
+            <div>
+                <label for="modelo">Modelo:</label><br>
+                <input type="text" name="modelo" id="modelo" 
+                       value="{{ old('modelo', $veiculo->modelo) }}" placeholder="Ex: Strada 1.4">
+            </div>
+
+            <div>
+                <label for="categoria">Categoria:</label><br>
+                <input type="text" name="categoria" id="categoria" 
+                       value="{{ old('categoria', $veiculo->categoria) }}" placeholder="Ex: Utilitário">
+            </div>
+
+            <div>
+                <label for="placa">Placa:</label><br>
+                <input type="text" name="placa" id="placa" 
+                       value="{{ old('placa', $veiculo->placa) }}" placeholder="Ex: ABC-1234">
+            </div>
+
+            <div>
+                <label for="ano">Ano:</label><br>
+                <input type="number" name="ano" id="ano" 
+                       value="{{ old('ano', $veiculo->ano) }}" placeholder="Ex: 2020">
+            </div>
+
+            <div>
+                <label for="marca_id">Marca:</label><br>
+                <select name="marca_id" id="marca_id" required>
+                    <option value="">Selecione uma marca</option>
+                    @foreach ($marcas as $marca)
+                        <option value="{{ $marca->id }}" {{ old('marca_id', $veiculo->marca_id) == $marca->id ? 'selected' : '' }}>
+                            {{ $marca->descricao }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label for="status_id">Status:</label><br>
+                <select name="status_id" id="status_id" required>
+                    <option value="">Selecione um status</option>
+                    @foreach ($statuses as $statu)
+                        <option value="{{ $statu->id }}" {{ old('status_id', $veiculo->status_id) == $statu->id ? 'selected' : '' }}>
+                            {{ $statu->descricao }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button type="submit" style="background:linear-gradient(90deg,#ff512f,#f09819);
+                                             color:#fff; padding:10px 16px; border:none; border-radius:10px;
+                                             font-weight:600; cursor:pointer;">
+                    Salvar Alterações
+                </button>
+
+                <a href="{{ route('veiculos.index') }}" 
+                   style="background:#555; padding:10px 16px; border-radius:10px;
+                          color:#fff; text-decoration:none; font-weight:600;">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- 🔹 Validação simples no cliente -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+
+            form.addEventListener('submit', (event) => {
+                const ano = document.getElementById('ano').value.trim();
+                if (!/^\d{4}$/.test(ano)) {
+                    alert('Ano inválido. Use o formato AAAA.');
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
 </x-app-layout>

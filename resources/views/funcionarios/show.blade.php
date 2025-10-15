@@ -1,42 +1,48 @@
 <x-app-layout>
-    <!-- Define o cabeçalho da página -->
+    <!-- 🔹 Cabeçalho -->
     <x-slot name="header">
-        <!-- Importa um arquivo CSS específico para estilização de detalhes do funcionário -->
-        <link rel="stylesheet" href="{{ asset('css/clientes/showFuncionario.css') }}">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            <!-- Exibe o título da página -->
-            Detalhes do Funcionário
+        <h2 class="text-2xl font-semibold text-white leading-tight">
+            {{ __('Detalhes do Funcionário') }}
         </h2>
     </x-slot>
-    <div class="container">
-        <div class="funcionario-details">
-            <!-- Conteúdo dos detalhes do funcionário -->
-            <div class="funcionario-content">
-                <!-- Meta informações do funcionário -->
-                <div class="funcionario-meta">
-                    <span class="funcionario-label">ID:</span>
-                    <!-- Exibe o ID do funcionário -->
-                    <span class="funcionario-info">{{ $funcionario->id }}</span>
-                </div>
-                <div class="funcionario-meta">
-                    <span class="funcionario-label">Nome:</span>
-                    <!-- Exibe o nome do funcionário -->
-                    <span class="funcionario-info">{{ $funcionario->nome }}</span>
-                </div>
-                <div class="funcionario-meta">
-                    <span class="funcionario-label">Email:</span>
-                    <!-- Exibe o email do funcionário -->
-                    <span class="funcionario-info">{{ $funcionario->email }}</span>
-                </div>
-                <div class="funcionario-meta">
-                    <span class="funcionario-label">Sexo:</span>
-                    <!-- Exibe o sexo do funcionário -->
-                    <span class="funcionario-info">{{ $funcionario->sexo }}</span>
-                </div>
-                <!-- Adicione outros campos conforme necessário -->
+
+    <!-- 🔹 Conteúdo principal -->
+    <div class="card" style="max-width: 600px; margin: auto;">
+
+        <h3 style="font-size:20px; margin-bottom:20px;">Informações do Funcionário</h3>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
+                <span style="color:#ffb84d;">ID:</span>
+                <span style="color:#fff;">{{ $funcionario->id }}</span>
             </div>
-            <!-- Link para voltar à página de índice de funcionários -->
-            <a href="{{ route('funcionarios.index') }}" class="btn-return">Voltar</a>
+
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
+                <span style="color:#ffb84d;">Nome:</span>
+                <span style="color:#fff;">{{ $funcionario->nome }}</span>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
+                <span style="color:#ffb84d;">Email:</span>
+                <span style="color:#fff;">{{ $funcionario->email }}</span>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
+                <span style="color:#ffb84d;">Sexo:</span>
+                <span style="color:#fff;">
+                    {{ $funcionario->sexo == 'M' ? 'Masculino' : 'Feminino' }}
+                </span>
+            </div>
+        </div>
+
+        <!-- 🔸 Botão Voltar -->
+        <div style="margin-top:24px; text-align:right;">
+            <a href="{{ route('funcionarios.index') }}"
+               style="padding:10px 16px; border-radius:12px;
+                      background:linear-gradient(90deg, #ff512f, #f09819);
+                      color:#fff; font-weight:600; text-decoration:none;">
+                Voltar
+            </a>
         </div>
     </div>
 </x-app-layout>

@@ -1,43 +1,49 @@
 <x-app-layout>
-    <!-- Define o cabeçalho da página -->
+    <!-- 🔹 Cabeçalho -->
     <x-slot name="header">
-        <!-- Importa um arquivo CSS específico para estilização de marcas -->
-        <link rel="stylesheet" href="{{ asset('css/clientes/clientes.css') }}">
-        <!-- Define o título da página -->
-        <title>Nova Marca</title>
-        <h2 class="font-semibold text-xl text-white leading-tight">
-            <!-- Exibe o título da página traduzido usando o helper de tradução '__' -->
-            {{ __('Criar Marcas') }}
+        <h2 class="text-2xl font-semibold text-white leading-tight">
+            {{ __('Cadastrar Marca') }}
         </h2>
     </x-slot>
-    <!-- Verifica se há uma mensagem de sucesso na sessão e a exibe -->
+
+    <!-- 🔹 Mensagem de sucesso -->
     @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            <strong class="font-bold">Sucesso!</strong>
-            <span class="block sm:inline">{{ session('success') }}</span>
+        <div style="
+            background: rgba(119, 255, 168, .16);
+            border: 1px solid rgba(119, 255, 168, .45);
+            color: #c9ffd9;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-align: center;
+        ">
+            <strong>Sucesso!</strong> {{ session('success') }}
         </div>
     @endif
-    <body>
-        <div class="container">
-            <!-- Formulário para criar uma nova marca -->
-            <form action="{{ route('marcas.store') }}" method="POST">
-                <!-- Token CSRF para proteção contra ataques CSRF -->
-                @csrf
-                <div class="form-group">
-                    <label for="descricao">Nome:</label>
-                    <!-- Campo para inserir o nome da marca -->
-                    <input type="text" name="descricao">
-                </div>
-                <div class="form-group">
-                    <label for="observacao">Observação:</label>
-                    <!-- Campo para inserir uma observação sobre a marca -->
-                    <input type="text" name="observacao">
-                </div>
-                <!-- Botão para submeter o formulário e salvar a nova marca -->
-                <button type="submit" class="btn btn-success">Salvar</button>
-                <!-- Link para cancelar a operação e voltar à página de índice de marcas -->
-                <a href="{{ route('marcas.index') }}" class="btn btn-secondary">Cancelar</a>
-            </form>
-        </div>
-    </body>
+
+    <!-- 🔹 Formulário -->
+    <div class="card" style="max-width: 700px; margin: auto;">
+        <h3 style="font-size:20px; margin-bottom:16px;">Nova Marca</h3>
+
+        <form action="{{ route('marcas.store') }}" method="POST" 
+              style="display:flex; flex-direction:column; gap:16px;">
+            @csrf
+
+            <div>
+                <label for="descricao">Nome da Marca:</label><br>
+                <input type="text" name="descricao" id="descricao" placeholder="Ex: Chevrolet, Ford..." required>
+            </div>
+
+            <div>
+                <label for="observacao">Observação:</label><br>
+                <input type="text" name="observacao" id="observacao" placeholder="Ex: Modelos mais populares, origem, etc.">
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button type="submit">Salvar</button>
+                <a href="{{ route('marcas.index') }}" class="btn" style="background:#666;">Cancelar</a>
+            </div>
+        </form>
+    </div>
 </x-app-layout>

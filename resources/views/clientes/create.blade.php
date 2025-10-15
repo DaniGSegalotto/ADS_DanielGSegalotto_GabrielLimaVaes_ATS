@@ -1,131 +1,120 @@
 <x-app-layout>
-    <head>
-        <!-- Importa um arquivo CSS específico para estilização de clientes -->
-        <link rel="stylesheet" href="{{ asset('css/clientes/clientes.css') }}">
-        <!-- Define o título da página -->
-        <title>Novo Cliente</title>
-    </head>
-    <!-- Define o cabeçalho da página -->
+    <!-- 🔹 Cabeçalho -->
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-white leading-tight">
-            <!-- Exibe o título da página traduzido usando o helper de tradução '__' -->
-            {{ __('Criar Clientes') }}
+        <h2 class="text-2xl font-semibold text-white leading-tight">
+            {{ __('Criar Cliente') }}
         </h2>
     </x-slot>
-    <!-- Verifica se há uma mensagem de sucesso na sessão e a exibe -->
+
+    <!-- 🔹 Mensagem de sucesso -->
     @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            <strong class="font-bold">Sucesso!</strong>
-            <span class="block sm:inline">{{ session('success') }}</span>
+        <div style="
+            background: rgba(119, 255, 168, .16);
+            border: 1px solid rgba(119, 255, 168, .45);
+            color: #c9ffd9;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        ">
+            <strong>Sucesso!</strong> {{ session('success') }}
         </div>
     @endif
 
-    <body>
-        <div class="container">
-            <!-- Formulário para adicionar novos clientes -->
-            <form id="formNovoCliente" action="{{ route('clientes.store') }}" method="POST">
-                <!-- Token CSRF para proteção contra ataques CSRF -->
-                @csrf
-                <div class="form-group">
-                    <!-- Campo para inserir o nome do cliente -->
-                    <label for="nome">Nome:</label>
-                    <input type="text" name="nome" id="nome">
-                    <div id="error-nome" class="error-message"></div>
-                </div>
-                <div class="form-group">
-                    <!-- Campo para inserir o telefone do cliente -->
-                    <label for="telefone">Telefone:</label>
-                    <input type="tel" name="telefone" id="telefone">
-                    <div id="error-telefone" class="error-message"></div>
-                </div>
-                <div class="form-group">
-                    <!-- Campo para inserir o CPF do cliente -->
-                    <label for="CPF">CPF:</label>
-                    <input type="text" name="CPF" id="CPF">
-                    <div id="error-CPF" class="error-message"></div>
-                </div>
-                <div class="form-group">
-                    <!-- Campo para inserir a CNH do cliente -->
-                    <label for="CHN">CNH:</label>
-                    <input type="text" name="CHN" id="CHN">
-                    <div id="error-CHN" class="error-message"></div>
-                </div>
-                <div class="form-group">
-                    <!-- Campo para inserir o email do cliente -->
-                    <label for="email">Email:</label>
-                    <input type="email" name="email" id="email">
-                    <div id="error-email" class="error-message"></div>
-                </div>
-                <!-- Botão para submeter o formulário -->
-                <button type="submit" class="btn btn-success">Salvar</button>
-                <!-- Link para cancelar a operação e voltar à página de índice de clientes -->
-                <a href="{{ route('clientes.index') }}" class="btn btn-secondary">Cancelar</a>
-            </form>
-        </div>
+    <!-- 🔹 Formulário -->
+    <div class="card" style="max-width: 800px; margin: auto;">
+        <form id="formNovoCliente" action="{{ route('clientes.store') }}" method="POST"
+              style="display:flex; flex-direction:column; gap:16px;">
+            @csrf
 
-        <!-- Script para validação do formulário -->
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const form = document.getElementById('formNovoCliente');
+            <div>
+                <label for="nome">Nome:</label><br>
+                <input type="text" name="nome" id="nome" placeholder="Digite o nome completo" required>
+                <div id="error-nome" class="error-message" style="color:#ffbaba; font-size:13px;"></div>
+            </div>
 
-                form.addEventListener('submit', function (event) {
-                    // Resetar mensagens de erro
-                    clearErrors();
+            <div>
+                <label for="telefone">Telefone:</label><br>
+                <input type="tel" name="telefone" id="telefone" placeholder="Apenas números" required>
+                <div id="error-telefone" class="error-message" style="color:#ffbaba; font-size:13px;"></div>
+            </div>
 
-                    // Validar campos
-                    let valid = true;
+            <div>
+                <label for="CPF">CPF:</label><br>
+                <input type="text" name="CPF" id="CPF" placeholder="Somente números" required>
+                <div id="error-CPF" class="error-message" style="color:#ffbaba; font-size:13px;"></div>
+            </div>
 
-                    const nome = document.getElementById('nome').value.trim();
-                    if (nome === '') {
-                        showError('nome', 'Por favor, insira o nome.');
-                        valid = false;
-                    }
+            <div>
+                <label for="CHN">CNH:</label><br>
+                <input type="text" name="CHN" id="CHN" placeholder="Número da CNH" required>
+                <div id="error-CHN" class="error-message" style="color:#ffbaba; font-size:13px;"></div>
+            </div>
 
-                    const telefone = document.getElementById('telefone').value.trim();
-                    if (!validatePhone(telefone)) {
-                        showError('telefone', 'Por favor, insira um telefone válido.');
-                        valid = false;
-                    }
+            <div>
+                <label for="email">Email:</label><br>
+                <input type="email" name="email" id="email" placeholder="email@exemplo.com" required>
+                <div id="error-email" class="error-message" style="color:#ffbaba; font-size:13px;"></div>
+            </div>
 
-                    const CPF = document.getElementById('CPF').value.trim();
-                    if (!validateCPF(CPF)) {
-                        showError('CPF', 'Por favor, insira um CPF válido.');
-                        valid = false;
-                    }
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button type="submit">Salvar</button>
+                <a href="{{ route('clientes.index') }}" class="btn" style="background:#666;">Cancelar</a>
+            </div>
+        </form>
+    </div>
 
-                    const email = document.getElementById('email').value.trim();
-                    if (email === '') {
-                        showError('email', 'Por favor, insira o email.');
-                        valid = false;
-                    }
+    <!-- 🔹 Script de validação -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('formNovoCliente');
 
-                    if (!valid) {
-                        event.preventDefault(); // Impede o envio do formulário se houver erros
-                    }
-                });
+            form.addEventListener('submit', function (event) {
+                clearErrors();
+                let valid = true;
 
-                function showError(field, message) {
-                    const errorDiv = document.getElementById(`error-${field}`);
-                    errorDiv.textContent = message;
+                const nome = document.getElementById('nome').value.trim();
+                if (nome === '') {
+                    showError('nome', 'Por favor, insira o nome.');
+                    valid = false;
                 }
 
-                function clearErrors() {
-                    const errorMessages = document.querySelectorAll('.error-message');
-                    errorMessages.forEach(function (element) {
-                        element.textContent = '';
-                    });
+                const telefone = document.getElementById('telefone').value.trim();
+                if (!validatePhone(telefone)) {
+                    showError('telefone', 'Telefone inválido. Use 10 ou 11 dígitos.');
+                    valid = false;
                 }
 
-                function validatePhone(phone) {
-                    // Aceita apenas números, pode ser adaptado conforme o formato desejado
-                    return /^\d{10}$/.test(phone) || /^\d{11}$/.test(phone); // Aceita 10 ou 11 dígitos
+                const CPF = document.getElementById('CPF').value.trim();
+                if (!validateCPF(CPF)) {
+                    showError('CPF', 'CPF inválido. Use 11 dígitos numéricos.');
+                    valid = false;
                 }
 
-                function validateCPF(cpf) {
-                    // Aceita apenas números e exatamente 11 dígitos
-                    return /^\d{11}$/.test(cpf);
+                const email = document.getElementById('email').value.trim();
+                if (email === '') {
+                    showError('email', 'Por favor, insira o email.');
+                    valid = false;
                 }
+
+                if (!valid) event.preventDefault();
             });
-        </script>
-    </body>
+
+            function showError(field, message) {
+                document.getElementById(`error-${field}`).textContent = message;
+            }
+
+            function clearErrors() {
+                document.querySelectorAll('.error-message').forEach(e => e.textContent = '');
+            }
+
+            function validatePhone(phone) {
+                return /^\d{10,11}$/.test(phone);
+            }
+
+            function validateCPF(cpf) {
+                return /^\d{11}$/.test(cpf);
+            }
+        });
+    </script>
 </x-app-layout>

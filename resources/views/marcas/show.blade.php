@@ -1,38 +1,39 @@
 <x-app-layout>
-    <!-- Define o cabeçalho da página -->
-    <head>
-        <!-- Importa um arquivo CSS específico para estilização de detalhes de marcas -->
-        <link rel="stylesheet" href="{{ asset('css/clientes/showMarcas.css') }}">
-    </head>
-    <!-- Define o conteúdo do cabeçalho -->
+    <!-- 🔹 Cabeçalho -->
     <x-slot name="header">
-        <!-- Título da página -->
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            <!-- Exibe o título da página traduzido usando o helper de tradução '__' -->
+        <h2 class="text-2xl font-semibold text-white leading-tight">
             {{ __('Detalhes da Marca') }}
         </h2>
     </x-slot>
-    <!-- Seção para exibir os detalhes da marca -->
-    <section class="marca-details">
-      <div class="marca-content">
-        <!-- Meta informações da marca -->
-        <div class="marca-meta">
-          <span class="marca-label">ID:</span>
-          <!-- Exibe o ID da marca -->
-          <span class="marca-info">{{ $marca->id }}</span>
+
+    <!-- 🔹 Conteúdo -->
+    <div class="card" style="max-width:700px; margin:auto; text-align:left;">
+        <h3 style="font-size:20px; margin-bottom:16px;">Informações da Marca</h3>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <div>
+                <span style="color:#ffb84d; font-weight:600;">ID:</span><br>
+                <span style="color:#fff;">{{ $marca->id }}</span>
+            </div>
+
+            <div>
+                <span style="color:#ffb84d; font-weight:600;">Descrição:</span><br>
+                <span style="color:#fff;">{{ $marca->descricao }}</span>
+            </div>
+
+            <div>
+                <span style="color:#ffb84d; font-weight:600;">Observação:</span><br>
+                <span style="color:#fff;">{{ $marca->observacao ?? '—' }}</span>
+            </div>
         </div>
-        <div class="marca-meta">
-          <span class="marca-label">Descrição:</span>
-          <!-- Exibe a descrição da marca -->
-          <span class="marca-info">{{ $marca->descricao }}</span>
+
+        <!-- 🔸 Botão Voltar -->
+        <div style="margin-top:24px; text-align:right;">
+            <a href="{{ route('marcas.index') }}" 
+               style="background:linear-gradient(90deg,#ff512f,#f09819);
+                      padding:10px 18px; border-radius:12px; color:#fff; text-decoration:none; font-weight:600;">
+                Voltar
+            </a>
         </div>
-        <div class="marca-meta">
-          <span class="marca-label">Observação:</span>
-          <!-- Exibe a observação da marca -->
-          <span class="marca-info">{{ $marca->observacao }}</span>
-        </div>
-      </div>
-      <!-- Link para voltar à página de índice de marcas -->
-      <a href="{{ route('marcas.index') }}" class="btn-return">Voltar</a>
-    </section>
+    </div>
 </x-app-layout>

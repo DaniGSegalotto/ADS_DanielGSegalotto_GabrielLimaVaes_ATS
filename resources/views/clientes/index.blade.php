@@ -1,77 +1,130 @@
 <x-app-layout>
-    <!-- Importa um arquivo CSS/JS específico para estilização/interação do índice de clientes -->
-    <head>
-        <link rel="stylesheet" href="{{ asset('css/clientes/index.css') }}">
-        <script src="{{ asset('js/clientes.js') }}"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    </head>
-    <!-- Define o cabeçalho da página -->
+    <!-- 🔹 Cabeçalho -->
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-white leading-tight">
-            <!-- Exibe o título da página traduzido usando o helper de tradução '__' -->
+        <h2 class="text-2xl font-semibold text-white leading-tight">
             {{ __('Lista de Clientes') }}
         </h2>
     </x-slot>
 
-    <div class="container">
-        <!-- Formulário de busca -->
-        <form action="{{ route('clientes.index') }}" method="GET" class="search-form">
-            <div class="search-container">
-                <!-- Adicione campos de busca aqui, por exemplo: -->
-                <input type="text" name="query" placeholder="Buscar Clientes">
-                <button type="submit" class="btn btn-primary">Buscar</button>
-            </div>
+    <!-- 🔹 Conteúdo principal -->
+    <div class="card" style="max-width: 1100px; margin: auto;">
+
+        <!-- 🔸 Barra de busca -->
+        <form action="{{ route('clientes.index') }}" method="GET" 
+              style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <input type="text" name="query" placeholder="Buscar clientes..." 
+                   style="flex:1; padding:10px 14px; border-radius:12px; border:none;
+                          background:rgba(255,255,255,0.1); color:#fff; outline:none;">
+            <button type="submit" 
+                    style="margin-left:8px; padding:10px 16px; border:none; border-radius:12px;
+                           background:linear-gradient(90deg,#ff512f,#f09819); color:#fff;
+                           font-weight:600; cursor:pointer;">
+                Buscar
+            </button>
         </form>
 
-    <div class="container">
-        <!-- Formulário de busca (ainda não implementado) -->
-        <form action="{{ route('clientes.index') }}" method="GET" class="search-form">
-            <div class="search-container">
-            </div>
-        </form>
+        <!-- 🔸 Botão para novo cliente -->
+        <a href="{{ route('clientes.create') }}" 
+           style="display:inline-block; margin-bottom:16px; padding:10px 16px;
+                  background:linear-gradient(90deg,#ff512f,#f09819);
+                  border:none; border-radius:12px; color:#fff; font-weight:600;
+                  text-decoration:none;">
+            Novo Cliente
+        </a>
 
-        <!-- Botão para adicionar um novo cliente -->
-        <a href="{{ route('clientes.create') }}" class="btn btn-primary">Novo Cliente</a>
-
-        <!-- Tabela de clientes -->
-        <table class="table">
+        <!-- 🔸 Tabela de clientes -->
+        <table style="width:100%; border-collapse:collapse; background:rgba(255,255,255,0.08);
+                      border:1px solid rgba(255,255,255,0.15); border-radius:12px; overflow:hidden;">
             <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>NOME</th>
-                    <th>TELEFONE</th>
-                    <th>CPF</th>
-                    <th>CNH</th>
-                    <th>E-MAIL</th>
-                    <th>OPÇÕES</th>
+                <tr style="background:rgba(255,255,255,0.15); color:#fff;">
+                    <th style="padding:12px;">ID</th>
+                    <th style="padding:12px;">NOME</th>
+                    <th style="padding:12px;">TELEFONE</th>
+                    <th style="padding:12px;">CPF</th>
+                    <th style="padding:12px;">CNH</th>
+                    <th style="padding:12px;">E-MAIL</th>
+                    <th style="padding:12px;">OPÇÕES</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Loop para exibir cada cliente na tabela -->
-                @foreach ($clientes as $cliente)
-                    <tr>
-                        <td>{{ $cliente->id }}</td>
-                        <td>{{ $cliente->nome }}</td>
-                        <td>{{ $cliente->telefone }}</td>
-                        <td>{{ $cliente->CPF }}</td>
-                        <td>{{ $cliente->CHN }}</td>
-                        <td>{{ $cliente->email }}</td>
-                        <td>
-                            <!-- Botões de ações para detalhes, edição e exclusão do cliente -->
-                            <a href="{{ route('clientes.show', $cliente->id) }}" class="btn btn-info">Detalhes</a>
-                            <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-warning">Editar</a>
-                            <!-- Formulário para excluir o cliente -->
-                            <form id="form-{{ $cliente->id }}" action="{{ route('clientes.destroy', $cliente->id) }}" method="POST"
-                                style="display: inline;">
-                                @csrf <!-- Token CSRF para proteção contra ataques CSRF -->
-                                @method('DELETE') <!-- Método HTTP para indicar que é uma exclusão -->
-                                <button type="button" class="btn btn-danger" onclick="deletarCliente({{ $cliente->id }})">Excluir</button>
-                                <button type="button" class="btn btn-info2" onclick="infoCliente({{ $cliente->id }})">Informação</button>
+                @forelse ($clientes as $cliente)
+                    <tr style="border-top:1px solid rgba(255,255,255,0.1); color:#fff;">
+                        <td style="padding:10px 12px;">{{ $cliente->id }}</td>
+                        <td style="padding:10px 12px;">{{ $cliente->nome }}</td>
+                        <td style="padding:10px 12px;">{{ $cliente->telefone }}</td>
+                        <td style="padding:10px 12px;">{{ $cliente->CPF }}</td>
+                        <td style="padding:10px 12px;">{{ $cliente->CHN }}</td>
+                        <td style="padding:10px 12px;">{{ $cliente->email }}</td>
+                        <td style="padding:10px 12px;">
+                            <!-- 🔹 Botões -->
+                            <a href="{{ route('clientes.show', $cliente->id) }}" 
+                               style="padding:6px 10px; border-radius:8px; background:rgba(255,255,255,0.15);
+                                      color:#fff; text-decoration:none; font-size:13px;">
+                                Detalhes
+                            </a>
+
+                            <a href="{{ route('clientes.edit', $cliente->id) }}" 
+                               style="padding:6px 10px; border-radius:8px;
+                                      background:linear-gradient(90deg,#ff512f,#f09819);
+                                      color:#fff; text-decoration:none; font-size:13px;">
+                                Editar
+                            </a>
+
+                            <form id="form-{{ $cliente->id }}" action="{{ route('clientes.destroy', $cliente->id) }}" 
+                                  method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" onclick="deletarCliente({{ $cliente->id }})"
+                                        style="padding:6px 10px; border-radius:8px; border:none;
+                                               background:#c0392b; color:#fff; cursor:pointer; font-size:13px;">
+                                    Excluir
+                                </button>
+                                <button type="button" onclick="infoCliente({{ $cliente->id }})"
+                                        style="padding:6px 10px; border-radius:8px; border:none;
+                                               background:#444; color:#fff; cursor:pointer; font-size:13px;">
+                                    Info
+                                </button>
                             </form>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="7" style="text-align:center; padding:14px; color:#ccc;">
+                            Nenhum cliente encontrado.
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
+
+    <!-- 🔹 SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function deletarCliente(id) {
+            Swal.fire({
+                title: 'Excluir cliente?',
+                text: "Esta ação não pode ser desfeita.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ff512f',
+                cancelButtonColor: '#555',
+                confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(`form-${id}`).submit();
+                }
+            });
+        }
+
+        function infoCliente(id) {
+            Swal.fire({
+                title: 'Informação',
+                text: `Cliente ID: ${id}`,
+                icon: 'info',
+                confirmButtonColor: '#ff512f'
+            });
+        }
+    </script>
 </x-app-layout>

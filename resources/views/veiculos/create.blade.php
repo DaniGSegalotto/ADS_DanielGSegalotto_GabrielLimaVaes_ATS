@@ -1,28 +1,22 @@
 <x-app-layout>
-    <head>
-        <link rel="stylesheet" href="{{ asset('css/clientes/clientes.css') }}">
-        <title>Novo Veículo</title>
-    </head>
-
+    <!-- 🔹 Cabeçalho -->
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-white leading-tight">
-            {{ __('Criar Veículos') }}
+        <h2 class="text-2xl font-semibold text-white leading-tight">
+            {{ __('Cadastrar Novo Veículo') }}
         </h2>
     </x-slot>
 
-    {{-- Mensagem de sucesso --}}
+    <!-- 🔹 Mensagens de feedback -->
     @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            <strong class="font-bold">Sucesso!</strong>
-            <span class="block sm:inline">{{ session('success') }}</span>
+        <div class="card" style="background:rgba(76,175,80,0.2); border:1px solid rgba(76,175,80,0.4); color:#caffca; margin:auto; margin-bottom:20px; max-width:700px; padding:10px; border-radius:12px;">
+            <strong>✔ Sucesso:</strong> {{ session('success') }}
         </div>
     @endif
 
-    {{-- Mensagem de erro --}}
     @if ($errors->any())
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-            <strong class="font-bold">Erro!</strong>
-            <ul class="mt-2 list-disc list-inside">
+        <div class="card" style="background:rgba(255,82,82,0.15); border:1px solid rgba(255,82,82,0.4); color:#ffbaba; margin:auto; margin-bottom:20px; max-width:700px; padding:10px; border-radius:12px;">
+            <strong>⚠ Erros encontrados:</strong>
+            <ul style="margin-left:15px;">
                 @foreach ($errors->all() as $e)
                     <li>{{ $e }}</li>
                 @endforeach
@@ -30,132 +24,104 @@
         </div>
     @endif
 
-    <body>
-        <div class="container">
-            <form id="formNovoVeiculo" action="{{ route('veiculos.store') }}" method="POST">
-                @csrf
+    <!-- 🔹 Formulário -->
+    <div class="card" style="max-width:700px; margin:auto;">
+        <h3 style="font-size:20px; margin-bottom:16px;">Informações do Veículo</h3>
 
-                {{-- Modelo --}}
-                <div class="form-group">
-                    <label for="modelo">Modelo:</label>
-                    <input type="text" name="modelo" id="modelo" value="{{ old('modelo') }}">
-                    <div id="error-modelo" class="error-message"></div>
-                </div>
+        <form id="formNovoVeiculo" action="{{ route('veiculos.store') }}" method="POST"
+              style="display:flex; flex-direction:column; gap:16px;">
+            @csrf
 
-                {{-- Categoria --}}
-                <div class="form-group">
-                    <label for="categoria">Categoria:</label>
-                    <input type="text" name="categoria" id="categoria" value="{{ old('categoria') }}">
-                    <div id="error-categoria" class="error-message"></div>
-                </div>
+            <div>
+                <label for="modelo">Modelo:</label><br>
+                <input type="text" name="modelo" id="modelo" value="{{ old('modelo') }}" placeholder="Ex: Strada 1.4">
+            </div>
 
-                {{-- Placa --}}
-                <div class="form-group">
-                    <label for="placa">Placa:</label>
-                    <input type="text" name="placa" id="placa" value="{{ old('placa') }}">
-                    <div id="error-placa" class="error-message"></div>
-                </div>
+            <div>
+                <label for="categoria">Categoria:</label><br>
+                <input type="text" name="categoria" id="categoria" value="{{ old('categoria') }}" placeholder="Ex: Utilitário">
+            </div>
 
-                {{-- Ano --}}
-                <div class="form-group">
-                    <label for="ano">Ano:</label>
-                    <input type="number" name="ano" id="ano" value="{{ old('ano') }}">
-                    <div id="error-ano" class="error-message"></div>
-                </div>
+            <div>
+                <label for="placa">Placa:</label><br>
+                <input type="text" name="placa" id="placa" value="{{ old('placa') }}" placeholder="Ex: ABC-1234">
+            </div>
 
-                {{-- Marca --}}
-                <div class="form-group">
-                    <label for="marca_id">Marca:</label>
-                    <select class="form-control" name="marca_id" id="marca_id" required>
-                        <option value="">Selecione uma marca</option>
-                        @foreach($marcas as $marca)
-                            <option value="{{ $marca->id }}" {{ old('marca_id') == $marca->id ? 'selected' : '' }}>
-                                {{ $marca->descricao }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <div id="error-marca_id" class="error-message"></div>
-                </div>
+            <div>
+                <label for="ano">Ano:</label><br>
+                <input type="number" name="ano" id="ano" value="{{ old('ano') }}" placeholder="Ex: 2020">
+            </div>
 
-                {{-- Status (corrigido para status_id) --}}
-                <div class="form-group">
-                    <label for="status_id">Status:</label>
-                    <select class="form-control" name="status_id" id="status_id" required>
-                        <option value="">Selecione um status</option>
-                        @foreach($statuses as $statusItem)
-                            <option value="{{ $statusItem->id }}" {{ old('status_id') == $statusItem->id ? 'selected' : '' }}>
-                                {{ $statusItem->descricao }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <div id="error-status_id" class="error-message"></div>
-                </div>
+            <div>
+                <label for="marca_id">Marca:</label><br>
+                <select name="marca_id" id="marca_id" required>
+                    <option value="">Selecione uma marca</option>
+                    @foreach($marcas as $marca)
+                        <option value="{{ $marca->id }}" {{ old('marca_id') == $marca->id ? 'selected' : '' }}>
+                            {{ $marca->descricao }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-                <button type="submit" class="btn btn-success">Salvar</button>
-                <a href="{{ route('veiculos.index') }}" class="btn btn-secondary">Cancelar</a>
-            </form>
-        </div>
+            <div>
+                <label for="status_id">Status:</label><br>
+                <select name="status_id" id="status_id" required>
+                    <option value="">Selecione um status</option>
+                    @foreach($statuses as $statusItem)
+                        <option value="{{ $statusItem->id }}" {{ old('status_id') == $statusItem->id ? 'selected' : '' }}>
+                            {{ $statusItem->descricao }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const form = document.getElementById('formNovoVeiculo');
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button type="submit">Salvar</button>
+                <a href="{{ route('veiculos.index') }}" class="btn" style="background:#666;">Cancelar</a>
+            </div>
+        </form>
+    </div>
 
-                form.addEventListener('submit', function (event) {
-                    let valid = true;
-                    clearErrors();
+    <!-- 🔹 Script de Validação -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('formNovoVeiculo');
 
-                    const modelo = document.getElementById('modelo').value.trim();
-                    if (modelo === '') {
-                        showError('modelo', 'Por favor, insira o modelo.');
-                        valid = false;
-                    }
+            form.addEventListener('submit', (event) => {
+                let valid = true;
+                clearErrors();
 
-                    const categoria = document.getElementById('categoria').value.trim();
-                    if (categoria === '') {
-                        showError('categoria', 'Por favor, insira a categoria.');
-                        valid = false;
-                    }
+                const modelo = document.getElementById('modelo').value.trim();
+                if (!modelo) { showError('modelo', 'Informe o modelo.'); valid = false; }
 
-                    const placa = document.getElementById('placa').value.trim();
-                    if (placa === '') {
-                        showError('placa', 'Por favor, insira a placa.');
-                        valid = false;
-                    }
+                const categoria = document.getElementById('categoria').value.trim();
+                if (!categoria) { showError('categoria', 'Informe a categoria.'); valid = false; }
 
-                    const ano = document.getElementById('ano').value.trim();
-                    if (!validateAno(ano)) {
-                        showError('ano', 'Por favor, insira um ano válido (AAAA).');
-                        valid = false;
-                    }
+                const placa = document.getElementById('placa').value.trim();
+                if (!placa) { showError('placa', 'Informe a placa.'); valid = false; }
 
-                    const marca_id = document.getElementById('marca_id').value.trim();
-                    if (marca_id === '') {
-                        showError('marca_id', 'Por favor, selecione uma marca.');
-                        valid = false;
-                    }
+                const ano = document.getElementById('ano').value.trim();
+                if (!/^\d{4}$/.test(ano)) { showError('ano', 'Ano inválido (formato AAAA).'); valid = false; }
 
-                    const status_id = document.getElementById('status_id').value.trim();
-                    if (status_id === '') {
-                        showError('status_id', 'Por favor, selecione um status.');
-                        valid = false;
-                    }
+                const marca = document.getElementById('marca_id').value.trim();
+                if (!marca) { showError('marca_id', 'Selecione uma marca.'); valid = false; }
 
-                    if (!valid) event.preventDefault();
-                });
+                const status = document.getElementById('status_id').value.trim();
+                if (!status) { showError('status_id', 'Selecione um status.'); valid = false; }
 
-                function showError(field, message) {
-                    const errorDiv = document.getElementById(`error-${field}`);
-                    if (errorDiv) errorDiv.textContent = message;
-                }
-
-                function clearErrors() {
-                    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-                }
-
-                function validateAno(ano) {
-                    return /^\d{4}$/.test(ano);
-                }
+                if (!valid) event.preventDefault();
             });
-        </script>
-    </body>
+
+            function showError(field, message) {
+                const el = document.getElementById(field);
+                if (el) el.style.border = "1px solid #f44336";
+                alert(message);
+            }
+
+            function clearErrors() {
+                document.querySelectorAll('input, select').forEach(el => el.style.border = '');
+            }
+        });
+    </script>
 </x-app-layout>
