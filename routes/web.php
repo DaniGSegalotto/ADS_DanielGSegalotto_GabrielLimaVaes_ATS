@@ -6,7 +6,9 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\VeiculoController;
 use App\Http\Controllers\FuncionarioController;
-use App\Http\Controllers\AgendamentoController; // Importação do controlador AgendamentoController
+use App\Http\Controllers\AgendamentoController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,38 +21,53 @@ use App\Http\Controllers\AgendamentoController; // Importação do controlador A
 |
 */
 
-// Rota padrão que retorna a view 'welcome'
+// 🔹 Página inicial
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Rota que retorna a view 'ATS' requerendo autenticação e verificação de e-mail
+// 🔹 Página principal do sistema (ATS)
 Route::get('/ATS', function () {
     return view('ATS');
 })->middleware(['auth', 'verified'])->name('ATS');
 
-// Grupo de rotas protegidas pelo middleware 'auth'
+// 🔹 Rotas de perfil do usuário (protegidas por login)
 Route::middleware('auth')->group(function () {
-    // Rotas de perfil do usuário
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Rotas para o recurso 'clientes', utilizando o controlador 'ClienteController'
+// 🔹 CRUDs principais do sistema
 Route::resource('clientes', ClienteController::class);
-
-// Rotas para o recurso 'funcionarios', utilizando o controlador 'FuncionarioController'
 Route::resource('funcionarios', FuncionarioController::class);
-
-// Rotas para o recurso 'marcas', utilizando o controlador 'MarcaController'
 Route::resource('marcas', MarcaController::class);
-
-// Rotas para o recurso 'veiculos', utilizando o controlador 'VeiculoController'
 Route::resource('veiculos', VeiculoController::class);
-
-// Rotas para o recurso 'agendamentos', utilizando o controlador 'AgendamentoController'
 Route::resource('agendamentos', AgendamentoController::class);
 
-// Inclui as rotas de autenticação do Laravel, como login, registro, recuperação de senha, etc.
-require __DIR__.'/auth.php';
+// 🔹 Rota do Chatbot
+Route::post('/chat', function (Request $request) {
+    $message = $request->input('message');
+
+    try {
+        // Envia a mensagem do usuário ao n8n (que roda no Docker)
+        $response = Http::post('http://host.docker.internal:5678/webhook/laravel', [
+            'message' => $message,
+        ]);
+
+
+
+        // Retorna a resposta do n8n ao front-end
+        return response()->json([
+            'reply' => $response->json()['reply'] ?? 'Desculpe, não entendi.'
+        ]);
+    } catch (\Exception $e) {
+        // Caso o servidor n8n não esteja ativo
+        return response()->json([
+            'reply' => 'Ops! O servidor do assistente está indisponível no momento.'
+        ]);
+    }
+});
+
+// 🔹 Rotas de autenticação padrão (login, registro etc)
+require __DIR__ . '/auth.php';
