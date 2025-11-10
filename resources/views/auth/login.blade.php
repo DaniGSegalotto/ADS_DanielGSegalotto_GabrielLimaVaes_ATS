@@ -6,11 +6,22 @@
     <form method="POST" action="{{ route('login') }}">
         @csrf <!-- Token de verificação CSRF -->
 
+        <!-- Tipo de usuário -->
+        <div class="mt-2">
+            <x-input-label for="tipo" :value="__('Entrar como')" />
+            <select id="tipo" name="tipo"
+                class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <option value="funcionario" {{ old('tipo') == 'funcionario' ? 'selected' : '' }}>Funcionário</option>
+                <option value="cliente" {{ old('tipo') == 'cliente' ? 'selected' : '' }}>Cliente</option>
+            </select>
+            <x-input-error :messages="$errors->get('tipo')" class="mt-2" />
+        </div>
+
         <!-- Endereço de E-mail -->
-        <div>
+        <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required
-                autofocus autocomplete="username" />
+            <x-text-input id="email" class="block mt-1 w-full"
+                type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
@@ -18,8 +29,8 @@
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
 
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required
-                autocomplete="current-password" />
+            <x-text-input id="password" class="block mt-1 w-full"
+                type="password" name="password" required autocomplete="current-password" />
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>

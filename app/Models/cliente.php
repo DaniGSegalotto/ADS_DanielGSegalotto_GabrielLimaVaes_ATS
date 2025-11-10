@@ -3,10 +3,29 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Cliente extends Model
+class Cliente extends Authenticatable
 {
-   protected $table = 'clientes'; // Define o nome da tabela no banco de dados associada a este modelo
-   protected $fillable = ['nome', 'telefone', 'CPF', 'CHN', 'email']; // Define os campos que podem ser atribuídos em massa
+    use HasFactory, Notifiable;
+
+    // Nome da tabela associada ao modelo
+    protected $table = 'clientes';
+
+    // Campos que podem ser preenchidos automaticamente
+    protected $fillable = [
+        'nome',
+        'telefone',
+        'CPF',
+        'CHN',       // ok manter se o campo existir no banco
+        'email',
+        'password',
+    ];
+
+    // Campos que devem ser ocultos em arrays e respostas JSON
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 }

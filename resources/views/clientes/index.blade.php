@@ -1,34 +1,54 @@
 <x-app-layout>
     <!-- 🔹 Cabeçalho -->
     <x-slot name="header">
-        <h2 class="text-2xl font-semibold text-white leading-tight">
-            {{ __('Lista de Clientes') }}
-        </h2>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 class="text-2xl font-semibold text-white leading-tight">
+                {{ __('Lista de Clientes') }}
+            </h2>
+
+            <!-- 🔸 Botão de logout do cliente -->
+            @auth('cliente')
+                <form method="POST" action="{{ route('cliente.logout') }}" style="margin:0;">
+                    @csrf
+                    <button type="submit"
+                        style="padding:8px 14px;
+                               background:#c0392b;
+                               border:none;
+                               border-radius:8px;
+                               color:#fff;
+                               font-weight:600;
+                               cursor:pointer;
+                               transition:background .2s ease;">
+                        Sair
+                    </button>
+                </form>
+            @endauth
+        </div>
     </x-slot>
 
     <!-- 🔹 Conteúdo principal -->
     <div class="card" style="max-width: 1100px; margin: auto;">
 
         <!-- 🔸 Barra de busca -->
-        <form action="{{ route('clientes.index') }}" method="GET" 
-              style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <input type="text" name="query" placeholder="Buscar clientes..." 
-                   style="flex:1; padding:10px 14px; border-radius:12px; border:none;
-                          background:rgba(255,255,255,0.1); color:#fff; outline:none;">
-            <button type="submit" 
-                    style="margin-left:8px; padding:10px 16px; border:none; border-radius:12px;
-                           background:linear-gradient(90deg,#ff512f,#f09819); color:#fff;
-                           font-weight:600; cursor:pointer;">
+        <form action="{{ route('clientes.index') }}" method="GET"
+            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <input type="text" name="query" placeholder="Buscar clientes..."
+                style="flex:1; padding:10px 14px; border-radius:12px; border:none;
+                       background:rgba(255,255,255,0.1); color:#fff; outline:none;">
+            <button type="submit"
+                style="margin-left:8px; padding:10px 16px; border:none; border-radius:12px;
+                       background:linear-gradient(90deg,#ff512f,#f09819); color:#fff;
+                       font-weight:600; cursor:pointer;">
                 Buscar
             </button>
         </form>
 
         <!-- 🔸 Botão para novo cliente -->
-        <a href="{{ route('clientes.create') }}" 
-           style="display:inline-block; margin-bottom:16px; padding:10px 16px;
-                  background:linear-gradient(90deg,#ff512f,#f09819);
-                  border:none; border-radius:12px; color:#fff; font-weight:600;
-                  text-decoration:none;">
+        <a href="{{ route('clientes.create') }}"
+            style="display:inline-block; margin-bottom:16px; padding:10px 16px;
+                   background:linear-gradient(90deg,#ff512f,#f09819);
+                   border:none; border-radius:12px; color:#fff; font-weight:600;
+                   text-decoration:none;">
             Novo Cliente
         </a>
 
@@ -57,20 +77,20 @@
                         <td style="padding:10px 12px;">{{ $cliente->email }}</td>
                         <td style="padding:10px 12px;">
                             <!-- 🔹 Botões -->
-                            <a href="{{ route('clientes.show', $cliente->id) }}" 
+                            <a href="{{ route('clientes.show', $cliente->id) }}"
                                style="padding:6px 10px; border-radius:8px; background:rgba(255,255,255,0.15);
                                       color:#fff; text-decoration:none; font-size:13px;">
                                 Detalhes
                             </a>
 
-                            <a href="{{ route('clientes.edit', $cliente->id) }}" 
+                            <a href="{{ route('clientes.edit', $cliente->id) }}"
                                style="padding:6px 10px; border-radius:8px;
                                       background:linear-gradient(90deg,#ff512f,#f09819);
                                       color:#fff; text-decoration:none; font-size:13px;">
                                 Editar
                             </a>
 
-                            <form id="form-{{ $cliente->id }}" action="{{ route('clientes.destroy', $cliente->id) }}" 
+                            <form id="form-{{ $cliente->id }}" action="{{ route('clientes.destroy', $cliente->id) }}"
                                   method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')

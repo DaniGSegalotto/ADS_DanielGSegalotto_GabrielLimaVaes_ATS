@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
+     * Exibe o formulário de login (único para funcionário e cliente)
      */
     public function create(): View
     {
@@ -21,26 +21,46 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Processa o login (funcionário ou cliente)
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
-        $request->authenticate();
+        // ✅ Validação básica dos campos
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+            'tipo' => 'required|in:funcionario,cliente',
+        ]);
 
-        $request->session()->regenerate();
+        $credentials = $request->only('email', 'password');
+        $tipo = $request->input('tipo');
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        // ✅ Define o guard conforme a escolha do usuário
+        $guard = $tipo === 'cliente' ? 'cliente' : 'web';
+
+        if (Auth::guard($guard)->attempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate();
+
+            // Redireciona para o painel principal (ATS)
+            return redirect()->intended(RouteServiceProvider::HOME ?? '/ATS');
+        }
+
+        // ❌ Caso as credenciais estejam incorretas
+        throw ValidationException::withMessages([
+            'email' => __('As credenciais informadas são inválidas.'),
+        ]);
     }
 
     /**
-     * Destroy an authenticated session.
+     * Faz logout do usuário (cliente ou funcionário)
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Faz logout em ambos os guards
         Auth::guard('web')->logout();
+        Auth::guard('cliente')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');

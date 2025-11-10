@@ -5,31 +5,42 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
 use App\Models\Agendamento;
+use Illuminate\Support\Facades\Auth;
 
 class ClienteController extends Controller
 {
-    /* Exibe uma lista de todos os clientes.*/
+    /* Exibe uma lista de todos os clientes. */
     public function index()
     {
-        // Obtem todos os clientes do banco de dados
-        $clientes = Cliente::all();
+        // 🔹 Funcionário vê todos; Cliente vê apenas o próprio perfil
+        if (session('tipo_usuario') === 'cliente') {
+            $cliente = Auth::guard('cliente')->user();
+            return view('clientes.show', compact('cliente'));
+        }
 
-        // Retorna a view 'clientes.index' com a lista de clientes
+        $clientes = Cliente::all();
         return view('clientes.index', compact('clientes'));
     }
 
-    /* Exibe o formulário para criar um novo cliente.*/
-
+    /* Exibe o formulário para criar um novo cliente. */
     public function create()
     {
-        // Retorna a view 'clientes.create'
+        // 🔹 Somente funcionários podem criar novos clientes
+        if (session('tipo_usuario') === 'cliente') {
+            return redirect()->route('ATS')->with('error', 'Acesso negado para clientes.');
+        }
+
         return view('clientes.create');
     }
 
     /* Armazena um novo cliente no banco de dados. */
     public function store(Request $request)
     {
-        // Validação dos dados do formulário
+        // 🔹 Apenas funcionários podem cadastrar clientes
+        if (session('tipo_usuario') === 'cliente') {
+            return redirect()->route('ATS')->with('error', 'Acesso negado para clientes.');
+        }
+
         $request->validate([
             'nome' => 'required|string|max:255',
             'telefone' => 'required|string|max:20',
@@ -38,7 +49,6 @@ class ClienteController extends Controller
             'email' => 'nullable|string|email|max:255|unique:clientes',
         ]);
 
-        // Cria uma nova instância de Cliente com dados do formulário
         $cliente = new Cliente([
             'nome' => $request->input('nome'),
             'telefone' => $request->input('telefone'),
@@ -47,30 +57,33 @@ class ClienteController extends Controller
             'email' => $request->input('email'),
         ]);
 
-        // Salva o cliente no banco de dados
         $cliente->save();
 
-        // Redireciona para a página 'clientes.index' após salvar
         return redirect()->route('clientes.index')->with('success', 'Cliente criado com sucesso!');
     }
 
     /* Exibe o formulário para editar um cliente existente. */
     public function edit(string $id)
     {
-        // Encontra o cliente pelo ID fornecido ou retorna 404 se não encontrado
+        // 🔹 Cliente só pode editar o próprio perfil
         $cliente = Cliente::findOrFail($id);
 
-        // Retorna a view 'clientes.edit' com o cliente para edição
+        if (session('tipo_usuario') === 'cliente' && Auth::guard('cliente')->id() !== $cliente->id) {
+            return redirect()->route('ATS')->with('error', 'Você só pode editar seu próprio perfil.');
+        }
+
         return view('clientes.edit', compact('cliente'));
     }
 
-    /* Atualiza um cliente existente no banco de dados.*/
+    /* Atualiza um cliente existente no banco de dados. */
     public function update(Request $request, string $id)
     {
-        // Encontra o cliente pelo ID para atualização
         $cliente = Cliente::findOrFail($id);
 
-        // Validação dos dados do formulário
+        if (session('tipo_usuario') === 'cliente' && Auth::guard('cliente')->id() !== $cliente->id) {
+            return redirect()->route('ATS')->with('error', 'Você só pode atualizar seu próprio perfil.');
+        }
+
         $request->validate([
             'nome' => 'required|string|max:255',
             'telefone' => 'required|string|max:20',
@@ -79,48 +92,40 @@ class ClienteController extends Controller
             'email' => 'nullable|string|email|max:255|unique:clientes,email,'.$cliente->id,
         ]);
 
-        // Atualiza os campos do cliente com os dados do formulário
-        $cliente->nome = $request->input('nome');
-        $cliente->telefone = $request->input('telefone');
-        $cliente->CPF = $request->input('CPF');
-        $cliente->CHN = $request->input('CHN');
-        $cliente->email = $request->input('email');
+        $cliente->update($request->all());
 
-        // Salva as alterações no banco de dados
-        $cliente->save();
-
-        // Redireciona para a página 'clientes.index' após a atualização
         return redirect()->route('clientes.index')->with('success', 'Cliente alterado com sucesso!');
     }
 
     /* Remove um cliente do banco de dados. */
     public function destroy(string $id)
     {
-        // Encontra o cliente pelo ID para exclusão
-        $cliente = Cliente::findOrFail($id);
+        // 🔹 Clientes não podem excluir ninguém (nem eles mesmos)
+        if (session('tipo_usuario') === 'cliente') {
+            return redirect()->route('ATS')->with('error', 'Ação não permitida para clientes.');
+        }
 
-        // Verifica se o cliente está vinculado a algum agendamento
+        $cliente = Cliente::findOrFail($id);
         $agendamentos = Agendamento::where('cliente_id', $cliente->id)->exists();
 
-        // Se estiver vinculado a algum agendamento, redireciona de volta com mensagem de erro
         if ($agendamentos) {
             return redirect()->route('clientes.index')->with('error', 'Não é possível excluir o cliente, pois está vinculado a um agendamento.');
         }
 
-        // Caso não esteja vinculado a agendamentos, exclui o cliente
         $cliente->delete();
-
-        // Redireciona para a página 'clientes.index' após exclusão
         return redirect()->route('clientes.index')->with('success', 'Cliente excluído com sucesso!');
     }
 
     /* Mostra detalhes de um cliente específico. */
     public function show(string $id)
     {
-        // Busca o cliente pelo ID ou retorna 404 se não encontrado
         $cliente = Cliente::findOrFail($id);
 
-        // Retorna a view 'clientes.show' para exibir detalhes do cliente
+        // 🔹 Cliente só pode ver o próprio perfil
+        if (session('tipo_usuario') === 'cliente' && Auth::guard('cliente')->id() !== $cliente->id) {
+            return redirect()->route('ATS')->with('error', 'Acesso negado.');
+        }
+
         return view('clientes.show', compact('cliente'));
     }
 }
