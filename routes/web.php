@@ -5,7 +5,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 
-
 // 🔹 Controllers principais
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClienteController;
@@ -30,37 +29,52 @@ use App\Http\Controllers\ClientePainelController;
 // 🔸 PÚBLICO / PÁGINA INICIAL
 // ----------------------------------------------------------
 Route::get('/', function () {
-    return view('welcome'); // Tela inicial de acesso
+    return view('welcome'); // Tela inicial
 })->name('welcome');
 
 // ----------------------------------------------------------
 // 🔸 ROTA INTELIGENTE /ATS
 // ----------------------------------------------------------
-// Redireciona automaticamente para o painel correto
+// Redireciona para o painel correto com base no tipo de login
 Route::get('/ATS', function () {
     if (auth('cliente')->check()) {
-        // ✅ Cliente autenticado → painel simplificado
-        return redirect()->route('cliente.home');
+        return redirect()->route('cliente.home'); // Painel do cliente
     } elseif (auth('web')->check()) {
-        // ✅ Funcionário autenticado → painel completo
-        return view('ATS');
+        return view('ATS'); // Painel do funcionário
     }
-
-    // ❌ Não autenticado → volta à tela inicial
     return redirect()->route('welcome');
 })->name('ATS');
+
+// ----------------------------------------------------------
+// 🔸 LOGIN PERSONALIZADO PARA FUNCIONÁRIOS
+// ----------------------------------------------------------
+// Exibe o login estilizado
+Route::get('/login', function () {
+    return view('auth.login_funcionario'); // Nova tela estilizada
+})->name('login');
+
+// Faz login (controlado pelo Fortify padrão)
+require __DIR__ . '/auth.php';
+
+// Corrige logout de funcionário (POST)
+Route::post('/logout', function (Request $request) {
+    Auth::guard('web')->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/login'); // volta ao login do funcionário
+})->name('logout');
 
 // ----------------------------------------------------------
 // 🔸 FUNCIONÁRIOS (GUARD: web)
 // ----------------------------------------------------------
 Route::middleware(['auth:web'])->group(function () {
 
-    // 🔹 Perfil do funcionário
+    // Perfil do funcionário
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // 🔹 CRUDs administrativos
+    // CRUDs administrativos
     Route::resource('clientes', ClienteController::class);
     Route::resource('funcionarios', FuncionarioController::class);
     Route::resource('marcas', MarcaController::class);
@@ -90,28 +104,15 @@ Route::post('/chat', function (Request $request) {
 });
 
 // ----------------------------------------------------------
-// 🔸 AUTENTICAÇÃO PADRÃO (FUNCIONÁRIOS)
-// ----------------------------------------------------------
-require __DIR__ . '/auth.php';
-
-// 🔹 Corrige logout de funcionário (POST)
-Route::post('/logout', function (Request $request) {
-    Auth::guard('web')->logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    return redirect('/');
-})->name('logout');
-
-// ----------------------------------------------------------
 // 🔸 CLIENTES (AUTENTICAÇÃO PERSONALIZADA)
 // ----------------------------------------------------------
 
-// 🔹 Login / Logout
+// Login / Logout
 Route::get('/cliente/login', [ClienteLoginController::class, 'showLoginForm'])->name('cliente.login.form');
 Route::post('/cliente/login', [ClienteLoginController::class, 'login'])->name('cliente.login');
 Route::post('/cliente/logout', [ClienteLoginController::class, 'logout'])->name('cliente.logout');
 
-// 🔹 Registro de novos clientes
+// Registro
 Route::get('/cliente/register', [ClienteRegisterController::class, 'showRegistrationForm'])->name('cliente.register.form');
 Route::post('/cliente/register', [ClienteRegisterController::class, 'register'])->name('cliente.register');
 
@@ -120,17 +121,10 @@ Route::post('/cliente/register', [ClienteRegisterController::class, 'register'])
 // ----------------------------------------------------------
 Route::middleware(['auth:cliente', 'cliente.permissao'])->group(function () {
 
-    // 🔹 Página inicial do cliente (painel simplificado)
     Route::get('/cliente/home', [ClientePainelController::class, 'index'])->name('cliente.home');
-
-    // 🔹 Perfil e atualização
     Route::get('/cliente/perfil', [ClientePainelController::class, 'perfil'])->name('cliente.perfil');
     Route::post('/cliente/perfil/update', [ClientePainelController::class, 'update'])->name('cliente.perfil.update');
-
-    // 🔹 Visualização de veículos e agendamento
     Route::get('/cliente/veiculos', [ClientePainelController::class, 'veiculos'])->name('cliente.veiculos');
     Route::get('/cliente/agendamento', [ClientePainelController::class, 'agendamento'])->name('cliente.agendamento');
     Route::post('/cliente/agendamento', [ClientePainelController::class, 'storeAgendamento'])->name('cliente.agendamento.store');
 });
-
-

@@ -13,39 +13,49 @@ use Illuminate\View\View;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Exibe o formulário de login (único para funcionário e cliente)
+     * Exibe o formulário de login.
+     * Mostra a tela estilizada correta para funcionário.
      */
     public function create(): View
     {
-        return view('auth.login');
+        // 🔹 Exibe o login estilizado do funcionário
+        return view('auth.login_funcionario');
     }
 
     /**
-     * Processa o login (funcionário ou cliente)
+     * Processa o login tanto de funcionário quanto de cliente.
      */
     public function store(Request $request): RedirectResponse
     {
-        // ✅ Validação básica dos campos
+        // ✅ Validação dos campos
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
-            'tipo' => 'required|in:funcionario,cliente',
+            'tipo' => 'nullable|in:funcionario,cliente', // tipo pode vir da view antiga
         ]);
 
         $credentials = $request->only('email', 'password');
-        $tipo = $request->input('tipo');
 
-        // ✅ Define o guard conforme a escolha do usuário
+        // ✅ Define o guard dinamicamente
+        $tipo = $request->input('tipo');
         $guard = $tipo === 'cliente' ? 'cliente' : 'web';
 
+        // 🔐 Tenta autenticar no guard correto
         if (Auth::guard($guard)->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            // Redireciona para o painel principal (ATS)
-            return redirect()->intended(RouteServiceProvider::HOME ?? '/ATS');
+            // 🔹 Define o tipo de usuário na sessão
+            session(['tipo_usuario' => $tipo ?? ($guard === 'cliente' ? 'cliente' : 'funcionario')]);
+
+            // 🔹 Redireciona conforme o perfil
+            if ($guard === 'cliente') {
+                return redirect()->intended('/cliente/home');
+            } else {
+                return redirect()->intended('/ATS');
+            }
         }
 
-        // ❌ Caso as credenciais estejam incorretas
+        // ❌ Credenciais inválidas
         throw ValidationException::withMessages([
             'email' => __('As credenciais informadas são inválidas.'),
         ]);
@@ -56,13 +66,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        // Faz logout em ambos os guards
+        // 🔹 Desloga de ambos os guards
         Auth::guard('web')->logout();
         Auth::guard('cliente')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        // 🔹 Retorna à página inicial
         return redirect('/');
     }
 }
