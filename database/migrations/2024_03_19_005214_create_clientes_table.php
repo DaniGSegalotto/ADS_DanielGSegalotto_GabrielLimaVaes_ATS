@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('CHN');
             $table->string('email');
             $table->timestamps();
+            $table->string('password');
         });
     }
 

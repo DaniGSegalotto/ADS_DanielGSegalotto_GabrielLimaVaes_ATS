@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\GeminiChatController;
 
 // 🔹 Controllers principais
 use App\Http\Controllers\ProfileController;
@@ -83,27 +84,6 @@ Route::middleware(['auth:web'])->group(function () {
 });
 
 // ----------------------------------------------------------
-// 🔸 CHATBOT INTERNO (opcional)
-// ----------------------------------------------------------
-Route::post('/chat', function (Request $request) {
-    $message = $request->input('message');
-
-    try {
-        $response = Http::post('http://host.docker.internal:5678/webhook/laravel', [
-            'message' => $message,
-        ]);
-
-        return response()->json([
-            'reply' => $response->json()['reply'] ?? 'Desculpe, não entendi.'
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'reply' => 'Ops! O servidor do assistente está indisponível no momento.'
-        ]);
-    }
-});
-
-// ----------------------------------------------------------
 // 🔸 CLIENTES (AUTENTICAÇÃO PERSONALIZADA)
 // ----------------------------------------------------------
 
@@ -128,3 +108,7 @@ Route::middleware(['auth:cliente', 'cliente.permissao'])->group(function () {
     Route::get('/cliente/agendamento', [ClientePainelController::class, 'agendamento'])->name('cliente.agendamento');
     Route::post('/cliente/agendamento', [ClientePainelController::class, 'storeAgendamento'])->name('cliente.agendamento.store');
 });
+
+    // 🔹 Rota do Chatbot com IA (OpenAI)
+    Route::post('/chat', [GeminiChatController::class, 'sendMessage']);
+    Route::get('/chat/reset', [GeminiChatController::class, 'resetConversation']);
