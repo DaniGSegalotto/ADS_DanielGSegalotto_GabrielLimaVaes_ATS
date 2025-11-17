@@ -21,7 +21,6 @@ class ClienteLoginController extends Controller
      */
     public function login(Request $request)
     {
-        // ✅ Validação dos campos
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
@@ -29,19 +28,17 @@ class ClienteLoginController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        // ✅ Tentativa de autenticação no guard "cliente"
         if (Auth::guard('cliente')->attempt($credentials, $request->filled('remember'))) {
-            // Regenera a sessão por segurança
+
+            // Segurança
             $request->session()->regenerate();
 
-            // Armazena tipo de usuário para middlewares
+            // Guardar tipo de usuário
             session(['tipo_usuario' => 'cliente']);
 
-            // ✅ Redireciona direto para o painel do cliente
             return redirect()->route('cliente.home')->with('success', 'Login realizado com sucesso!');
         }
 
-        // ❌ Se falhar, retorna mensagem de erro
         return back()
             ->withErrors(['email' => 'Credenciais inválidas.'])
             ->withInput($request->only('email'));
@@ -56,6 +53,7 @@ class ClienteLoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('success', 'Logout realizado com sucesso!');
+        // 🔥 Redireciona para a página inicial (aquela da imagem!)
+        return redirect()->route('welcome')->with('success', 'Logout realizado com sucesso!');
     }
 }

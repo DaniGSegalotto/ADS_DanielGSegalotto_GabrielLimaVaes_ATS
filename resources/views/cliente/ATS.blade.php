@@ -1,123 +1,130 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Painel do Cliente - ATS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+@extends('layouts.app_cliente')
 
+@section('content')
+
+    <!-- Cabeçalho da página -->
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a0b0b, #3b0d0d);
-            color: #fff;
-            margin: 0;
-            padding: 0;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 
-        header {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px 25px;
+        .image-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            backdrop-filter: blur(10px);
+            margin-bottom: 24px;
         }
 
-        h1 {
-            color: #ff7043;
-            font-size: 20px;
-            margin: 0;
+        .image-container img {
+            max-width: 320px;
+            height: auto;
+            display: block;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        nav a {
-            color: #fff;
-            margin-left: 20px;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        nav a:hover {
-            color: #ffb98b;
-        }
-
-        main {
-            padding: 40px;
+        .welcome-message {
             text-align: center;
+            font-size: 3rem;
+            font-family: 'Pacifico', cursive;
+            color: red;
+            margin: 2rem;
         }
 
-        .card {
-            background: rgba(255,255,255,0.1);
-            padding: 25px;
-            border-radius: 15px;
-            max-width: 700px;
-            margin: 40px auto;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        .alert {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px auto;
+            max-width: 900px;
+            text-align: center;
+            font-weight: 500;
         }
 
-        .btn {
+        .menu-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .menu-container a,
+        .menu-container button {
             display: inline-block;
-            margin: 12px;
-            padding: 12px 20px;
+            margin: 6px;
+            padding: 10px 18px;
             background: linear-gradient(90deg, #ff512f, #f09819);
-            color: #fff;
-            border-radius: 10px;
-            text-decoration: none;
+            color: white;
             font-weight: 600;
-            transition: transform .2s ease, box-shadow .3s ease;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 81, 47, 0.4);
+        .menu-container a:hover,
+        .menu-container button:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
         }
 
-        footer {
-            text-align: center;
-            padding: 15px;
-            font-size: 13px;
-            color: #ccc;
+        .logout-button {
+            background: #c0392b !important;
+        }
+
+        .intro-container {
+            height: auto;
+            display: block;
+            margin: auto;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e2e8f0 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            max-width: 10000px;
+            text-align: left;
+        }
+
+        .intro-paragraph {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 15px;
+            color: #333;
+            line-height: 1.6;
         }
     </style>
-</head>
-<body>
 
-<header>
-    <h1>Bem-vindo ao ATS - Área do Cliente</h1>
-    <nav>
-        <a href="{{ route('cliente.home') }}">Início</a>
-        <a href="{{ route('cliente.veiculos') }}">Veículos</a>
-        <a href="{{ route('cliente.agendamento') }}">Agendamentos</a>
-        <a href="{{ route('cliente.perfil') }}">Perfil</a>
-        <form method="POST" action="{{ route('cliente.logout') }}" style="display:inline;">
-            @csrf
-            <button type="submit" style="background:none;border:none;color:#ff8c6b;cursor:pointer;">Sair</button>
-        </form>
-    </nav>
-</header>
-
-<main>
-    <div class="card">
-        <h2>Olá, {{ Auth::guard('cliente')->user()->nome }} 👋</h2>
-        <p>Bem-vindo à sua área exclusiva! Aqui você pode:</p>
-        <ul style="text-align:left;display:inline-block;margin-top:15px;">
-            <li>🔎 Consultar veículos disponíveis para aluguel</li>
-            <li>📅 Realizar novos agendamentos</li>
-            <li>🧾 Visualizar seu histórico de reservas</li>
-            <li>👤 Atualizar informações do seu perfil</li>
-        </ul>
-
-        <div style="margin-top:20px;">
-            <a href="{{ route('cliente.veiculos') }}" class="btn">Ver Veículos</a>
-            <a href="{{ route('cliente.agendamento') }}" class="btn">Fazer Agendamento</a>
-            <a href="{{ route('cliente.perfil') }}" class="btn">Editar Perfil</a>
-        </div>
+    <div class="image-container">
+        <img src="/img/ATS.png" alt="ATS">
     </div>
-</main>
 
-<footer>
-    <p>Automotive Testing Site © {{ date('Y') }} — Área exclusiva para clientes</p>
-</footer>
+    <!-- Boas-vindas -->
+    <p class="welcome-message">Seja bem-vindo</p>
 
-</body>
-</html>
+    <!-- Mensagem específica para cliente -->
+    <div class="alert">
+        Você está logado como <strong>Cliente</strong>. Acesso exclusivo a veículos, agendamentos e perfil.
+    </div>
+
+    <!-- Menu do cliente (somente cliente) -->
+    <div class="menu-container">
+        <a href="{{ route('cliente.veiculos') }}">Ver Veículos</a>
+        <a href="{{ route('cliente.agendamento') }}">Agendar</a>
+        <a href="{{ route('cliente.perfil') }}">Perfil</a>
+
+        <form method="POST" action="{{ route('cliente.logout') }}" style="display: inline;">
+            @csrf
+            <button type="submit" class="logout-button">Sair</button>
+        </form>
+    </div>
+
+    <!-- Texto institucional exclusivo para clientes -->
+    <div class="intro-container">
+        <p class="intro-paragraph">
+            Bem-vindo à <strong>Automotive Testing Site</strong>!  
+            Aqui você pode acessar nossa frota de veículos, realizar novos agendamentos, 
+            consultar seu histórico e manter seus dados atualizados.
+            <br><br>
+            Nosso compromisso é te oferecer a melhor experiência possível.
+        </p>
+    </div>
+
+@endsection
