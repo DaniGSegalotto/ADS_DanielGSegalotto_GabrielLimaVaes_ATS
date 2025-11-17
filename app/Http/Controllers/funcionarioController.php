@@ -26,28 +26,28 @@ class FuncionarioController extends Controller
     }
 
     /* Armazena um novo funcionário no banco de dados. */
-    public function store(Request $request)
-    {
-        // Validação dos dados do formulário
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'email' => 'nullable|string|email|max:255|unique:funcionarios',
-            'sexo' => 'required|string|in:M,F', // Supondo que o sexo seja M (Masculino) ou F (Feminino)
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'nome' => 'required|string|max:255',
+        'email' => 'nullable|string|email|max:255|unique:funcionarios',
+        'sexo' => 'required|string|in:M,F',
+        'password' => 'required|string|min:6', // ADICIONADO
+    ]);
 
-        // Cria uma nova instância de Funcionario com dados do formulário
-        $funcionario = new Funcionario([
-            'nome' => $request->input('nome'),
-            'email' => $request->input('email'),
-            'sexo' => $request->input('sexo'),
-        ]);
+    $funcionario = new Funcionario([
+        'nome' => $request->input('nome'),
+        'email' => $request->input('email'),
+        'sexo' => $request->input('sexo'),
+        'password' => bcrypt($request->input('password')), // ADICIONADO
+    ]);
 
-        // Salva o funcionário no banco de dados
-        $funcionario->save();
+    $funcionario->save();
 
-        // Redireciona para a página 'funcionarios.index' após salvar
-        return redirect()->route('funcionarios.index')->with('success', 'Funcionário criado com sucesso!');
-    }
+    return redirect()->route('funcionarios.index')
+        ->with('success', 'Funcionário criado com sucesso!');
+}
+
 
     /* Exibe o formulário para editar um funcionário existente. */
     public function edit(string $id)

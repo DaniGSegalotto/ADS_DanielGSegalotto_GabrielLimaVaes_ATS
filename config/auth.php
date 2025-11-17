@@ -20,12 +20,13 @@ return [
     */
 
     'guards' => [
+        // Guard para FUNCIONÁRIOS
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'users', // aponta para funcionarios ✔️
         ],
 
-        // ✅ Guard para login de clientes
+        // Guard para CLIENTES
         'cliente' => [
             'driver' => 'session',
             'provider' => 'clientes',
@@ -39,15 +40,16 @@ return [
     */
 
     'providers' => [
+        // Provider para FUNCIONÁRIOS
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\Funcionario::class, // ✔️ CORRIGIDO
         ],
 
-        // ✅ Provider para autenticação dos clientes
+        // Provider para CLIENTES
         'clientes' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Cliente::class, // <-- Corrigido o "C" maiúsculo
+            'model' => App\Models\Cliente::class,
         ],
     ],
 
@@ -58,6 +60,7 @@ return [
     */
 
     'passwords' => [
+        // Reset para FUNCIONÁRIOS
         'users' => [
             'provider' => 'users',
             'table' => 'password_reset_tokens',
@@ -65,7 +68,7 @@ return [
             'throttle' => 60,
         ],
 
-        // Reset de senha para cliente (opcional)
+        // Reset para CLIENTES
         'clientes' => [
             'provider' => 'clientes',
             'table' => 'password_reset_tokens',
