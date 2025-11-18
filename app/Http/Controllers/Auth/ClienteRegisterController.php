@@ -23,33 +23,35 @@ class ClienteRegisterController extends Controller
      */
     public function register(Request $request)
     {
-        // ✅ Validação dos campos obrigatórios
+        // Validação completa
         $request->validate([
             'nome' => 'required|string|max:255',
             'telefone' => 'required|string|max:20',
             'CPF' => 'required|string|max:14|unique:clientes,CPF',
             'CHN' => 'required|string|max:20',
             'email' => 'required|string|email|max:255|unique:clientes,email',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // ✅ Limpa o CPF (remove pontos e traços)
-        $cpfLimpo = preg_replace('/\D/', '', $request->input('CPF'));
+        // Limpa o CPF
+        $cpfLimpo = preg_replace('/\D/', '', $request->CPF);
 
-        // ✅ Criação segura do cliente
+        // Cria o cliente
         $cliente = Cliente::create([
-            'nome' => $request->input('nome'),
-            'telefone' => $request->input('telefone'),
+            'nome' => $request->nome,
+            'telefone' => $request->telefone,
             'CPF' => $cpfLimpo,
-            'CHN' => $request->input('CHN'),
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
+            'CHN' => $request->CHN,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
         ]);
 
-        // ✅ Login automático após o cadastro
+        // Login automático
         Auth::guard('cliente')->login($cliente);
 
-        // ✅ Redirecionamento para a página principal
-        return redirect()->route('ATS')->with('success', 'Conta criada com sucesso!');
+        // Redireciona ao painel do cliente
+return redirect()
+    ->route('cliente.login.form')
+    ->with('success', 'Conta criada com sucesso! Faça login para continuar.');
     }
 }

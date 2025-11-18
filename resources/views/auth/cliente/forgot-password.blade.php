@@ -70,7 +70,7 @@
       <div id="flash" class="flash">{{ session('status') }}</div>
     @endif
 
-    <form method="POST" action="{{ route('password.email') }}">
+<form method="POST" action="{{ route('cliente.password.email') }}">
       @csrf
       <label for="email">E-mail</label>
       <div class="field">
@@ -80,7 +80,11 @@
 
       <div class="row">
         <div class="back"><a href="{{ url('/') }}">Voltar ao login</a></div>
-        <button type="submit">ENVIAR LINK</button>
+<button type="submit" id="sendBtn">
+    <span id="btnText">ENVIAR LINK</span>
+    <span id="btnLoader" style="display:none;">⏳ Enviando...</span>
+</button>
+
       </div>
     </form>
   </main>
@@ -92,5 +96,6 @@
       setTimeout(()=>el.remove(), 4500);
     })();
   </script>
+  
 </body>
 </html>

@@ -54,9 +54,6 @@ Route::get('/login', function () {
     return view('auth.login_funcionario'); // Nova tela estilizada
 })->name('login');
 
-// Faz login (controlado pelo Fortify padrão)
-require __DIR__ . '/auth.php';
-
 // Corrige logout de funcionário (POST)
 Route::post('/logout', function (Request $request) {
     Auth::guard('web')->logout();
@@ -109,6 +106,29 @@ Route::middleware(['auth:cliente', 'cliente.permissao'])->group(function () {
     Route::get('/cliente/agendamento', [ClientePainelController::class, 'agendamento'])->name('cliente.agendamento');
     Route::post('/cliente/agendamento', [ClientePainelController::class, 'storeAgendamento'])->name('cliente.agendamento.store');
 });
+
+// ----------------------------------------------------------
+// 🔐 RECUPERAÇÃO DE SENHA — CLIENTE
+// ----------------------------------------------------------
+
+use App\Http\Controllers\Auth\ClienteForgotPasswordController;
+use App\Http\Controllers\Auth\ClienteResetPasswordController;
+
+// Form "esqueci a senha"
+Route::get('/cliente/forgot-password', [ClienteForgotPasswordController::class, 'showLinkRequestForm'])
+    ->name('cliente.password.request');
+
+// Envia o e-mail
+Route::post('/cliente/forgot-password', [ClienteForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->name('cliente.password.email');
+
+// Form de redefinir senha com token
+Route::get('/cliente/reset-password/{token}', [ClienteResetPasswordController::class, 'showResetForm'])
+    ->name('cliente.password.reset');
+
+// Atualiza a senha no banco
+Route::post('/cliente/reset-password', [ClienteResetPasswordController::class, 'reset'])
+    ->name('cliente.password.update');
 
     // 🔹 Rota do Chatbot com IA (OpenAI)
     Route::post('/chat', [GeminiChatController::class, 'sendMessage']);

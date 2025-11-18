@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Criar Conta de Cliente</title>
+    <title>Redefinir Senha</title>
 
     <style>
         :root {
@@ -58,12 +58,14 @@
             text-align: center;
             margin-bottom: 18px;
             font-size: 23px;
+            letter-spacing: .3px;
         }
 
         label {
             display: block;
             margin-top: 14px;
             font-size: 13px;
+            opacity: .9;
         }
 
         .field {
@@ -89,24 +91,22 @@
             outline: none;
             color: #fff;
             font-size: 15px;
+            padding-right: 36px;
         }
 
-        /* 👁 botão do olho */
-        .eye-toggle {
+        /* 👁 Ícone do olho */
+        .togglePwd {
+            width: 20px;
+            height: 20px;
             position: absolute;
             right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
             opacity: 0;
+            cursor: pointer;
             pointer-events: none;
             transition: opacity .25s ease;
         }
-
-        .eye-toggle svg { width: 100%; height: 100%; fill: #fff; }
-        .eye-hide { display: none; }
 
         button {
             width: 100%;
@@ -120,6 +120,12 @@
             font-weight: 600;
             cursor: pointer;
             box-shadow: 0 10px 24px rgba(255,81,47,.35);
+            transition: .2s ease;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px rgba(255,81,47,.45);
         }
 
         button:disabled {
@@ -127,28 +133,21 @@
             cursor: not-allowed;
         }
 
-        .helper { text-align:center; margin-top:14px; font-size:13px; }
-        .helper a { color:#fff; opacity:.85; text-decoration:none; }
-
         .errors {
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 14px;
             background:#ff4d6d22;
             border:1px solid #ff4d6d55;
             color:#ffd6df;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 14px;
         }
 
-        /* checklist */
         #password-info, #password-checklist, #strength-bar {
             opacity: 0;
             display: none;
             transform: translateY(-6px);
             transition: opacity .25s ease, transform .25s ease;
-        }
-
-        #password-checklist li {
-            margin-bottom: 4px;
         }
 
         #strength-bar {
@@ -166,15 +165,24 @@
             background: var(--weak);
             transition: width .35s ease, background .35s ease;
         }
+
+        .bounce { animation: bounce .35s ease; }
+
+        @keyframes bounce {
+            50% { transform: scale(1.24); }
+        }
+
+        .back a { color:#fff; font-size:13px; text-decoration:none; opacity:.85; }
+        .back a:hover { opacity:1; }
     </style>
 </head>
 
 <body>
 
-<form method="POST" action="{{ route('cliente.register') }}" class="card">
+<form method="POST" action="{{ route('cliente.password.update') }}" class="card">
 @csrf
 
-<h1>Criar Conta de Cliente</h1>
+<h1>Redefinir Senha</h1>
 
 @if ($errors->any())
 <div class="errors">
@@ -184,28 +192,18 @@
 </div>
 @endif
 
-<label>Nome</label>
-<div class="field"><input type="text" name="nome" required></div>
+<input type="hidden" name="token" value="{{ request()->route('token') }}">
+<input type="hidden" name="email" value="{{ request()->query('email') }}">
 
-<label>Telefone</label>
-<div class="field"><input type="text" id="telefone" name="telefone" required></div>
-
-<label>CPF</label>
-<div class="field"><input type="text" id="CPF" name="CPF" required></div>
-
-<label>CNH</label>
-<div class="field"><input type="text" name="CHN" required></div>
-
-<label>E-mail</label>
-<div class="field"><input type="email" name="email" required></div>
-
-<label>Senha</label>
+<label>Nova Senha</label>
 <div class="field">
     <input type="password" id="password" name="password" required>
-    <div class="eye-toggle" id="togglePassword">
-        <svg class="eye-show" viewBox="0 0 24 24"><path d="M12 5c-7.633 0-10 7-10 7s2.367 7 10 7 10-7 10-7-2.367-7-10-7Zm0 11a4 4 0 1 1 4-4 4 4 0 0 1-4 4Z"/></svg>
-        <svg class="eye-hide" viewBox="0 0 24 24"><path d="M2 3.27 3.28 2 22 20.72l-1.28 1.28-3.2-3.2A10.82 10.82 0 0 1 12 19c-7.63 0-10-7-10-7a17.39 17.39 0 0 1 4.11-5.63L2 3.27Z"/></svg>
-    </div>
+
+    <!-- OLHO -->
+    <svg class="togglePwd" viewBox="0 0 24 24" fill="currentColor">
+        <path class="eyeOpen" d="M12 5c-7.633 0-10 7-10 7s2.367 7 10 7 10-7 10-7-2.367-7-10-7Zm0 11a4 4 0 1 1 4-4 4 4 0 0 1-4 4Z"/>
+        <path class="eyeClosed" style="display:none;" d="M2 3.27 3.28 2 22 20.72l-1.28 1.28-3.2-3.2A10.82 10.82 0 0 1 12 19c-7.63 0-10-7-10-7a17.39 17.39 0 0 1 4.11-5.63L2 3.27Z"/>
+    </svg>
 </div>
 
 <div id="password-info">A senha deve conter:</div>
@@ -218,73 +216,43 @@
     <li id="req-symbol">❌ 1 símbolo (!@#$%)</li>
 </ul>
 
-<div id="strength-bar">
-    <div id="strength-fill"></div>
-</div>
+<div id="strength-bar"><div id="strength-fill"></div></div>
 
-<label>Confirmar Senha</label>
+<label>Confirmar Nova Senha</label>
 <div class="field">
     <input type="password" id="password_confirmation" name="password_confirmation" required>
-    <div class="eye-toggle" id="toggleConfirm">
-        <svg class="eye-show" viewBox="0 0 24 24"><path d="M12 5c-7.633 0-10 7-10 7s2.367 7 10 7 10-7 10-7-2.367-7-10-7Zm0 11a4 4 0 1 1 4-4 4 4 0 0 1-4 4Z"/></svg>
-        <svg class="eye-hide" viewBox="0 0 24 24"><path d="M2 3.27 3.28 2 22 20.72l-1.28 1.28-3.2-3.2A10.82 10.82 0 0 1 12 19c-7.63 0-10-7-10-7a17.39 17.39 0 0 1 4.11-5.63L2 3.27Z"/></svg>
-    </div>
+
+    <!-- OLHO -->
+    <svg class="togglePwd" viewBox="0 0 24 24" fill="currentColor">
+        <path class="eyeOpen" d="M12 5c-7.633 0-10 7-10 7s2.367 7 10 7 10-7 10-7-2.367-7-10-7Zm0 11a4 4 0 1 1 4-4 4 4 0 0 1-4 4Z"/>
+        <path class="eyeClosed" style="display:none;" d="M2 3.27 3.28 2 22 20.72l-1.28 1.28-3.2-3.2A10.82 10.82 0 0 1 12 19c-7.63 0-10-7-10-7a17.39 17.39 0 0 1 4.11-5.63L2 3.27Z"/>
+    </svg>
 </div>
 
 <div id="match-warning" style="font-size:12px;color:#ffbaba;display:none;">
     ❌ As senhas não coincidem
 </div>
 
-<button id="submit-btn" disabled>Registrar</button>
+<button id="submit-btn" disabled>Salvar Nova Senha</button>
 
-<div class="helper">
-    <a href="{{ route('cliente.login.form') }}">Já possui conta? Entrar</a>
+<div class="back" style="margin-top:14px;">
+    <a href="{{ route('cliente.login.form') }}">← Voltar ao login</a>
 </div>
 
 </form>
 
 <script>
-// função do toggle padrão
-function setupToggle(inputId, toggleId) {
-    const input = document.getElementById(inputId);
-    const toggle = document.getElementById(toggleId);
-    const eyeShow = toggle.querySelector(".eye-show");
-    const eyeHide = toggle.querySelector(".eye-hide");
-
-    input.addEventListener("focus", () => {
-        toggle.style.opacity = 0.75;
-        toggle.style.pointerEvents = "auto";
-    });
-
-    input.addEventListener("blur", () => {
-        if (!input.value.trim()) {
-            toggle.style.opacity = 0;
-            toggle.style.pointerEvents = "none";
-        }
-    });
-
-    toggle.addEventListener("click", () => {
-        const showing = input.type === "text";
-        input.type = showing ? "password" : "text";
-
-        eyeShow.style.display = showing ? "block" : "none";
-        eyeHide.style.display = showing ? "none" : "block";
-    });
-}
-
-// aplicar nos dois campos
-setupToggle("password", "togglePassword");
-setupToggle("password_confirmation", "toggleConfirm");
-
-// CHECKLIST + MATCH (seu script original mantido)
+/* --------- CHECKLIST --------- */
 const pass = document.getElementById("password");
 const conf = document.getElementById("password_confirmation");
 const btn = document.getElementById("submit-btn");
 
 const info = document.getElementById("password-info");
 const list = document.getElementById("password-checklist");
+
 const bar = document.getElementById("strength-bar");
 const fill = document.getElementById("strength-fill");
+
 const warning = document.getElementById("match-warning");
 
 const rules = {
@@ -299,6 +267,7 @@ function showChecklist() {
     info.style.display = "block";
     list.style.display = "block";
     bar.style.display = "block";
+
     setTimeout(() => {
         info.style.opacity = 1;
         list.style.opacity = 1;
@@ -310,6 +279,7 @@ function hideChecklist() {
     info.style.opacity = 0;
     list.style.opacity = 0;
     bar.style.opacity = 0;
+
     setTimeout(() => {
         info.style.display = "none";
         list.style.display = "none";
@@ -359,18 +329,36 @@ function update(el, ok) {
 pass.addEventListener("input", validate);
 conf.addEventListener("input", validate);
 
-// Máscaras
-document.getElementById("telefone").addEventListener("input", e => {
-    let x = e.target.value.replace(/\D/g,'').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-    e.target.value = !x[2] ? x[1] : "(" + x[1] + ") " + x[2] + (x[3] ? "-" + x[3] : "");
-});
 
-document.getElementById("CPF").addEventListener("input", e => {
-    let v = e.target.value.replace(/\D/g,'').slice(0,11);
-    v = v.replace(/(\d{3})(\d)/,"$1.$2")
-         .replace(/(\d{3})(\d)/,"$1.$2")
-         .replace(/(\d{3})(\d{1,2})$/,"$1-$2");
-    e.target.value = v;
+/* --------- OLHO PARA MOSTRAR/OCULTAR SENHA --------- */
+
+document.querySelectorAll(".field").forEach(field => {
+    const input = field.querySelector("input[type='password']");
+    const toggle = field.querySelector(".togglePwd");
+    if (!input || !toggle) return;
+
+    const open = toggle.querySelector(".eyeOpen");
+    const closed = toggle.querySelector(".eyeClosed");
+
+    input.addEventListener("focus", () => {
+        toggle.style.opacity = 0.75;
+        toggle.style.pointerEvents = "auto";
+    });
+
+    input.addEventListener("blur", () => {
+        if (!input.value) {
+            toggle.style.opacity = 0;
+            toggle.style.pointerEvents = "none";
+        }
+    });
+
+    toggle.addEventListener("click", () => {
+        const showing = input.type === "text";
+
+        input.type = showing ? "password" : "text";
+        open.style.display = showing ? "block" : "none";
+        closed.style.display = showing ? "none" : "block";
+    });
 });
 </script>
 
