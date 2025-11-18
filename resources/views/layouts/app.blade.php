@@ -654,7 +654,7 @@
 
 
     <!-- Botão flutuante do WhatsApp -->
-    <a href="#" target="_blank" rel="noopener" class="whatsapp-float" id="whatsappButton" aria-label="WhatsApp">
+    <a href="https://wa.me/5554999050399" target="_blank" rel="noopener" class="whatsapp-float" id="whatsappButton" aria-label="WhatsApp">
         <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
     </a>
 
