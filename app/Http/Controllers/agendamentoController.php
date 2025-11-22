@@ -13,38 +13,64 @@ use Illuminate\Database\QueryException;
 
 class AgendamentoController extends Controller
 {
-    /* Exibe uma lista de todos os agendamentos. */
-    public function index()
-    {
-        // Obtém todos os agendamentos do banco de dados
-        $agendamentos = Agendamento::all();
+    /* ============================================================
+       LISTAR COM BUSCA (padrão ATS e case-insensitive)
+    ============================================================ */
+    public function index(Request $request)
+{
+    $query = strtolower($request->input('query'));
 
-        // Retorna a view 'agendamentos.index' com a lista de agendamentos
-        return view('agendamentos.index', compact('agendamentos'));
-    }
+    $agendamentos = Agendamento::with(['funcionario', 'veiculo', 'cliente'])
+        ->when($query, function ($q) use ($query) {
 
-    /* Exibe o formulário para criar um novo agendamento. */
+            return $q->whereRaw("LOWER(TO_CHAR(data, 'DD/MM/YYYY')) LIKE ?", ["%{$query}%"])
+                ->orWhereRaw("LOWER(TO_CHAR(horario, 'HH24:MI')) LIKE ?", ["%{$query}%"])
+                ->orWhereHas('funcionario', fn($s) =>
+                    $s->whereRaw("LOWER(nome) LIKE ?", ["%{$query}%"])
+                )
+                ->orWhereHas('veiculo', fn($s) =>
+                    $s->whereRaw("LOWER(modelo) LIKE ?", ["%{$query}%"])
+                )
+                ->orWhereHas('cliente', fn($s) =>
+                    $s->whereRaw("LOWER(nome) LIKE ?", ["%{$query}%"])
+                );
+        })
+        ->orderBy('data', 'asc')
+        ->orderBy('horario', 'asc')
+        ->get();
+
+    return view('agendamentos.index', [
+        'agendamentos' => $agendamentos,
+        'query' => null // limpa o campo após buscar
+    ]);
+}
+
+
+    /* ============================================================
+       FORMULÁRIO DE CRIAÇÃO
+    ============================================================ */
     public function create()
     {
-        // Retorna a view 'agendamentos.create' com dados necessários para o formulário
-        $funcionarios = Funcionario::all();
-        $veiculos = Veiculo::all();
-        $clientes = Cliente::all();
-        return view('agendamentos.create', compact('funcionarios', 'veiculos', 'clientes'));
+        return view('agendamentos.create', [
+            'funcionarios' => Funcionario::all(),
+            'veiculos' => Veiculo::all(),
+            'clientes' => Cliente::all(),
+        ]);
     }
 
-    /* Armazena um novo agendamento no banco de dados. */
+    /* ============================================================
+       CRIAR NOVO AGENDAMENTO
+    ============================================================ */
     public function store(Request $request)
     {
         try {
-            // Validação dos dados do formulário
             $validator = Validator::make($request->all(), [
                 'data' => ['required', 'date', 'after_or_equal:' . now()->toDateString()],
                 'horario' => ['required', 'date_format:H:i'],
                 'funcionario_id' => ['required', 'exists:funcionarios,id'],
                 'veiculo_id' => ['required', 'exists:veiculos,id'],
-                'cliente_id' => ['required', 'exists:clientes,id'],
-                // Regra de validação personalizada para evitar duplicidades
+
+                // evita agendamentos duplicados
                 'cliente_id' => [
                     'required',
                     Rule::unique('agendamentos')->where(function ($query) use ($request) {
@@ -58,64 +84,48 @@ class AgendamentoController extends Controller
                 ],
             ]);
 
-            // Adicionar mensagem de erro customizada
-            $validator->setAttributeNames([
-                'cliente_id' => 'Cliente',
-            ]);
-
-            // Verificar se há erros de validação
             if ($validator->fails()) {
-                return redirect()
-                    ->back()
-                    ->withErrors($validator)
-                    ->withInput();
+                return back()->withErrors($validator)->withInput();
             }
 
-            // Cria uma nova instância de Agendamento com dados do formulário
-            Agendamento::create([
-                'data' => $request->input('data'),
-                'horario' => $request->input('horario'),
-                'funcionario_id' => $request->input('funcionario_id'),
-                'veiculo_id' => $request->input('veiculo_id'),
-                'cliente_id' => $request->input('cliente_id'),
-            ]);
+            Agendamento::create($validator->validated());
 
-            // Redireciona para a página 'agendamentos.index' após salvar
-            return redirect()->route('agendamentos.index')->with('success', 'Agendamento criado com sucesso!');
+            return redirect()->route('agendamentos.index')
+                ->with('success', 'Agendamento criado com sucesso!');
+
         } catch (QueryException $e) {
-            // Captura exceções de SQL (por exemplo, violação de chave única)
-            return redirect()
-                ->back()
-                ->withInput()
-                ->withErrors(['error' => 'Não foi possível agendar. Cliente, funcionário ou veículo já estão agendados para o mesmo horário e data.']);
+            return back()->withInput()->withErrors([
+                'error' => 'Já existe um agendamento com estes dados.'
+            ]);
         }
     }
 
-    /* Exibe o formulário para editar um agendamento existente. */
+    /* ============================================================
+       FORMULÁRIO DE EDIÇÃO
+    ============================================================ */
     public function edit(string $id)
     {
-        // Encontra o agendamento pelo ID fornecido ou retorna 404 se não encontrado
-        $agendamento = Agendamento::findOrFail($id);
-
-        // Retorna a view 'agendamentos.edit' com o agendamento para edição
-        $funcionarios = Funcionario::all();
-        $veiculos = Veiculo::all();
-        $clientes = Cliente::all();
-        return view('agendamentos.edit', compact('agendamento', 'funcionarios', 'veiculos', 'clientes'));
+        return view('agendamentos.edit', [
+            'agendamento' => Agendamento::findOrFail($id),
+            'funcionarios' => Funcionario::all(),
+            'veiculos' => Veiculo::all(),
+            'clientes' => Cliente::all(),
+        ]);
     }
 
-    /* Atualiza um agendamento existente no banco de dados. */
+    /* ============================================================
+       ATUALIZAR AGENDAMENTO
+    ============================================================ */
     public function update(Request $request, string $id)
     {
         try {
-            // Validação dos dados do formulário
             $validator = Validator::make($request->all(), [
                 'data' => ['required', 'date'],
                 'horario' => ['required', 'date_format:H:i'],
                 'funcionario_id' => ['required', 'exists:funcionarios,id'],
                 'veiculo_id' => ['required', 'exists:veiculos,id'],
-                'cliente_id' => ['required', 'exists:clientes,id'],
-                // Regra de validação personalizada para evitar duplicidades
+
+                // evita duplicidade no update
                 'cliente_id' => [
                     'required',
                     Rule::unique('agendamentos')->where(function ($query) use ($request, $id) {
@@ -124,68 +134,45 @@ class AgendamentoController extends Controller
                             ['horario', '=', $request->horario],
                             ['funcionario_id', '=', $request->funcionario_id],
                             ['veiculo_id', '=', $request->veiculo_id],
-                        ])->whereNotIn('id', [$id]);
+                        ])->where('id', '!=', $id);
                     }),
                 ],
             ]);
 
-            // Adicionar mensagem de erro customizada
-            $validator->setAttributeNames([
-                'cliente_id' => 'Cliente',
-            ]);
-
-            // Verificar se há erros de validação
             if ($validator->fails()) {
-                return redirect()
-                    ->back()
-                    ->withErrors($validator)
-                    ->withInput();
+                return back()->withErrors($validator)->withInput();
             }
 
-            // Encontra o agendamento pelo ID para atualização
-            $agendamento = Agendamento::findOrFail($id);
+            Agendamento::findOrFail($id)->update($validator->validated());
 
-            // Atualiza os campos do agendamento com os dados do formulário
-            $agendamento->data = $request->input('data');
-            $agendamento->horario = $request->input('horario');
-            $agendamento->funcionario_id = $request->input('funcionario_id');
-            $agendamento->veiculo_id = $request->input('veiculo_id');
-            $agendamento->cliente_id = $request->input('cliente_id');
+            return redirect()->route('agendamentos.index')
+                ->with('success', 'Agendamento atualizado com sucesso!');
 
-            // Salva as alterações no banco de dados
-            $agendamento->save();
-
-            // Redireciona para a página 'agendamentos.index' após a atualização
-            return redirect()->route('agendamentos.index')->with('success', 'Agendamento alterado com sucesso!');
         } catch (QueryException $e) {
-            // Captura exceções de SQL (por exemplo, violação de chave única)
-            return redirect()
-                ->back()
-                ->withInput()
-                ->withErrors(['error' => 'Não foi possível atualizar o agendamento. Cliente, funcionário ou veículo já estão agendados para o mesmo horário e data.']);
+            return back()->withInput()->withErrors([
+                'error' => 'Erro ao atualizar. Já existe outro agendamento com estes dados.'
+            ]);
         }
     }
 
-    /* Remove um agendamento do banco de dados. */
+    /* ============================================================
+       EXCLUIR
+    ============================================================ */
     public function destroy(string $id)
     {
-        // Encontra o agendamento pelo ID para exclusão
-        $agendamento = Agendamento::findOrFail($id);
+        Agendamento::findOrFail($id)->delete();
 
-        // Exclui o agendamento do banco de dados
-        $agendamento->delete();
-
-        // Redireciona para a página 'agendamentos.index' após exclusão
-        return redirect()->route('agendamentos.index')->with('success', 'Agendamento excluído com sucesso!');
+        return redirect()->route('agendamentos.index')
+            ->with('success', 'Agendamento excluído com sucesso!');
     }
 
-    /* Mostra detalhes de um agendamento específico. */
+    /* ============================================================
+       DETALHES
+    ============================================================ */
     public function show(string $id)
     {
-        // Busca o agendamento pelo ID ou retorna 404 se não encontrado
-        $agendamento = Agendamento::findOrFail($id);
-
-        // Retorna a view 'agendamentos.show' para exibir detalhes do agendamento
-        return view('agendamentos.show', compact('agendamento'));
+        return view('agendamentos.show', [
+            'agendamento' => Agendamento::with(['funcionario', 'veiculo', 'cliente'])->findOrFail($id)
+        ]);
     }
 }

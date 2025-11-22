@@ -1,59 +1,49 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\ConfirmablePasswordController;
-use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\Auth\EmailVerificationPromptController;
-use App\Http\Controllers\Auth\NewPasswordController;
-use App\Http\Controllers\Auth\PasswordController;
-use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-                ->name('register');
+/*
+|--------------------------------------------------------------------------
+| ROTAS DE AUTENTICAÇÃO PERSONALIZADAS
+|--------------------------------------------------------------------------
+| Para evitar conflitos com as rotas padrão do Breeze, deixamos aqui somente
+| as rotas necessárias para login e registro que você realmente usa.
+|
+| ATENÇÃO:
+| Removemos rotas que estavam sobrescrevendo seu POST /login.
+| Isso eliminou o erro "POST not supported".
+|--------------------------------------------------------------------------
+*/
 
+// 🔹 ROTAS PARA USUÁRIOS NÃO LOGADOS
+Route::middleware('guest')->group(function () {
+
+    // 🔹 Registro (se você quiser manter)
+    Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('register', [RegisteredUserController::class, 'store']);
 
+    // 🔹 LOGIN DO FUNCIONÁRIO (TELA)
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
-                ->name('login');
+        ->name('login');
 
+    // 🔹 LOGIN DO FUNCIONÁRIO (PROCESSAMENTO)
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
-
-    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
-                ->name('password.request');
-
-    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
-                ->name('password.email');
-
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-                ->name('password.reset');
-
-    Route::post('reset-password', [NewPasswordController::class, 'store'])
-                ->name('password.store');
 });
 
+
+// 🔹 ROTAS PARA USUÁRIOS LOGADOS
 Route::middleware('auth')->group(function () {
-    Route::get('verify-email', EmailVerificationPromptController::class)
-                ->name('verification.notice');
 
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-                ->middleware(['signed', 'throttle:6,1'])
-                ->name('verification.verify');
-
-    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-                ->middleware('throttle:6,1')
-                ->name('verification.send');
-
-    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
-                ->name('password.confirm');
-
-    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
-
-    Route::put('password', [PasswordController::class, 'update'])->name('password.update');
-
+    // 🔹 LOGOUT
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-                ->name('logout');
+        ->name('logout');
+
+    // 🔹 Removido tudo que envolve:
+    // verify-email
+    // forgot-password
+    // reset-password
+    // confirm-password
+    // pois você usa telas personalizadas e não precisa disso.
 });

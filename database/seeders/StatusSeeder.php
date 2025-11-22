@@ -9,13 +9,19 @@ class StatusSeeder extends Seeder
 {
     public function run(): void
     {
-        // Evita duplicações se rodar mais de uma vez
-        if (Status::count() === 0) {
-            Status::insert([
-                ['descricao' => 'Ativo'],
-                ['descricao' => 'Inativo'],
-                ['descricao' => 'Em manutenção'],
-            ]);
+        // Evita duplicações ao rodar novamente
+        $statuses = [
+            'Ativo',
+            'Inativo',
+            'Em manutenção',
+
+        
+            'Disponível',
+            'Indisponível',
+        ];
+
+        foreach ($statuses as $descricao) {
+            Status::firstOrCreate(['descricao' => $descricao]);
         }
     }
 }

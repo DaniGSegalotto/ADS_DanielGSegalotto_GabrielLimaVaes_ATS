@@ -1,98 +1,178 @@
 <x-app-layout>
-    <!-- 🔹 Cabeçalho -->
+
+    <!-- Cabeçalho -->
     <x-slot name="header">
         <h2 class="text-2xl font-semibold text-white leading-tight">
-            {{ __('Criar Agendamento') }}
+            Criar Agendamento
         </h2>
     </x-slot>
 
-    <!-- 🔹 Mensagem de sucesso -->
+    <!-- Mensagem de sucesso -->
     @if(session('success'))
         <div style="
-            background: rgba(119, 255, 168, .16);
-            border: 1px solid rgba(119, 255, 168, .45);
-            color: #c9ffd9;
-            padding: 10px 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            margin-bottom: 15px;
+            max-width:700px;
+            margin:20px auto;
+            background:rgba(76,175,80,0.15);
+            border:1px solid rgba(76,175,80,0.35);
+            color:#1b5e20;
+            padding:12px 16px;
+            border-radius:12px;
+            font-size:15px;
         ">
-            <strong>Sucesso!</strong> {{ session('success') }}
+            {{ session('success') }}
         </div>
     @endif
 
-    <!-- 🔹 Conteúdo -->
-    <div class="card">
-        <form id="form-agendamento" action="{{ route('agendamentos.store') }}" method="POST" style="display:flex; flex-direction:column; gap:16px;">
+    <!-- Card principal -->
+    <div style="
+        max-width:700px;
+        margin:40px auto;
+        background:#ffffff;
+        padding:28px;
+        border-radius:16px;
+        border:1px solid #e6e6e6;
+        box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    ">
+
+        <form id="form-agendamento"
+              action="{{ route('agendamentos.store') }}"
+              method="POST"
+              style="display:flex; flex-direction:column; gap:20px;">
+
             @csrf
 
+            <!-- Data -->
             <div>
-                <label for="data">Data:</label><br>
-                <input type="date" name="data" id="data" required>
+                <label style="font-weight:600;">Data:</label>
+                <input type="date" name="data" id="data" required
+                    style="
+                        width:100%;
+                        padding:12px;
+                        border-radius:10px;
+                        border:1px solid #d0d0d0;
+                        margin-top:4px;
+                    ">
             </div>
 
+            <!-- Horário -->
             <div>
-                <label for="horario">Horário:</label><br>
-                <input type="time" name="horario" id="horario" required>
+                <label style="font-weight:600;">Horário:</label>
+                <input type="time" name="horario" id="horario" required
+                    style="
+                        width:100%;
+                        padding:12px;
+                        border-radius:10px;
+                        border:1px solid #d0d0d0;
+                        margin-top:4px;
+                    ">
             </div>
 
+            <!-- Funcionário -->
             <div>
-                <label for="funcionario_id">Funcionário:</label><br>
-                <select name="funcionario_id" id="funcionario_id" required>
+                <label style="font-weight:600;">Funcionário:</label>
+                <select name="funcionario_id" id="funcionario_id" required
+                    style="
+                        width:100%;
+                        padding:12px;
+                        border-radius:10px;
+                        border:1px solid #d0d0d0;
+                        margin-top:4px;
+                    ">
                     <option value="">Selecione um funcionário</option>
                     @foreach($funcionarios as $funcionario)
-                        <option value="{{ $funcionario->id }}">{{ $funcionario->nome }}</option>
+                        <option value="{{ $funcionario->id }}">
+                            {{ $funcionario->nome }}
+                        </option>
                     @endforeach
                 </select>
             </div>
 
+            <!-- Veículo -->
             <div>
-                <label for="veiculo_id">Veículo:</label><br>
-                <select name="veiculo_id" id="veiculo_id" required>
+                <label style="font-weight:600;">Veículo:</label>
+                <select name="veiculo_id" id="veiculo_id" required
+                    style="
+                        width:100%;
+                        padding:12px;
+                        border-radius:10px;
+                        border:1px solid #d0d0d0;
+                        margin-top:4px;
+                    ">
                     <option value="">Selecione um veículo</option>
                     @foreach($veiculos as $veiculo)
-                        <option value="{{ $veiculo->id }}">{{ $veiculo->modelo }}</option>
+                        <option value="{{ $veiculo->id }}">
+                            {{ $veiculo->modelo }}
+                        </option>
                     @endforeach
                 </select>
             </div>
 
+            <!-- Cliente -->
             <div>
-                <label for="cliente_id">Cliente:</label><br>
-                <select name="cliente_id" id="cliente_id" required>
+                <label style="font-weight:600;">Cliente:</label>
+                <select name="cliente_id" id="cliente_id" required
+                    style="
+                        width:100%;
+                        padding:12px;
+                        border-radius:10px;
+                        border:1px solid #d0d0d0;
+                        margin-top:4px;
+                    ">
                     <option value="">Selecione um cliente</option>
                     @foreach($clientes as $cliente)
-                        <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
+                        <option value="{{ $cliente->id }}">
+                            {{ $cliente->nome }}
+                        </option>
                     @endforeach
                 </select>
             </div>
 
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <button type="submit">Salvar</button>
-                <a href="{{ route('agendamentos.index') }}" class="btn" style="background:#666;">Cancelar</a>
+            <!-- Botões -->
+            <div style="display:flex; gap:12px; margin-top:10px;">
+
+                <!-- Salvar -->
+                <button type="submit"
+                    style="
+                        padding:12px 20px;
+                        background:#ff7a00;
+                        border:none;
+                        color:white;
+                        font-weight:600;
+                        border-radius:10px;
+                        cursor:pointer;
+                    "
+                    onmouseover="this.style.background='#ff8f2b'"
+                    onmouseout="this.style.background='#ff7a00'">
+                    Salvar
+                </button>
+
+                <!-- Cancelar -->
+                <a href="{{ route('agendamentos.index') }}"
+                    style="
+                        padding:12px 20px;
+                        background:#666;
+                        color:white;
+                        border-radius:10px;
+                        text-decoration:none;
+                        font-weight:600;
+                    "
+                    onmouseover="this.style.opacity='0.85'"
+                    onmouseout="this.style.opacity='1'">
+                    Cancelar
+                </a>
+
             </div>
         </form>
     </div>
 
-    <!-- 🔹 Script de validação -->
+    <!-- Script (pode ser usado depois para validações avançadas) -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('form-agendamento');
-            form.addEventListener('submit', function (event) {
-                event.preventDefault();
-                const data = document.getElementById('data').value;
-                const horario = document.getElementById('horario').value;
-                const funcionarioId = document.getElementById('funcionario_id').value;
-                const veiculoId = document.getElementById('veiculo_id').value;
-                const clienteId = document.getElementById('cliente_id').value;
-
-                // ⚙️ Aqui poderia entrar uma chamada AJAX para validar no backend
-                const existeAgendamento = false;
-                if (existeAgendamento) {
-                    alert('Não é possível agendar. Cliente, funcionário ou veículo já estão agendados para o mesmo horário e data.');
-                } else {
-                    form.submit();
-                }
+            form.addEventListener('submit', function () {
+                // espaço para validação AJAX futura
             });
         });
     </script>
+
 </x-app-layout>

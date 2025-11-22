@@ -1,39 +1,67 @@
 <x-app-layout>
-    <!-- 🔹 Cabeçalho -->
+
+    <!-- Cabeçalho -->
     <x-slot name="header">
         <h2 class="text-2xl font-semibold text-white leading-tight">
-            {{ __('Detalhes da Marca') }}
+            Detalhes da Marca
         </h2>
     </x-slot>
 
-    <!-- 🔹 Conteúdo -->
-    <div class="card" style="max-width:700px; margin:auto; text-align:left;">
-        <h3 style="font-size:20px; margin-bottom:16px;">Informações da Marca</h3>
+    <!-- Card principal -->
+    <div style="
+        max-width: 750px;
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e6e6e6;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        padding: 32px;
+        color: #333;
+    ">
 
-        <div style="display:flex; flex-direction:column; gap:12px;">
-            <div>
-                <span style="color:#ffb84d; font-weight:600;">ID:</span><br>
-                <span style="color:#fff;">{{ $marca->id }}</span>
-            </div>
+        <!-- Título interno -->
+        <h3 style="font-size: 22px; font-weight: 600; margin-bottom: 22px;">
+            Informações da Marca
+        </h3>
 
-            <div>
-                <span style="color:#ffb84d; font-weight:600;">Descrição:</span><br>
-                <span style="color:#fff;">{{ $marca->descricao }}</span>
-            </div>
+        <!-- Grid de informações -->
+        <div style="
+            display: grid;
+            grid-template-columns: 180px auto;
+            row-gap: 14px;
+            column-gap: 10px;
+            font-size: 15px;
+        ">
 
-            <div>
-                <span style="color:#ffb84d; font-weight:600;">Observação:</span><br>
-                <span style="color:#fff;">{{ $marca->observacao ?? '—' }}</span>
-            </div>
+            <span style="font-weight:600; color:#ff7a00;">ID:</span>
+            <span>{{ $marca->id }}</span>
+
+            <span style="font-weight:600; color:#ff7a00;">Descrição:</span>
+            <span>{{ $marca->descricao }}</span>
+
+            <span style="font-weight:600; color:#ff7a00;">Observação:</span>
+            <span>{{ $marca->observacao ?? '—' }}</span>
+
         </div>
 
-        <!-- 🔸 Botão Voltar -->
-        <div style="margin-top:24px; text-align:right;">
-            <a href="{{ route('marcas.index') }}" 
-               style="background:linear-gradient(90deg,#ff512f,#f09819);
-                      padding:10px 18px; border-radius:12px; color:#fff; text-decoration:none; font-weight:600;">
+        <!-- Botão Voltar -->
+        <div style="margin-top: 35px; text-align: right;">
+            <a href="{{ route('marcas.index') }}"
+               style="
+                    padding: 12px 20px;
+                    background: linear-gradient(90deg, #ff6a00, #ff9500);
+                    color: #fff;
+                    border-radius: 10px;
+                    font-weight: 600;
+                    text-decoration: none;
+                    transition: .2s;
+               "
+               onmouseover="this.style.opacity='0.85'"
+               onmouseout="this.style.opacity='1'">
                 Voltar
             </a>
         </div>
+
     </div>
+
 </x-app-layout>

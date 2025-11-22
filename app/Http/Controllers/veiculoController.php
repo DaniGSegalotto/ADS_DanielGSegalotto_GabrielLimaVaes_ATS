@@ -12,16 +12,18 @@ class VeiculoController extends Controller
 {
     public function index()
     {
-        // se no Model for status(), use 'status'; se for outro nome, ajuste aqui
-        $veiculos = Veiculo::with(['marca','status'])->get();
+        // Carrega marca e status juntos
+        $veiculos = Veiculo::with(['marca', 'status'])->get();
+
         return view('veiculos.index', compact('veiculos'));
     }
 
     public function create()
     {
         $marcas   = Marca::all();
-        $statuses = Status::orderBy('descricao')->get(['id','descricao']);
-        return view('veiculos.create', compact('marcas','statuses'));
+        $statuses = Status::orderBy('descricao')->get();
+
+        return view('veiculos.create', compact('marcas', 'statuses'));
     }
 
     public function store(Request $request)
@@ -32,32 +34,32 @@ class VeiculoController extends Controller
             'placa'      => 'required|string|max:10|unique:veiculos,placa',
             'ano'        => 'required|integer|min:1900',
             'marca_id'   => 'required|exists:marcas,id',
-            'status_id'  => 'required|exists:statuses,id', // <- FK correta
+            'status_id'  => 'required|exists:statuses,id', // agora é FK
         ]);
 
-        $veiculo = new Veiculo([
-            'modelo'     => $request->input('modelo'),
-            'categoria'  => $request->input('categoria'),
-            'placa'      => $request->input('placa'),
-            'ano'        => $request->input('ano'),
-            'marca_id'   => (int) $request->input('marca_id'),
-            'status_id'  => (int) $request->input('status_id'), // <- aqui
+        Veiculo::create([
+            'modelo'     => $request->modelo,
+            'categoria'  => $request->categoria,
+            'placa'      => $request->placa,
+            'ano'        => $request->ano,
+            'marca_id'   => $request->marca_id,
+            'status_id'  => $request->status_id,  // salva o status correto
         ]);
 
-        $veiculo->save();
-
-        return redirect()->route('veiculos.index')->with('success', 'Veículo criado com sucesso!');
+        return redirect()->route('veiculos.index')
+            ->with('success', 'Veículo criado com sucesso!');
     }
 
-    public function edit(string $id)
+    public function edit($id)
     {
         $veiculo  = Veiculo::findOrFail($id);
         $marcas   = Marca::all();
-        $statuses = Status::orderBy('descricao')->get(['id','descricao']);
-        return view('veiculos.edit', compact('veiculo','marcas','statuses'));
+        $statuses = Status::orderBy('descricao')->get();
+
+        return view('veiculos.edit', compact('veiculo', 'marcas', 'statuses'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         $veiculo = Veiculo::findOrFail($id);
 
@@ -67,38 +69,41 @@ class VeiculoController extends Controller
             'placa'      => 'required|string|max:10|unique:veiculos,placa,' . $veiculo->id,
             'ano'        => 'required|integer|min:1900',
             'marca_id'   => 'required|exists:marcas,id',
-            'status_id'  => 'required|exists:statuses,id', // <- FK correta
+            'status_id'  => 'required|exists:statuses,id', // FK
         ]);
 
-        $veiculo->modelo    = $request->input('modelo');
-        $veiculo->categoria = $request->input('categoria');
-        $veiculo->placa     = $request->input('placa');
-        $veiculo->ano       = $request->input('ano');
-        $veiculo->marca_id  = (int) $request->input('marca_id');
-        $veiculo->status_id = (int) $request->input('status_id'); // <- aqui
+        $veiculo->update([
+            'modelo'     => $request->modelo,
+            'categoria'  => $request->categoria,
+            'placa'      => $request->placa,
+            'ano'        => $request->ano,
+            'marca_id'   => $request->marca_id,
+            'status_id'  => $request->status_id, // salva FK correta
+        ]);
 
-        $veiculo->save();
-
-        return redirect()->route('veiculos.index')->with('success', 'Veículo alterado com sucesso!');
+        return redirect()->route('veiculos.index')
+            ->with('success', 'Veículo alterado com sucesso!');
     }
 
-    public function destroy(string $id)
+    public function destroy($id)
     {
         $veiculo = Veiculo::findOrFail($id);
-        $agendamentos = Agendamento::where('veiculo_id', $veiculo->id)->exists();
 
-        if ($agendamentos) {
-            return redirect()->route('veiculos.index')->with('error', 'Não é possível excluir o veículo, pois está vinculado a um agendamento.');
+        if (Agendamento::where('veiculo_id', $veiculo->id)->exists()) {
+            return redirect()->route('veiculos.index')
+                ->with('error', 'Não é possível excluir o veículo, pois está vinculado a um agendamento.');
         }
 
         $veiculo->delete();
 
-        return redirect()->route('veiculos.index')->with('success', 'Veículo excluído com sucesso!');
+        return redirect()->route('veiculos.index')
+            ->with('success', 'Veículo excluído com sucesso!');
     }
 
-    public function show(string $id)
+    public function show($id)
     {
-        $veiculo = Veiculo::with(['marca','status'])->findOrFail($id);
+        $veiculo = Veiculo::with(['marca', 'status'])->findOrFail($id);
+
         return view('veiculos.show', compact('veiculo'));
     }
 }

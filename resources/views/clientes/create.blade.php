@@ -1,70 +1,134 @@
 <x-app-layout>
-    <!-- 🔹 Cabeçalho -->
+
+    {{-- Cabeçalho da página --}}
     <x-slot name="header">
-        <h2 class="text-2xl font-semibold text-white leading-tight">
-            {{ __('Criar Cliente') }}
+        <h2 style="font-size: 26px; font-weight: 600; color: #333;">
+            Criar Cliente
         </h2>
     </x-slot>
 
-    <!-- 🔹 Mensagem de sucesso -->
+    {{-- Mensagem de sucesso --}}
     @if(session('success'))
         <div style="
-            background: rgba(119, 255, 168, .16);
-            border: 1px solid rgba(119, 255, 168, .45);
-            color: #c9ffd9;
-            padding: 10px 12px;
+            background: #e8ffe8;
+            border: 1px solid #a4e6a4;
+            color: #2b7a2b;
+            padding: 12px 16px;
             border-radius: 10px;
             font-size: 14px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         ">
             <strong>Sucesso!</strong> {{ session('success') }}
         </div>
     @endif
 
-    <!-- 🔹 Formulário -->
-    <div class="card" style="max-width: 800px; margin: auto;">
+    {{-- Container principal --}}
+    <div style="
+        max-width: 750px;
+        margin: 40px auto;
+        background: #ffffff;
+        border: 1px solid #e4e4e4;
+        padding: 32px;
+        border-radius: 18px;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+    ">
+
         <form id="formNovoCliente" action="{{ route('clientes.store') }}" method="POST"
-              style="display:flex; flex-direction:column; gap:16px;">
+              style="display:flex; flex-direction:column; gap:18px;">
             @csrf
 
+            {{-- Nome --}}
             <div>
-                <label for="nome">Nome:</label><br>
-                <input type="text" name="nome" id="nome" placeholder="Digite o nome completo" required>
-                <div id="error-nome" class="error-message" style="color:#ffbaba; font-size:13px;"></div>
+                <label for="nome" style="color:#ff7a00; font-weight:600;">Nome</label><br>
+                <input type="text" name="nome" id="nome" placeholder="Digite o nome completo" required
+                       style="
+                            width:100%; padding:12px;
+                            border:1px solid #ccc; border-radius:10px;
+                            font-size:15px; margin-top:6px;
+                       ">
+                <div id="error-nome" class="error-message" style="color:#d33; font-size:13px;"></div>
             </div>
 
+            {{-- Telefone --}}
             <div>
-                <label for="telefone">Telefone:</label><br>
-                <input type="tel" name="telefone" id="telefone" placeholder="Apenas números" required>
-                <div id="error-telefone" class="error-message" style="color:#ffbaba; font-size:13px;"></div>
+                <label for="telefone" style="color:#ff7a00; font-weight:600;">Telefone</label><br>
+                <input type="tel" name="telefone" id="telefone" placeholder="Apenas números" required
+                       style="
+                            width:100%; padding:12px;
+                            border:1px solid #ccc; border-radius:10px;
+                            font-size:15px; margin-top:6px;
+                       ">
+                <div id="error-telefone" class="error-message" style="color:#d33; font-size:13px;"></div>
             </div>
 
+            {{-- CPF --}}
             <div>
-                <label for="CPF">CPF:</label><br>
-                <input type="text" name="CPF" id="CPF" placeholder="Somente números" required>
-                <div id="error-CPF" class="error-message" style="color:#ffbaba; font-size:13px;"></div>
+                <label for="CPF" style="color:#ff7a00; font-weight:600;">CPF</label><br>
+                <input type="text" name="CPF" id="CPF" placeholder="Somente números" required
+                       style="
+                            width:100%; padding:12px;
+                            border:1px solid #ccc; border-radius:10px;
+                            font-size:15px; margin-top:6px;
+                       ">
+                <div id="error-CPF" class="error-message" style="color:#d33; font-size:13px;"></div>
             </div>
 
+            {{-- CNH --}}
             <div>
-                <label for="CHN">CNH:</label><br>
-                <input type="text" name="CHN" id="CHN" placeholder="Número da CNH" required>
-                <div id="error-CHN" class="error-message" style="color:#ffbaba; font-size:13px;"></div>
+                <label for="CHN" style="color:#ff7a00; font-weight:600;">CNH</label><br>
+                <input type="text" name="CHN" id="CHN" placeholder="Número da CNH" required
+                       style="
+                            width:100%; padding:12px;
+                            border:1px solid #ccc; border-radius:10px;
+                            font-size:15px; margin-top:6px;
+                       ">
+                <div id="error-CHN" class="error-message" style="color:#d33; font-size:13px;"></div>
             </div>
 
+            {{-- E-mail --}}
             <div>
-                <label for="email">Email:</label><br>
-                <input type="email" name="email" id="email" placeholder="email@exemplo.com" required>
-                <div id="error-email" class="error-message" style="color:#ffbaba; font-size:13px;"></div>
+                <label for="email" style="color:#ff7a00; font-weight:600;">E-mail</label><br>
+                <input type="email" name="email" id="email" placeholder="email@exemplo.com" required
+                       style="
+                            width:100%; padding:12px;
+                            border:1px solid #ccc; border-radius:10px;
+                            font-size:15px; margin-top:6px;
+                       ">
+                <div id="error-email" class="error-message" style="color:#d33; font-size:13px;"></div>
             </div>
 
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <button type="submit">Salvar</button>
-                <a href="{{ route('clientes.index') }}" class="btn" style="background:#666;">Cancelar</a>
+            {{-- Botões --}}
+            <div style="display:flex; gap:12px; margin-top:20px;">
+                <button type="submit"
+                        style="
+                            padding:12px 22px;
+                            background: linear-gradient(90deg,#ff6a00,#ff9500);
+                            border:none; color:#fff;
+                            border-radius:10px;
+                            font-size:15px; font-weight:600;
+                            cursor:pointer; transition:.2s;
+                        ">
+                    Salvar
+                </button>
+
+                <a href="{{ route('clientes.index') }}"
+                   style="
+                        padding:12px 22px;
+                        background:#777;
+                        color:#fff;
+                        border-radius:10px;
+                        font-size:15px;
+                        font-weight:600;
+                        text-decoration:none;
+                   ">
+                    Cancelar
+                </a>
             </div>
         </form>
+
     </div>
 
-    <!-- 🔹 Script de validação -->
+    {{-- Script de validação --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('formNovoCliente');
@@ -80,20 +144,20 @@
                 }
 
                 const telefone = document.getElementById('telefone').value.trim();
-                if (!validatePhone(telefone)) {
+                if (!/^\d{10,11}$/.test(telefone)) {
                     showError('telefone', 'Telefone inválido. Use 10 ou 11 dígitos.');
                     valid = false;
                 }
 
-                const CPF = document.getElementById('CPF').value.trim();
-                if (!validateCPF(CPF)) {
-                    showError('CPF', 'CPF inválido. Use 11 dígitos numéricos.');
+                const cpf = document.getElementById('CPF').value.trim();
+                if (!/^\d{11}$/.test(cpf)) {
+                    showError('CPF', 'CPF inválido. Use 11 dígitos.');
                     valid = false;
                 }
 
                 const email = document.getElementById('email').value.trim();
                 if (email === '') {
-                    showError('email', 'Por favor, insira o email.');
+                    showError('email', 'Por favor, insira o e-mail.');
                     valid = false;
                 }
 
@@ -105,16 +169,9 @@
             }
 
             function clearErrors() {
-                document.querySelectorAll('.error-message').forEach(e => e.textContent = '');
-            }
-
-            function validatePhone(phone) {
-                return /^\d{10,11}$/.test(phone);
-            }
-
-            function validateCPF(cpf) {
-                return /^\d{11}$/.test(cpf);
+                document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
             }
         });
     </script>
+
 </x-app-layout>

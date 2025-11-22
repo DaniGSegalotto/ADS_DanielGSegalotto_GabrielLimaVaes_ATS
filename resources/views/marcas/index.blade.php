@@ -1,96 +1,177 @@
 <x-app-layout>
-    <!-- 🔹 Cabeçalho -->
+
+    <!-- Cabeçalho -->
     <x-slot name="header">
         <h2 class="text-2xl font-semibold text-white leading-tight">
-            {{ __('Lista de Marcas') }}
+            Lista de Marcas
         </h2>
     </x-slot>
 
-    <!-- 🔹 Conteúdo -->
-    <div class="card" style="max-width: 900px; margin: auto;">
+    <!-- Container -->
+    <div style="
+        max-width: 1100px;
+        margin: 40px auto;
+        background: #ffffff;
+        padding: 28px;
+        border-radius: 16px;
+        border: 1px solid #e6e6e6;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    ">
 
-        <!-- 🔸 Barra de busca -->
-        <form action="{{ route('marcas.index') }}" method="GET" 
-              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <input type="text" name="query" placeholder="Buscar marcas..." 
-                   value="{{ request('query') }}"
-                   style="flex: 1; padding: 10px; border-radius: 12px; border: none; background: rgba(255,255,255,0.12); color: #fff;">
+        <!-- Barra de busca -->
+        <form action="{{ route('marcas.index') }}" method="GET"
+              style="display:flex; gap:12px; margin-bottom:25px; flex-wrap:wrap;">
+
+            <input type="text" name="query" placeholder="Buscar marcas..."
+                value="{{ $query ?? '' }}"
+                style="
+                    flex:1;
+                    padding:12px 16px;
+                    border-radius:10px;
+                    border:1px solid #d0d0d0;
+                    font-size:15px;
+                ">
+
             <button type="submit"
-                    style="margin-left: 10px; background: linear-gradient(90deg, #ff512f, #f09819);
-                           border: none; color: white; padding: 10px 18px; border-radius: 12px; font-weight: 600;">
+                style="
+                    padding:12px 18px;
+                    border:none;
+                    border-radius:10px;
+                    background:#ff7a00;
+                    color:white;
+                    font-weight:600;
+                    cursor:pointer;
+                    transition:.2s;
+                "
+                onmouseover="this.style.background='#ff8f2b'"
+                onmouseout="this.style.background='#ff7a00'">
                 Buscar
             </button>
+
+            <a href="{{ route('marcas.create') }}"
+                style="
+                    padding:12px 18px;
+                    border-radius:10px;
+                    background:#ff7a00;
+                    color:white;
+                    font-weight:600;
+                    text-decoration:none;
+                    transition:.2s;
+                "
+                onmouseover="this.style.background='#ff8f2b'"
+                onmouseout="this.style.background='#ff7a00'">
+                Nova Marca
+            </a>
         </form>
 
-        <!-- 🔸 Botão Nova Marca -->
-        <div style="margin-bottom: 20px; text-align: right;">
-            <a href="{{ route('marcas.create') }}" 
-               style="background: linear-gradient(90deg, #ff512f, #f09819); 
-                      color: white; padding: 10px 16px; border-radius: 12px; text-decoration: none; font-weight: 600;">
-                + Nova Marca
-            </a>
-        </div>
+        <!-- Tabela -->
+        <div style="overflow-x:auto;">
+            <table style="
+                width:100%;
+                border-collapse:collapse;
+                font-size:15px;
+                color:#333;
+            ">
+                <thead>
+                    <tr style="background:#f2f2f2; border-bottom:2px solid #ddd;">
+                        <th style="padding:14px; text-align:left;">ID</th>
+                        <th style="padding:14px; text-align:left;">Nome</th>
+                        <th style="padding:14px; text-align:left;">Observação</th>
+                        <th style="padding:14px; text-align:left;">Ações</th>
+                    </tr>
+                </thead>
 
-        <!-- 🔸 Tabela de Marcas -->
-        <table style="width:100%; border-collapse: collapse; text-align:left;">
-            <thead>
-                <tr style="background: rgba(255,255,255,0.08); color: #ffb84d;">
-                    <th style="padding:10px;">ID</th>
-                    <th style="padding:10px;">Nome</th>
-                    <th style="padding:10px;">Observação</th>
-                    <th style="padding:10px;">Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($marcas as $marca)
-                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #fff;">
-                        <td style="padding:10px;">{{ $marca->id }}</td>
-                        <td style="padding:10px;">{{ $marca->descricao }}</td>
-                        <td style="padding:10px;">{{ $marca->observacao ?? '-' }}</td>
-                        <td style="padding:10px;">
-                            <div style="display:flex; gap:8px;">
-                                <a href="{{ route('marcas.show', $marca->id) }}" 
-                                   style="background:#2196F3; padding:6px 10px; border-radius:8px; color:#fff; text-decoration:none; font-weight:500;">
-                                   Detalhes
+                <tbody>
+                    @forelse ($marcas as $marca)
+                        <tr style="border-bottom:1px solid #eee; transition:0.2s;"
+                            onmouseover="this.style.background='#fafafa'"
+                            onmouseout="this.style.background='white'">
+
+                            <td style="padding:12px;">{{ $marca->id }}</td>
+                            <td style="padding:12px;">{{ $marca->descricao }}</td>
+                            <td style="padding:12px;">{{ $marca->observacao ?? '-' }}</td>
+
+                            <td style="padding:12px; white-space:nowrap; display:flex; gap:6px;">
+
+                                <a href="{{ route('marcas.show', $marca->id) }}"
+                                    style="
+                                        padding:6px 10px;
+                                        background:#008cff;
+                                        color:white;
+                                        border-radius:6px;
+                                        font-size:13px;
+                                        text-decoration:none;
+                                        transition:.2s;
+                                    "
+                                    onmouseover="this.style.background='#0b7fe6'"
+                                    onmouseout="this.style.background='#008cff'">
+                                    Detalhes
                                 </a>
-                                <a href="{{ route('marcas.edit', $marca->id) }}" 
-                                   style="background:#ffb84d; padding:6px 10px; border-radius:8px; color:#000; text-decoration:none; font-weight:500;">
-                                   Editar
+
+                                <a href="{{ route('marcas.edit', $marca->id) }}"
+                                    style="
+                                        padding:6px 10px;
+                                        background:#ff7a00;
+                                        color:white;
+                                        border-radius:6px;
+                                        font-size:13px;
+                                        text-decoration:none;
+                                    "
+                                    onmouseover="this.style.background='#ff8f2b'"
+                                    onmouseout="this.style.background='#ff7a00'">
+                                    Editar
                                 </a>
-                                <form id="form-{{ $marca->id }}" action="{{ route('marcas.destroy', $marca->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" onclick="confirmarExclusao({{ $marca->id }})"
-                                            style="background:#e53935; color:white; padding:6px 10px; border-radius:8px; border:none; font-weight:500;">
+
+                                <form id="form-{{ $marca->id }}"
+                                      action="{{ route('marcas.destroy', $marca->id) }}"
+                                      method="POST">
+                                    @csrf @method('DELETE')
+
+                                    <button type="button"
+                                        onclick="confirmarExclusao({{ $marca->id }})"
+                                        style="
+                                            padding:6px 10px;
+                                            background:#e63946;
+                                            color:white;
+                                            border:none;
+                                            border-radius:6px;
+                                            font-size:13px;
+                                            cursor:pointer;
+                                            transition:.2s;
+                                        "
+                                        onmouseover="this.style.background='#c42e3a'"
+                                        onmouseout="this.style.background='#e63946'">
                                         Excluir
                                     </button>
                                 </form>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
 
-                @if($marcas->isEmpty())
-                    <tr>
-                        <td colspan="4" style="text-align:center; padding:15px; color:#ccc;">Nenhuma marca encontrada.</td>
-                    </tr>
-                @endif
-            </tbody>
-        </table>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" style="padding:20px; text-align:center; color:#777;">
+                                Nenhuma marca encontrada.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
-    <!-- 🔹 SweetAlert2 exclusão -->
+    <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function confirmarExclusao(id) {
             Swal.fire({
-                title: 'Tem certeza?',
-                text: 'Essa ação não pode ser desfeita.',
+                title: 'Excluir marca?',
+                text: 'Esta ação não pode ser desfeita.',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#e53935',
+                confirmButtonColor: '#ff7a00',
                 cancelButtonColor: '#555',
-                confirmButtonText: 'Sim, excluir!',
+                confirmButtonText: 'Sim, excluir',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -99,4 +180,5 @@
             });
         }
     </script>
+
 </x-app-layout>

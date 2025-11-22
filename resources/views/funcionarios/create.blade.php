@@ -1,64 +1,129 @@
 <x-app-layout>
-    <!-- 🔹 Cabeçalho -->
+
+    <!-- Cabeçalho -->
     <x-slot name="header">
         <h2 class="text-2xl font-semibold text-white leading-tight">
-            {{ __('Cadastrar Funcionário') }}
+            Cadastrar Funcionário
         </h2>
     </x-slot>
 
-    <!-- 🔹 Mensagem de sucesso -->
-    @if(session('success'))
-        <div style="
-            background: rgba(119, 255, 168, .16);
-            border: 1px solid rgba(119, 255, 168, .45);
-            color: #c9ffd9;
-            padding: 10px 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            margin-bottom: 15px;
-            text-align: center;
+    <!-- Card principal -->
+    <div style="
+        max-width: 700px;
+        margin: 40px auto;
+        background: #ffffff;
+        border: 1px solid #e4e4e4;
+        padding: 32px;
+        border-radius: 18px;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+    ">
+
+        <h3 style="
+            font-size: 20px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 25px;
         ">
-            <strong>Sucesso!</strong> {{ session('success') }}
-        </div>
-    @endif
+            Novo Funcionário
+        </h3>
 
-    <!-- 🔹 Formulário -->
-    <div class="card" style="max-width: 700px; margin: auto;">
-        <h3 style="font-size:20px; margin-bottom:16px;">Novo Funcionário</h3>
-
-        <form id="formNovoFuncionario" action="{{ route('funcionarios.store') }}" method="POST" 
-              style="display:flex; flex-direction:column; gap:16px;">
+        <form id="formNovoFuncionario" action="{{ route('funcionarios.store') }}" method="POST"
+              style="display:flex; flex-direction:column; gap:20px;">
             @csrf
 
+            <!-- Nome -->
             <div>
-                <label for="nome">Nome:</label><br>
-                <input type="text" name="nome" id="nome" placeholder="Digite o nome completo" required>
-                <div id="error-nome" style="color:#ffb3b3; font-size:13px; margin-top:4px;"></div>
+                <label style="font-weight:600; color:#ff7a00;">Nome:</label><br>
+                <input type="text" name="nome" id="nome" placeholder="Digite o nome completo" required
+                       style="
+                            width:100%;
+                            padding:12px 14px;
+                            border:1px solid #d0d0d0;
+                            border-radius:10px;
+                            font-size:15px;
+                       ">
+                <div id="error-nome" style="color:#d9534f; font-size:13px; margin-top:4px;"></div>
             </div>
 
+            <!-- Email -->
             <div>
-                <label for="email">E-mail:</label><br>
-                <input type="email" name="email" id="email" placeholder="exemplo@email.com" required>
-                <div id="error-email" style="color:#ffb3b3; font-size:13px; margin-top:4px;"></div>
+                <label style="font-weight:600; color:#ff7a00;">E-mail:</label><br>
+                <input type="email" name="email" id="email" placeholder="exemplo@email.com" required
+                       style="
+                            width:100%;
+                            padding:12px 14px;
+                            border:1px solid #d0d0d0;
+                            border-radius:10px;
+                            font-size:15px;
+                       ">
+                <div id="error-email" style="color:#d9534f; font-size:13px; margin-top:4px;"></div>
             </div>
 
+            <!-- Sexo -->
             <div>
-                <label for="sexo">Sexo:</label><br>
-                <select name="sexo" id="sexo" required>
-                    <option value="" disabled selected>Selecione o sexo</option>
-                    <option value="Masculino">Masculino</option>
-                    <option value="Feminino">Feminino</option>
+                <label style="font-weight:600; color:#ff7a00;">Sexo:</label><br>
+                <select name="sexo" id="sexo" required
+                        style="
+                            width:100%;
+                            padding:12px 14px;
+                            border:1px solid #d0d0d0;
+                            border-radius:10px;
+                            font-size:15px;
+                        ">
+                    <option value="" disabled selected>Selecione</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
                 </select>
             </div>
 
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <button type="submit">Salvar</button>
-                <a href="{{ route('funcionarios.index') }}" class="btn" style="background:#666;">Cancelar</a>
+            <!-- Senha -->
+            <div>
+                <label style="font-weight:600; color:#ff7a00;">Senha:</label><br>
+                <input type="password" name="password" placeholder="Crie uma senha" required
+                       style="
+                            width:100%;
+                            padding:12px 14px;
+                            border:1px solid #d0d0d0;
+                            border-radius:10px;
+                            font-size:15px;
+                       ">
             </div>
+
+            <!-- Botões -->
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
+                <a href="{{ route('funcionarios.index') }}"
+                   style="
+                        padding:12px 20px;
+                        background:#666;
+                        color:white;
+                        border-radius:10px;
+                        text-decoration:none;
+                        font-weight:600;
+                   ">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        style="
+                            padding:12px 20px;
+                            background:linear-gradient(90deg, #ff6a00, #ff9500);
+                            color:white;
+                            border:none;
+                            border-radius:10px;
+                            font-weight:600;
+                            cursor:pointer;
+                        "
+                        onmouseover="this.style.opacity='0.85'"
+                        onmouseout="this.style.opacity='1'">
+                    Salvar
+                </button>
+            </div>
+
         </form>
+
     </div>
 
-    <!-- 🔹 Script de validação -->
+    <!-- Script de validação -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('formNovoFuncionario');
@@ -75,7 +140,7 @@
 
                 const email = document.getElementById('email').value.trim();
                 if (!validateEmail(email)) {
-                    showError('email', 'Por favor, insira um e-mail válido.');
+                    showError('email', 'E-mail inválido.');
                     valid = false;
                 }
 
@@ -83,8 +148,8 @@
             });
 
             function showError(field, message) {
-                const errorDiv = document.getElementById(`error-${field}`);
-                if (errorDiv) errorDiv.textContent = message;
+                const div = document.getElementById(`error-${field}`);
+                if (div) div.textContent = message;
             }
 
             function clearErrors() {
@@ -96,4 +161,5 @@
             }
         });
     </script>
+
 </x-app-layout>

@@ -17,21 +17,27 @@ class Veiculo extends Model
         'placa',
         'ano',
         'marca_id',
-        'status_id', // <- campo correto
+        'status_id'
     ];
 
-    // Removido o cast antigo de 'status' (não é mais boolean)
-    protected $casts = [];
-
-    // Relacionamento com Marca
+    // Marca do veículo
     public function marca()
     {
         return $this->belongsTo(Marca::class);
     }
 
-    // Relacionamento com Status (FK = status_id)
+    // Status do veículo (Disponível, Indisponível, etc.)
     public function status()
     {
-        return $this->belongsTo(Status::class, 'status_id');
+        return $this->belongsTo(Status::class, 'status_id', 'id');
+    }
+
+    /**
+     * Scope que retorna somente veículos disponíveis.
+     * Facilita o uso no sistema inteiro.
+     */
+    public function scopeDisponiveis($query)
+    {
+        return $query->where('status_id', 1); // 1 = Disponível
     }
 }

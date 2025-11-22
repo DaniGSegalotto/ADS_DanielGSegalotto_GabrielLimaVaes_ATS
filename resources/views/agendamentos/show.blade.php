@@ -1,49 +1,80 @@
 <x-app-layout>
-    <!-- 🔹 Cabeçalho -->
+
+    <!-- Cabeçalho -->
     <x-slot name="header">
         <h2 class="text-2xl font-semibold text-white leading-tight">
-            {{ __('Detalhes do Agendamento') }}
+            Detalhes do Agendamento
         </h2>
     </x-slot>
 
-    <!-- 🔹 Conteúdo -->
-    <div class="card" style="max-width:700px; margin:auto; text-align:left;">
-        <h3 style="font-size:20px; margin-bottom:16px;">Informações do Agendamento</h3>
+    <!-- Container principal -->
+    <div style="
+        max-width:700px;
+        margin:40px auto;
+        background:#ffffff;
+        padding:28px;
+        border-radius:16px;
+        border:1px solid #e6e6e6;
+        box-shadow:0 6px 18px rgba(0,0,0,0.06);
+        color:#333;
+    ">
 
-        <div style="display:flex; flex-direction:column; gap:10px;">
-            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px;">
-                <span><strong>ID:</strong></span>
+        <h3 style="font-size:20px; margin-bottom:18px; font-weight:600;">
+            Informações do Agendamento
+        </h3>
+
+        <div style="display:flex; flex-direction:column; gap:14px; font-size:15px;">
+
+            <!-- Linha -->
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:6px;">
+                <strong>ID:</strong>
                 <span>{{ $agendamento->id }}</span>
             </div>
 
-            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px;">
-                <span><strong>Data:</strong></span>
-                <span>{{ $agendamento->data }}</span>
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:6px;">
+                <strong>Data:</strong>
+                <span>{{ \Carbon\Carbon::parse($agendamento->data)->format('d/m/Y') }}</span>
             </div>
 
-            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px;">
-                <span><strong>Horário:</strong></span>
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:6px;">
+                <strong>Horário:</strong>
                 <span>{{ $agendamento->horario }}</span>
             </div>
 
-            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px;">
-                <span><strong>Funcionário:</strong></span>
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:6px;">
+                <strong>Funcionário:</strong>
                 <span>{{ $agendamento->funcionario->nome }}</span>
             </div>
 
-            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px;">
-                <span><strong>Veículo:</strong></span>
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:6px;">
+                <strong>Veículo:</strong>
                 <span>{{ $agendamento->veiculo->modelo }}</span>
             </div>
 
-            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px;">
-                <span><strong>Cliente:</strong></span>
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:6px;">
+                <strong>Cliente:</strong>
                 <span>{{ $agendamento->cliente->nome }}</span>
             </div>
         </div>
 
-        <div style="text-align:center; margin-top:24px;">
-            <a href="{{ route('agendamentos.index') }}" class="btn" style="background:#666;">Voltar</a>
+        <!-- Botão Voltar -->
+        <div style="text-align:center; margin-top:26px;">
+            <a href="{{ route('agendamentos.index') }}"
+                style="
+                    padding:10px 20px;
+                    background:#ff7a00;
+                    color:white;
+                    border-radius:8px;
+                    font-size:14px;
+                    font-weight:600;
+                    text-decoration:none;
+                "
+                onmouseover="this.style.background='#ff8f2b'"
+                onmouseout="this.style.background='#ff7a00'">
+                Voltar
+            </a>
         </div>
+
     </div>
+
 </x-app-layout>

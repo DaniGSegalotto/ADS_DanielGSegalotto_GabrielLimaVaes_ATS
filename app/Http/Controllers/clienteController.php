@@ -9,121 +9,168 @@ use Illuminate\Support\Facades\Auth;
 
 class ClienteController extends Controller
 {
-    /* Exibe uma lista de todos os clientes. */
-    public function index()
+    /* ================================
+       LISTAGEM DE CLIENTES + BUSCA
+    ================================= */
+    public function index(Request $request)
     {
-        // 🔹 Funcionário vê todos; Cliente vê apenas o próprio perfil
-        if (session('tipo_usuario') === 'cliente') {
-            $cliente = Auth::guard('cliente')->user();
+        // Se for cliente logado → redireciona para sua própria página
+        if (auth('cliente')->check()) {
+            $cliente = auth('cliente')->user();
             return view('clientes.show', compact('cliente'));
         }
 
-        $clientes = Cliente::all();
+        // Busca
+        $query = trim($request->input('query'));
+
+        if (!empty($query)) {
+            $q = strtolower($query);
+
+            $clientes = Cliente::whereRaw('LOWER(nome) LIKE ?', ["%{$q}%"])
+                ->orWhereRaw('LOWER(email) LIKE ?', ["%{$q}%"])
+                ->orWhereRaw('LOWER(telefone) LIKE ?', ["%{$q}%"])
+                ->orWhereRaw('LOWER("CPF") LIKE ?', ["%{$q}%"])
+                ->orWhereRaw('LOWER("CHN") LIKE ?', ["%{$q}%"])
+                ->orderBy('nome')
+                ->get();
+        } else {
+            $clientes = Cliente::orderBy('nome')->get();
+        }
+
         return view('clientes.index', compact('clientes'));
     }
 
-    /* Exibe o formulário para criar um novo cliente. */
+    /* ================================
+       FORMULÁRIO DE CRIAÇÃO (FUNCIONÁRIO)
+    ================================= */
     public function create()
     {
-        // 🔹 Somente funcionários podem criar novos clientes
-        if (session('tipo_usuario') === 'cliente') {
-            return redirect()->route('ATS')->with('error', 'Acesso negado para clientes.');
+        if (auth('cliente')->check()) {
+            return redirect()->route('cliente.home')
+                ->with('error', 'Clientes não podem criar outros clientes.');
         }
 
         return view('clientes.create');
     }
 
-    /* Armazena um novo cliente no banco de dados. */
+    /* ================================
+       ARMAZENAR NOVO CLIENTE
+    ================================= */
     public function store(Request $request)
     {
-        // 🔹 Apenas funcionários podem cadastrar clientes
-        if (session('tipo_usuario') === 'cliente') {
-            return redirect()->route('ATS')->with('error', 'Acesso negado para clientes.');
+        if (auth('cliente')->check()) {
+            return redirect()->route('cliente.home')
+                ->with('error', 'Ação não permitida.');
         }
 
         $request->validate([
-            'nome' => 'required|string|max:255',
+            'nome'     => 'required|string|max:255',
             'telefone' => 'required|string|max:20',
-            'CPF' => 'required|string|max:11|unique:clientes',
-            'CHN' => 'nullable|string|max:20',
-            'email' => 'nullable|string|email|max:255|unique:clientes',
+            'CPF'      => 'required|string|size:11|unique:clientes',
+            'CHN'      => 'nullable|string|max:20',
+            'email'    => 'nullable|email|max:255|unique:clientes',
         ]);
 
-        $cliente = new Cliente([
-            'nome' => $request->input('nome'),
-            'telefone' => $request->input('telefone'),
-            'CPF' => $request->input('CPF'),
-            'CHN' => $request->input('CHN'),
-            'email' => $request->input('email'),
+        Cliente::create([
+            'nome'     => $request->nome,
+            'telefone' => $request->telefone,
+            'CPF'      => $request->CPF,
+            'CHN'      => $request->CHN,
+            'email'    => $request->email,
+            'password' => bcrypt('cliente123'), // senha padrão
         ]);
 
-        $cliente->save();
-
-        return redirect()->route('clientes.index')->with('success', 'Cliente criado com sucesso!');
+        return redirect()->route('clientes.index')
+            ->with('success', 'Cliente criado com sucesso!');
     }
 
-    /* Exibe o formulário para editar um cliente existente. */
+    /* ================================
+       FORMULÁRIO DE EDIÇÃO
+    ================================= */
     public function edit(string $id)
     {
-        // 🔹 Cliente só pode editar o próprio perfil
         $cliente = Cliente::findOrFail($id);
 
-        if (session('tipo_usuario') === 'cliente' && Auth::guard('cliente')->id() !== $cliente->id) {
-            return redirect()->route('ATS')->with('error', 'Você só pode editar seu próprio perfil.');
+        // Cliente só edita ele mesmo
+        if (auth('cliente')->check() &&
+            auth('cliente')->id() !== $cliente->id) {
+
+            return redirect()->route('cliente.home')
+                ->with('error', 'Você só pode editar seu próprio perfil.');
         }
 
         return view('clientes.edit', compact('cliente'));
     }
 
-    /* Atualiza um cliente existente no banco de dados. */
+    /* ================================
+       ATUALIZAR CLIENTE
+    ================================= */
     public function update(Request $request, string $id)
     {
         $cliente = Cliente::findOrFail($id);
 
-        if (session('tipo_usuario') === 'cliente' && Auth::guard('cliente')->id() !== $cliente->id) {
-            return redirect()->route('ATS')->with('error', 'Você só pode atualizar seu próprio perfil.');
+        if (auth('cliente')->check() &&
+            auth('cliente')->id() !== $cliente->id) {
+
+            return redirect()->route('cliente.home')
+                ->with('error', 'Ação não permitida.');
         }
 
         $request->validate([
-            'nome' => 'required|string|max:255',
+            'nome'     => 'required|string|max:255',
             'telefone' => 'required|string|max:20',
-            'CPF' => 'required|string|max:11|unique:clientes,CPF,'.$cliente->id,
-            'CHN' => 'nullable|string|max:20',
-            'email' => 'nullable|string|email|max:255|unique:clientes,email,'.$cliente->id,
+            'CPF'      => 'required|string|size:11|unique:clientes,CPF,' . $cliente->id,
+            'CHN'      => 'nullable|string|max:20',
+            'email'    => 'nullable|email|max:255|unique:clientes,email,' . $cliente->id,
         ]);
 
-        $cliente->update($request->all());
+        $cliente->update([
+            'nome'     => $request->nome,
+            'telefone' => $request->telefone,
+            'CPF'      => $request->CPF,
+            'CHN'      => $request->CHN,
+            'email'    => $request->email,
+        ]);
 
-        return redirect()->route('clientes.index')->with('success', 'Cliente alterado com sucesso!');
+        return redirect()->route('clientes.index')
+            ->with('success', 'Cliente atualizado com sucesso!');
     }
 
-    /* Remove um cliente do banco de dados. */
+    /* ================================
+       EXCLUIR CLIENTE
+    ================================= */
     public function destroy(string $id)
     {
-        // 🔹 Clientes não podem excluir ninguém (nem eles mesmos)
-        if (session('tipo_usuario') === 'cliente') {
-            return redirect()->route('ATS')->with('error', 'Ação não permitida para clientes.');
+        if (auth('cliente')->check()) {
+            return redirect()->route('cliente.home')
+                ->with('error', 'Ação não permitida.');
         }
 
         $cliente = Cliente::findOrFail($id);
-        $agendamentos = Agendamento::where('cliente_id', $cliente->id)->exists();
 
-        if ($agendamentos) {
-            return redirect()->route('clientes.index')->with('error', 'Não é possível excluir o cliente, pois está vinculado a um agendamento.');
+        if (Agendamento::where('cliente_id', $cliente->id)->exists()) {
+            return redirect()->route('clientes.index')
+                ->with('error', 'Não é possível excluir: cliente possui agendamentos.');
         }
 
         $cliente->delete();
-        return redirect()->route('clientes.index')->with('success', 'Cliente excluído com sucesso!');
+
+        return redirect()->route('clientes.index')
+            ->with('success', 'Cliente excluído com sucesso!');
     }
 
-    /* Mostra detalhes de um cliente específico. */
+    /* ================================
+       DETALHES DO CLIENTE
+    ================================= */
     public function show(string $id)
     {
         $cliente = Cliente::findOrFail($id);
 
-        // 🔹 Cliente só pode ver o próprio perfil
-        if (session('tipo_usuario') === 'cliente' && Auth::guard('cliente')->id() !== $cliente->id) {
-            return redirect()->route('ATS')->with('error', 'Acesso negado.');
+        if (auth('cliente')->check() &&
+            auth('cliente')->id() !== $cliente->id) {
+
+            return redirect()->route('cliente.home')
+                ->with('error', 'Acesso negado.');
         }
 
         return view('clientes.show', compact('cliente'));

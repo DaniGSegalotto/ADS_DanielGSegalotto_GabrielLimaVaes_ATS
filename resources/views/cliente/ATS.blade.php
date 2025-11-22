@@ -2,129 +2,210 @@
 
 @section('content')
 
-    <!-- Cabeçalho da página -->
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+<style>
+/* ======================================================
+      PREMIUM ATS – HOME DO CLIENTE 
+      (Visual integrado ao layout app_cliente.blade.php)
+======================================================== */
 
-        .image-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 24px;
-        }
+/* HERO */
+.hero {
+    background: url('/img/frota.jpg') center/cover no-repeat;
+    border-radius: 18px;
+    padding: 65px 55px;
+    margin-bottom: 45px;
+    position: relative;
+    overflow: hidden;
+}
 
-        .image-container img {
-            max-width: 320px;
-            height: auto;
-            display: block;
-            margin: auto;
-            border-radius: 8px;
-            box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.1);
-        }
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(3px);
+    background: rgba(0,0,0,0.45);
+}
 
-        .welcome-message {
-            text-align: center;
-            font-size: 3rem;
-            font-family: 'Pacifico', cursive;
-            color: red;
-            margin: 2rem;
-        }
+.hero-content {
+    position: relative;
+    z-index: 10;
+    color: #fff;
+    max-width: 600px;
+}
 
-        .alert {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeeba;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 10px auto;
-            max-width: 900px;
-            text-align: center;
-            font-weight: 500;
-        }
+.hero-title {
+    font-size: 40px;
+    font-weight: 900;
+    margin-bottom: 12px;
+    text-shadow: 0 3px 6px rgba(0,0,0,0.3);
+}
 
-        .menu-container {
-            text-align: center;
-            margin: 2rem 0;
-        }
+.hero-sub {
+    font-size: 18px;
+    margin-bottom: 26px;
+    opacity: .92;
+}
 
-        .menu-container a,
-        .menu-container button {
-            display: inline-block;
-            margin: 6px;
-            padding: 10px 18px;
-            background: linear-gradient(90deg, #ff512f, #f09819);
-            color: white;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: 10px;
-            transition: 0.2s;
-            border: none;
-            cursor: pointer;
-        }
+.hero-btn {
+    display: inline-block;
+    padding: 14px 28px;
+    background: linear-gradient(90deg, #ff6a00, #ff8c2b);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    border-radius: 14px;
+    transition: .25s;
+    box-shadow: 0 6px 20px rgba(255,120,40,.35);
+}
 
-        .menu-container a:hover,
-        .menu-container button:hover {
-            opacity: 0.85;
-            transform: translateY(-1px);
-        }
+.hero-btn:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.07);
+}
 
-        .logout-button {
-            background: #c0392b !important;
-        }
+/* CARDS */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 26px;
+    margin-bottom: 45px;
+}
 
-        .intro-container {
-            height: auto;
-            display: block;
-            margin: auto;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e2e8f0 100%);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-            max-width: 10000px;
-            text-align: left;
-        }
+.menu-card {
+    background: rgba(255,255,255,0.55);
+    padding: 26px;
+    border-radius: 18px;
+    border: 1px solid rgba(0,0,0,0.10);
+    backdrop-filter: blur(14px);
+    text-align: center;
+    box-shadow: 0 8px 22px rgba(0,0,0,.12);
+    transition: .25s;
+}
 
-        .intro-paragraph {
-            font-family: 'Open Sans', sans-serif;
-            font-size: 15px;
-            color: #333;
-            line-height: 1.6;
-        }
-    </style>
+.menu-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,.22);
+}
 
-    <div class="image-container">
-        <img src="/img/ATS.png" alt="ATS">
+.menu-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: #222;
+}
+
+.menu-desc {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 16px;
+    line-height: 1.45;
+}
+
+.menu-btn {
+    background: linear-gradient(90deg, #ff6a00, #ff8c2b);
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(255,120,40,.35);
+    transition: .25s;
+}
+
+.menu-btn:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.1);
+}
+
+/* BLOCO FINAL */
+.intro-container {
+    background: rgba(255,255,255,0.55);
+    padding: 30px;
+    border-radius: 18px;
+    border: 1px solid rgba(0,0,0,0.10);
+    box-shadow: 0 8px 22px rgba(0,0,0,.12);
+    backdrop-filter: blur(12px);
+    margin-top: 35px;
+}
+
+.intro-paragraph {
+    color: #222;
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 500;
+}
+</style>
+
+
+
+{{-- ======================================================
+      HERO PRINCIPAL
+======================================================== --}}
+<div class="hero">
+    <div class="hero-content">
+
+        <div class="hero-title">
+            Olá, {{ Auth::guard('cliente')->user()->nome }}
+        </div>
+
+        <div class="hero-sub">
+            Bem-vindo à sua área exclusiva do Automotive Testing Site.
+        </div>
+
+        <a href="{{ route('cliente.veiculos') }}" class="hero-btn">
+            Explorar veículos →
+        </a>
+    </div>
+</div>
+
+
+
+{{-- ======================================================
+      CARDS PRINCIPAIS
+======================================================== --}}
+<h2 style="color:#222; font-size:26px; font-weight:900; margin-bottom:18px;">
+    O que você deseja fazer?
+</h2>
+
+<div class="menu-grid">
+
+    <div class="menu-card">
+        <div class="menu-title">Consultar Veículos</div>
+        <div class="menu-desc">
+            Veja todos os modelos disponíveis e escolha o ideal.
+        </div>
+        <a href="{{ route('cliente.veiculos') }}" class="menu-btn">Ver veículos</a>
     </div>
 
-    <!-- Boas-vindas -->
-    <p class="welcome-message">Seja bem-vindo</p>
-
-    <!-- Mensagem específica para cliente -->
-    <div class="alert">
-        Você está logado como <strong>Cliente</strong>. Acesso exclusivo a veículos, agendamentos e perfil.
+    <div class="menu-card">
+        <div class="menu-title">Agendar Veículo</div>
+        <div class="menu-desc">
+            Escolha a data e confirme sua reserva com rapidez.
+        </div>
+        <a href="{{ route('cliente.agendamento') }}" class="menu-btn">Agendar agora</a>
     </div>
 
-    <!-- Menu do cliente (somente cliente) -->
-    <div class="menu-container">
-        <a href="{{ route('cliente.veiculos') }}">Ver Veículos</a>
-        <a href="{{ route('cliente.agendamento') }}">Agendar</a>
-        <a href="{{ route('cliente.perfil') }}">Perfil</a>
-
-        <form method="POST" action="{{ route('cliente.logout') }}" style="display: inline;">
-            @csrf
-            <button type="submit" class="logout-button">Sair</button>
-        </form>
+    <div class="menu-card">
+        <div class="menu-title">Editar Perfil</div>
+        <div class="menu-desc">
+            Atualize suas informações a qualquer momento.
+        </div>
+        <a href="{{ route('cliente.perfil') }}" class="menu-btn">Meu perfil</a>
     </div>
 
-    <!-- Texto institucional exclusivo para clientes -->
-    <div class="intro-container">
-        <p class="intro-paragraph">
-            Bem-vindo à <strong>Automotive Testing Site</strong>!  
-            Aqui você pode acessar nossa frota de veículos, realizar novos agendamentos, 
-            consultar seu histórico e manter seus dados atualizados.
-            <br><br>
-            Nosso compromisso é te oferecer a melhor experiência possível.
-        </p>
-    </div>
+</div>
+
+
+
+{{-- ======================================================
+      BLOCO FINAL
+======================================================== --}}
+<div class="intro-container">
+    <p class="intro-paragraph">
+        A <strong>Automotive Testing Site</strong> trabalha diariamente para garantir o melhor atendimento e a experiência mais prática possível.<br><br>
+        Aqui você pode acessar nossa frota, realizar agendamentos, acompanhar seu histórico, revisar seu perfil e muito mais — tudo de forma rápida, moderna e intuitiva.
+    </p>
+</div>
 
 @endsection

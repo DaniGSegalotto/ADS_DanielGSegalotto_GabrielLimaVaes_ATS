@@ -1,157 +1,326 @@
-<x-app-layout>
-    <!-- 🔹 Cabeçalho -->
-    <x-slot name="header">
-        <div class="image-container">
-            <img src="/img/ATS.png" alt="ats">
-        </div>
-    </x-slot>
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-    <!-- 🔹 Estilos -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automotive Testing Site</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+        :root {
+            --primary: #111;
+            --secondary: #555;
+            --border: #e4e4e4;
+            --bg: #f7f7f7;
+            --accent: #ff6a00;
+        }
 
-        .image-container {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--primary);
+        }
+
+        /* HEADER */
+        header {
+            width: 100%;
+            padding: 22px 40px;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header img {
+            height: 42px;
+        }
+
+        nav a {
+            margin-left: 22px;
+            text-decoration: none;
+            color: var(--secondary);
+            font-weight: 500;
+            transition: .2s;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        /* HERO */
+        .hero {
+            width: 100%;
+            min-height: 260px;
+            background: url('/img/banner-ats.jpg') center/cover no-repeat;
+            position: relative;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .image-container img {
-            max-width: 500px;
-            height: auto;
-            display: block;
-            margin: auto;
-            border-radius: 8px;
-            box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .welcome-message {
             text-align: center;
-            font-size: 3rem;
-            font-family: 'Pacifico', cursive;
-            color: red;
-            margin: 2rem;
+            padding: 60px 20px;
         }
 
-        .intro-container {
-            height: auto;
-            display: block;
-            margin: auto;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e2e8f0 100%);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-            max-width: 10000px;
-            text-align: left;
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.40);
         }
 
-        .intro-paragraph {
-            font-family: 'Open Sans', sans-serif;
+        .hero h1 {
+            position: relative;
+            font-size: 48px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0px 3px 8px rgba(0,0,0,0.55);
+        }
+
+        .hero span.highlight {
+            background: linear-gradient(90deg, #ff6a00, #ffbb00);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hero h2 {
+            position: relative;
+            margin-top: 10px;
+            color: #eaeaea;
+            font-size: 20px;
+            font-weight: 400;
+        }
+
+        /* ALERTA TEMPORÁRIO */
+        .temp-alert {
+            background: #e9fbe9;
+            color: #0a7f2f;
+            padding: 10px;
+            max-width: 700px;
+            margin: 25px auto;
+            border: 1px solid #bbf1c2;
+            border-radius: 10px;
+            text-align: center;
             font-size: 15px;
-            color: #333;
+            animation: fadeOut 4s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* CARDS */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 26px;
+            border-radius: 18px;
+            transition: .25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+        }
+
+        .card h3 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .card p {
+            margin: 14px 0;
+            color: #666;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .card a {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #111;
+            color: #fff;
+            border-radius: 10px;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        /* INFO BOX */
+        .info-box {
+            margin-top: 50px;
+            background: #fff;
+            padding: 35px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
             line-height: 1.6;
         }
 
-        .alert {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeeba;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 10px auto;
-            max-width: 900px;
-            text-align: center;
-            font-weight: 500;
+        /* BOTÕES FLUTUANTES */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 100px;
+            width: 62px;
+            height: 62px;
+            background: #25D366;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 30px;
+            z-index: 900;
+            transition: .2s;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.08);
         }
 
-        .menu-container {
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .menu-container a,
-        .menu-container button {
-            display: inline-block;
-            margin: 6px;
-            padding: 10px 18px;
-            background: linear-gradient(90deg, #ff512f, #f09819);
-            color: white;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: 10px;
-            transition: 0.2s;
-            border: none;
+        .chat-float {
+            position: fixed;
+            bottom: 30px;
+            right: 25px;
+            width: 62px;
+            height: 62px;
+            background: #e63946;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 28px;
             cursor: pointer;
+            transition: .2s;
+            z-index: 900;
+        }
+        .chat-float:hover {
+            transform: scale(1.08);
         }
 
-        .menu-container a:hover,
-        .menu-container button:hover {
-            opacity: 0.85;
-            transform: translateY(-1px);
+        /* FOOTER */
+        footer {
+            margin-top: 55px;
+            padding: 14px;
+            text-align: center;
+            font-size: 13px;
+            opacity: 0.55;
+            color: #444;
         }
 
-        .logout-button {
-            background: #c0392b !important;
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 34px; }
+            .hero h2 { font-size: 16px; }
+
+            .whatsapp-float { right: 80px; }
+            .chat-float { right: 20px; }
         }
     </style>
+</head>
 
-    <!-- 🔹 Mensagem de boas-vindas -->
-    <p class="welcome-message">Seja bem-vindo</p>
+<body>
 
-    <!-- 🔹 Mensagem de acesso -->
-    @if (session('tipo_usuario') === 'cliente')
-        <div class="alert">
-            Você está logado como <strong>Cliente</strong>. Acesso limitado a veículos e agendamentos.
+<header>
+    <img src="/img/ATS.png" alt="Logo ATS">
+
+    <nav>
+        <a href="/ATS">Início</a>
+        <a href="/clientes">Clientes</a>
+        <a href="/funcionarios">Funcionários</a>
+        <a href="/marcas">Marcas</a>
+        <a href="/veiculos">Veículos</a>
+        <a href="/agendamentos">Agendamentos</a>
+        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Sair</a>
+    </nav>
+
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
+</header>
+
+<div class="hero">
+    <h1>Bem-vindo ao <span class="highlight">Automotive Testing Site</span></h1>
+    <h2>Ambiente profissional para gerenciar test-drive, veículos e clientes</h2>
+</div>
+
+<div class="temp-alert">
+    Logado como Funcionário. Acesso completo ao sistema.
+</div>
+
+<div class="container">
+
+    <div class="cards">
+        <div class="card">
+            <h3>Clientes</h3>
+            <p>Cadastre e gerencie seus clientes de forma prática e eficiente.</p>
+            <a href="/clientes">Acessar</a>
         </div>
-    @else
-        <div class="alert" style="background:#d4edda; border-color:#c3e6cb; color:#155724;">
-            Logado como <strong>Funcionário</strong>. Acesso completo ao sistema.
+
+        <div class="card">
+            <h3>Funcionários</h3>
+            <p>Controle de permissões e gerenciamento da equipe interna.</p>
+            <a href="/funcionarios">Acessar</a>
         </div>
-    @endif
 
-    <!-- 🔹 Menu dinâmico -->
-    <div class="menu-container">
-        <!-- Itens comuns -->
-        <a href="{{ route('veiculos.index') }}">Ver Veículos</a>
-        <a href="{{ route('agendamentos.index') }}">Agendamentos</a>
+        <div class="card">
+            <h3>Veículos</h3>
+            <p>Gerencie modelos, disponibilidade, histórico e detalhes técnicos.</p>
+            <a href="/veiculos">Acessar</a>
+        </div>
 
-        <!-- Itens de funcionário -->
-        @if (session('tipo_usuario') !== 'cliente')
-            <a href="{{ route('clientes.index') }}">Clientes</a>
-            <a href="{{ route('funcionarios.index') }}">Funcionários</a>
-            <a href="{{ route('marcas.index') }}">Marcas</a>
-        @endif
-
-        <!-- 🔹 Botão de logout -->
-        @if (session('tipo_usuario') === 'cliente')
-            <form method="POST" action="{{ route('cliente.logout') }}" style="display: inline;">
-                @csrf
-                <button type="submit" class="logout-button">Sair (Cliente)</button>
-            </form>
-        @else
-            <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-                @csrf
-                <button type="submit" class="logout-button">Sair (Funcionário)</button>
-            </form>
-        @endif
+        <div class="card">
+            <h3>Agendamentos</h3>
+            <p>Organize test-drives e reservas com clareza e precisão.</p>
+            <a href="/agendamentos">Acessar</a>
+        </div>
     </div>
 
-    <!-- 🔹 Texto descritivo -->
-    <div class="intro-container">
-        <p class="intro-paragraph">
-            Bem-vindo à <strong>Automotive Testing Site</strong>, onde a eficiência encontra a mobilidade.
-            Nosso sistema foi desenvolvido para otimizar o processo de aluguel de veículos — do cadastro à entrega —
-            garantindo rapidez e precisão em cada etapa.<br><br>
-
-            O sistema oferece funcionalidades como:<br>
-            - <strong>Cadastro de Clientes</strong>: Inserção e gestão ágil das informações.<br>
-            - <strong>Cadastro de Funcionários</strong>: Controle de acessos conforme função.<br>
-            - <strong>Cadastro de Veículos</strong>: Registro completo da frota, histórico e disponibilidade.<br>
-            - <strong>Cadastro de Marcas</strong>: Organização das categorias de veículos disponíveis.<br><br>
-
-            Nosso objetivo é tornar o aluguel de veículos mais ágil e confiável. Seja para negócios ou lazer,
-            conte conosco para oferecer a melhor experiência de locação e atendimento.
+    <div class="info-box">
+        <p>
+            O <strong>Automotive Testing Site</strong> é uma plataforma moderna desenvolvida para otimizar processos
+            de test-drive e gestão de veículos.
+        </p>
+        <p style="margin-top: 14px;">
+            Construído seguindo padrões de design minimalista de marcas premium como Tesla e BMW i-Series.
         </p>
     </div>
-</x-app-layout>
+
+</div>
+
+<!-- Botões flutuantes -->
+<a class="whatsapp-float" href="https://wa.me/5554999050399" target="_blank">
+    <i class="fa-brands fa-whatsapp"></i>
+</a>
+
+<div class="chat-float" onclick="window.location.href='/chat/reset'">
+    💬
+</div>
+
+<footer>
+    © {{ date('Y') }} Automotive Testing Site — Todos os direitos reservados.
+</footer>
+
+</body>
+</html>

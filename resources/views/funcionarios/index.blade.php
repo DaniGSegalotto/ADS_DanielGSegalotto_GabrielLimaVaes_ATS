@@ -1,113 +1,205 @@
 <x-app-layout>
-    <!-- 🔹 Cabeçalho -->
+
+    <!-- CABEÇALHO -->
     <x-slot name="header">
-        <h2 class="text-2xl font-semibold text-white leading-tight">
-            {{ __('Lista de Funcionários') }}
-        </h2>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 style="font-size:24px; font-weight:600; color:#222;">
+                Lista de Funcionários
+            </h2>
+        </div>
     </x-slot>
 
-    <!-- 🔹 Container principal -->
-    <div class="card" style="max-width: 1000px; margin: auto;">
-        
-        <!-- 🔸 Barra de busca -->
-        <form action="{{ route('funcionarios.index') }}" method="GET" 
-              style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <input type="text" name="query" placeholder="Buscar Funcionários..." 
-                   style="flex:1; padding:10px 14px; border-radius:12px; border:none;
-                          background:rgba(255,255,255,0.1); color:#fff; outline:none;">
-            <button type="submit" 
-                    style="margin-left:8px; padding:10px 16px; border:none; border-radius:12px;
-                           background:linear-gradient(90deg,#ff512f,#f09819); color:#fff;
-                           font-weight:600; cursor:pointer;">
-                Buscar
-            </button>
-        </form>
+    <!-- CONTAINER PRINCIPAL -->
+    <div style="
+        max-width:1150px;
+        margin:40px auto;
+        background:white;
+        padding:28px;
+        border-radius:16px;
+        border:1px solid #e6e6e6;
+        box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    ">
 
-        <!-- 🔸 Botão Novo Funcionário -->
-        <a href="{{ route('funcionarios.create') }}" 
-           style="display:inline-block; margin-bottom:16px; padding:10px 16px;
-                  background:linear-gradient(90deg,#ff512f,#f09819);
-                  border:none; border-radius:12px; color:#fff; font-weight:600;
-                  text-decoration:none;">
-            Novo Funcionário
-        </a>
+<!-- BARRA DE BUSCA -->
+<form action="{{ route('funcionarios.index') }}" method="GET"
+      style="display:flex; gap:12px; margin-bottom:25px; flex-wrap:wrap;">
 
-        <!-- 🔸 Tabela de Funcionários -->
-        <table style="width:100%; border-collapse:collapse; background:rgba(255,255,255,0.08);
-                      border:1px solid rgba(255,255,255,0.15); border-radius:12px; overflow:hidden;">
-            <thead>
-                <tr style="background:rgba(255,255,255,0.15); color:#fff;">
-                    <th style="padding:12px;">ID</th>
-                    <th style="padding:12px;">NOME</th>
-                    <th style="padding:12px;">E-MAIL</th>
-                    <th style="padding:12px;">SEXO</th>
-                    <th style="padding:12px;">OPÇÕES</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($funcionarios as $funcionario)
-                    <tr style="border-top:1px solid rgba(255,255,255,0.1); color:#fff;">
-                        <td style="padding:10px 12px;">{{ $funcionario->id }}</td>
-                        <td style="padding:10px 12px;">{{ $funcionario->nome }}</td>
-                        <td style="padding:10px 12px;">{{ $funcionario->email }}</td>
-                        <td style="padding:10px 12px;">
-                            {{ $funcionario->sexo == 'M' ? 'Masculino' : 'Feminino' }}
-                        </td>
-                        <td style="padding:10px 12px;">
-                            <!-- 🔹 Botões de ação -->
-                            <a href="{{ route('funcionarios.show', $funcionario->id) }}" 
-                               style="padding:6px 10px; border-radius:8px; background:rgba(255,255,255,0.15);
-                                      color:#fff; text-decoration:none; font-size:13px;">
-                                Detalhes
-                            </a>
+    <input type="text" name="query" placeholder="Buscar funcionários..."
+        style="
+            flex:1;
+            padding:12px 16px;
+            border-radius:10px;
+            border:1px solid #d0d0d0;
+            font-size:15px;
+        "
+        value="{{ $query ?? '' }}"
+        autocomplete="off"
+    >
 
-                            <a href="{{ route('funcionarios.edit', $funcionario->id) }}" 
-                               style="padding:6px 10px; border-radius:8px;
-                                      background:linear-gradient(90deg,#ff512f,#f09819);
-                                      color:#fff; text-decoration:none; font-size:13px;">
-                                Editar
-                            </a>
+    <button type="submit"
+        style="
+            padding:12px 18px;
+            border:none;
+            border-radius:10px;
+            background:#ff7a00;
+            color:white;
+            font-weight:600;
+            cursor:pointer;
+        "
+        onmouseover="this.style.background='#ff8f2b'"
+        onmouseout="this.style.background='#ff7a00'">
+        Buscar
+    </button>
 
-                            <form id="form-{{ $funcionario->id }}" action="{{ route('funcionarios.destroy', $funcionario->id) }}" 
-                                  method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" onclick="deletarFuncionario({{ $funcionario->id }})"
-                                        style="padding:6px 10px; border-radius:8px; border:none;
-                                               background:#c0392b; color:#fff; cursor:pointer; font-size:13px;">
-                                    Excluir
-                                </button>
-                                <button type="button" onclick="infoFuncionario({{ $funcionario->id }})"
-                                        style="padding:6px 10px; border-radius:8px; border:none;
-                                               background:#444; color:#fff; cursor:pointer; font-size:13px;">
+    <a href="{{ route('funcionarios.create') }}"
+        style="
+            padding:12px 18px;
+            border-radius:10px;
+            background:#ff7a00;
+            color:white;
+            font-weight:600;
+            text-decoration:none;
+        "
+        onmouseover="this.style.background='#ff8f2b'"
+        onmouseout="this.style.background='#ff7a00'">
+        Novo Funcionário
+    </a>
+</form>
+
+
+        <!-- TABELA -->
+        <div style="overflow-x:auto;">
+            <table style="
+                width:100%;
+                border-collapse:collapse;
+                font-size:15px;
+                color:#333;
+            ">
+                <thead>
+                    <tr style="background:#f2f2f2; border-bottom:2px solid #ddd;">
+                        <th style="padding:14px; text-align:left;">ID</th>
+                        <th style="padding:14px; text-align:left;">Nome</th>
+                        <th style="padding:14px; text-align:left;">E-mail</th>
+                        <th style="padding:14px; text-align:left;">Sexo</th>
+                        <th style="padding:14px; text-align:left;">Opções</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse ($funcionarios as $funcionario)
+                        <tr style="border-bottom:1px solid #eee; transition:0.2s;"
+                            onmouseover="this.style.background='#fafafa'"
+                            onmouseout="this.style.background='white'">
+
+                            <td style="padding:12px;">{{ $funcionario->id }}</td>
+                            <td style="padding:12px;">{{ $funcionario->nome }}</td>
+                            <td style="padding:12px;">{{ $funcionario->email }}</td>
+                            <td style="padding:12px;">
+                                {{ $funcionario->sexo === 'M' ? 'Masculino' : 'Feminino' }}
+                            </td>
+
+                            <!-- BUTÕES -->
+                            <td style="padding:12px; white-space:nowrap; display:flex; gap:6px;">
+
+                                <!-- Detalhes -->
+                                <a href="{{ route('funcionarios.show', $funcionario->id) }}"
+                                    style="
+                                        padding:6px 10px;
+                                        background:#008cff;
+                                        color:white;
+                                        border-radius:6px;
+                                        font-size:13px;
+                                        text-decoration:none;
+                                    "
+                                    onmouseover="this.style.background='#0b7fe6'"
+                                    onmouseout="this.style.background='#008cff'">
+                                    Detalhes
+                                </a>
+
+                                <!-- Editar -->
+                                <a href="{{ route('funcionarios.edit', $funcionario->id) }}"
+                                    style="
+                                        padding:6px 10px;
+                                        background:#ff7a00;
+                                        color:white;
+                                        border-radius:6px;
+                                        font-size:13px;
+                                        text-decoration:none;
+                                    "
+                                    onmouseover="this.style.background='#ff8f2b'"
+                                    onmouseout="this.style.background='#ff7a00'">
+                                    Editar
+                                </a>
+
+                                <!-- Excluir -->
+                                <form id="form-{{ $funcionario->id }}"
+                                      action="{{ route('funcionarios.destroy', $funcionario->id) }}"
+                                      method="POST">
+                                    @csrf @method('DELETE')
+
+                                    <button type="button"
+                                        onclick="deletarFuncionario({{ $funcionario->id }})"
+                                        style="
+                                            padding:6px 10px;
+                                            background:#e63946;
+                                            color:white;
+                                            border:none;
+                                            border-radius:6px;
+                                            font-size:13px;
+                                            cursor:pointer;
+                                        "
+                                        onmouseover="this.style.background='#c42e3a'"
+                                        onmouseout="this.style.background='#e63946'">
+                                        Excluir
+                                    </button>
+                                </form>
+
+                                <!-- Info -->
+                                <button type="button"
+                                    onclick="infoFuncionario({{ $funcionario->id }})"
+                                    style="
+                                        padding:6px 10px;
+                                        background:#555;
+                                        color:white;
+                                        border:none;
+                                        border-radius:6px;
+                                        font-size:13px;
+                                        cursor:pointer;
+                                    "
+                                    onmouseover="this.style.background='#444'"
+                                    onmouseout="this.style.background='#555'">
                                     Info
                                 </button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" style="text-align:center; padding:14px; color:#ccc;">
-                            Nenhum funcionário encontrado.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+
+                            </td>
+                        </tr>
+
+                    @empty
+                        <tr>
+                            <td colspan="5" style="padding:20px; text-align:center; color:#777;">
+                                Nenhum funcionário encontrado.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+
+            </table>
+        </div>
     </div>
 
-    <!-- 🔹 SweetAlert -->
+    <!-- SWEET ALERT -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         function deletarFuncionario(id) {
             Swal.fire({
-                title: 'Tem certeza?',
-                text: "O funcionário será removido permanentemente!",
+                title: 'Excluir funcionário?',
+                text: 'Esta ação não poderá ser desfeita.',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#ff512f',
+                confirmButtonColor: '#ff7a00',
                 cancelButtonColor: '#555',
-                confirmButtonText: 'Sim, excluir!',
+                confirmButtonText: 'Excluir',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -118,11 +210,12 @@
 
         function infoFuncionario(id) {
             Swal.fire({
-                title: 'Informação do Funcionário',
-                text: `ID: ${id}`,
+                title: 'Info',
+                text: 'Funcionário ID: ' + id,
                 icon: 'info',
-                confirmButtonColor: '#ff512f'
+                confirmButtonColor: '#ff7a00'
             });
         }
     </script>
+
 </x-app-layout>

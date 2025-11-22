@@ -2,65 +2,56 @@
 
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Defaults
-    |--------------------------------------------------------------------------
-    */
-
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
+        // Agora o guard padrão será o de FUNCIONÁRIO
+        'guard' => 'funcionario',
+        'passwords' => 'funcionarios',
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Guards
-    |--------------------------------------------------------------------------
-    */
-
     'guards' => [
-        // Guard para FUNCIONÁRIOS
+
+        // Guard padrão Laravel (não usado para login)
         'web' => [
             'driver' => 'session',
-            'provider' => 'users', // aponta para funcionarios ✔️
+            'provider' => 'users',
         ],
 
-        // Guard para CLIENTES
+        // Guard para Funcionários
+        'funcionario' => [
+            'driver' => 'session',
+            'provider' => 'funcionarios',
+        ],
+
+        // Guard para Clientes
         'cliente' => [
             'driver' => 'session',
             'provider' => 'clientes',
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | User Providers
-    |--------------------------------------------------------------------------
-    */
-
     'providers' => [
-        // Provider para FUNCIONÁRIOS
+
+        // Provider padrão Laravel (não usado)
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Funcionario::class, // ✔️ CORRIGIDO
+            'model' => App\Models\User::class,
         ],
 
-        // Provider para CLIENTES
+        // Provider de Funcionários
+        'funcionarios' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Funcionario::class,
+        ],
+
+        // Provider de Clientes
         'clientes' => [
             'driver' => 'eloquent',
             'model' => App\Models\Cliente::class,
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Resetting Passwords
-    |--------------------------------------------------------------------------
-    */
-
     'passwords' => [
-        // Reset para FUNCIONÁRIOS
+
         'users' => [
             'provider' => 'users',
             'table' => 'password_reset_tokens',
@@ -68,7 +59,13 @@ return [
             'throttle' => 60,
         ],
 
-        // Reset para CLIENTES
+        'funcionarios' => [
+            'provider' => 'funcionarios',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
         'clientes' => [
             'provider' => 'clientes',
             'table' => 'password_reset_tokens',
@@ -76,12 +73,6 @@ return [
             'throttle' => 60,
         ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Password Confirmation Timeout
-    |--------------------------------------------------------------------------
-    */
 
     'password_timeout' => 10800,
 

@@ -35,7 +35,6 @@
             padding: 24px;
         }
 
-        /* 🔥 Card */
         .card {
             width: min(94vw, 380px);
             padding: 32px 28px;
@@ -52,7 +51,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 🔥 Avatar */
         .avatar {
             width: 90px;
             height: 90px;
@@ -73,7 +71,6 @@
             letter-spacing: .3px;
         }
 
-        /* 🔥 Inputs */
         label {
             font-size: 13px;
             opacity: .9;
@@ -112,7 +109,6 @@
             opacity: .65;
         }
 
-        /* 🔥 Ícone do olho */
         .togglePwd {
             width: 20px;
             height: 20px;
@@ -126,7 +122,6 @@
             transition: opacity .25s ease;
         }
 
-        /* 🔥 Botão */
         button {
             width: 100%;
             padding: 12px 16px;
@@ -147,7 +142,6 @@
             box-shadow: 0 12px 28px rgba(255,81,47,.45);
         }
 
-        /* 🔥 Alertas */
         .errors {
             background: #ff4d6d22;
             border: 1px solid #ff4d6d55;
@@ -168,7 +162,6 @@
             margin-bottom: 12px;
         }
 
-        /* 🔥 Links auxiliares */
         .helper {
             font-size: 13px;
             text-align: center;
@@ -197,96 +190,91 @@
 
 <body>
 
-    <main class="card">
+<main class="card">
 
-        <!-- Avatar -->
-        <div class="avatar">
-            <svg viewBox="0 0 24 24" width="42" fill="currentColor">
-                <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.59 0-8 2.13-8 4.75V21h16v-2.25C20 16.13 16.59 14 12 14Z"/>
+    <div class="avatar">
+        <svg viewBox="0 0 24 24" width="42" fill="currentColor">
+            <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.59 0-8 2.13-8 4.75V21h16v-2.25C20 16.13 16.59 14 12 14Z"/>
+        </svg>
+    </div>
+
+    <h1>Login do Funcionário</h1>
+
+    @if ($errors->any())
+        <div class="errors">
+            @foreach ($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
+    @endif
+
+    @if (session('status'))
+        <div id="flash" class="flash">{{ session('status') }}</div>
+    @endif
+
+    <form method="POST" action="{{ route('login') }}">
+        @csrf
+
+        <!-- 👇 ISSO AQUI RESOLVEU O LOGIN! -->
+        <input type="hidden" name="tipo" value="funcionario">
+
+        <label for="email">E-mail</label>
+        <div class="field">
+            <input type="email" id="email" name="email" value="{{ old('email') }}" required>
+        </div>
+
+        <label for="password">Senha</label>
+        <div class="field">
+            <input type="password" id="password" name="password" required>
+            <svg class="togglePwd" viewBox="0 0 24 24" fill="currentColor">
+                <path class="eyeOpen" d="M12 5c-7.633 0-10 7-10 7s2.367 7 10 7 10-7 10-7-2.367-7-10-7Zm0 11a4 4 0 1 1 4-4 4 4 0 0 1-4 4Z"/>
+                <path class="eyeClosed" style="display:none;" d="M2 3.27 3.28 2 22 20.72l-1.28 1.28-3.2-3.2A10.82 10.82 0 0 1 12 19c-7.63 0-10-7-10-7a17.39 17.39 0 0 1 4.11-5.63L2 3.27Z"/>
             </svg>
         </div>
 
-        <h1>Login do Funcionário</h1>
+        <button type="submit">ENTRAR</button>
+    </form>
 
-        <!-- Erros -->
-        @if ($errors->any())
-            <div class="errors">
-                @foreach ($errors->all() as $error)
-                    <div>{{ $error }}</div>
-                @endforeach
-            </div>
-        @endif
+    <div class="helper">
+        <a href="{{ route('cliente.login.form') }}">Não é funcionário? Entrar como Cliente</a>
+        <a href="{{ url('/') }}" class="back-home">← Voltar à página inicial</a>
+    </div>
+</main>
 
-        <!-- Flash -->
-        @if (session('status'))
-            <div id="flash" class="flash">{{ session('status') }}</div>
-        @endif
+<script>
+    (function(){
+        const el = document.getElementById('flash');
+        if (!el) return;
+        setTimeout(()=> el.style.opacity = 0, 3500);
+        setTimeout(()=> el.remove(), 4300);
+    })();
 
-        <!-- Form -->
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
+    const field = document.querySelector(".field input[type='password']");
+    const toggle = document.querySelector(".togglePwd");
 
-            <label for="email">E-mail</label>
-            <div class="field">
-                <input type="email" id="email" name="email" value="{{ old('email') }}" required>
-            </div>
+    const open = toggle.querySelector(".eyeOpen");
+    const closed = toggle.querySelector(".eyeClosed");
 
-            <label for="password">Senha</label>
-            <div class="field">
-                <input type="password" id="password" name="password" required>
+    field.addEventListener("focus", () => {
+        toggle.style.opacity = 0.75;
+        toggle.style.pointerEvents = "auto";
+    });
 
-                <!-- 👁 Ícone do olho -->
-                <svg class="togglePwd" viewBox="0 0 24 24" fill="currentColor">
-                    <path class="eyeOpen" d="M12 5c-7.633 0-10 7-10 7s2.367 7 10 7 10-7 10-7-2.367-7-10-7Zm0 11a4 4 0 1 1 4-4 4 4 0 0 1-4 4Z"/>
-                    <path class="eyeClosed" style="display:none;" d="M2 3.27 3.28 2 22 20.72l-1.28 1.28-3.2-3.2A10.82 10.82 0 0 1 12 19c-7.63 0-10-7-10-7a17.39 17.39 0 0 1 4.11-5.63L2 3.27Z"/>
-                </svg>
-            </div>
+    field.addEventListener("blur", () => {
+        if (!field.value.trim()) {
+            toggle.style.opacity = 0;
+            toggle.style.pointerEvents = "none";
+        }
+    });
 
-            <button type="submit">ENTRAR</button>
-        </form>
+    toggle.addEventListener("click", () => {
+        const showing = field.type === "text";
 
-        <div class="helper">
-            <a href="{{ route('cliente.login.form') }}">Não é funcionário? Entrar como Cliente</a>
-            <a href="{{ url('/') }}" class="back-home">← Voltar à página inicial</a>
-        </div>
-    </main>
-
-    <script>
-        /* Remover flash */
-        (function(){
-            const el = document.getElementById('flash');
-            if (!el) return;
-            setTimeout(()=> el.style.opacity = 0, 3500);
-            setTimeout(()=> el.remove(), 4300);
-        })();
-
-        /* 👁 Mostrar/Ocultar senha */
-        const field = document.querySelector(".field input[type='password']");
-        const toggle = document.querySelector(".togglePwd");
-
-        const open = toggle.querySelector(".eyeOpen");
-        const closed = toggle.querySelector(".eyeClosed");
-
-        field.addEventListener("focus", () => {
-            toggle.style.opacity = 0.75;
-            toggle.style.pointerEvents = "auto";
-        });
-
-        field.addEventListener("blur", () => {
-            if (!field.value.trim()) {
-                toggle.style.opacity = 0;
-                toggle.style.pointerEvents = "none";
-            }
-        });
-
-        toggle.addEventListener("click", () => {
-            const showing = field.type === "text";
-
-            field.type = showing ? "password" : "text";
-            open.style.display = showing ? "block" : "none";
-            closed.style.display = showing ? "none" : "block";
-        });
-    </script>
+        field.type = showing ? "password" : "text";
+        open.style.display = showing ? "block" : "none";
+        closed.style.display = showing ? "none" : "block";
+    });
+</script>
 
 </body>
 </html>
