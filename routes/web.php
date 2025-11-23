@@ -11,6 +11,7 @@ use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\VeiculoController;
 use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\AgendamentoController;
+use App\Http\Controllers\GeminiChatController;
 
 // Auth
 use App\Http\Controllers\Auth\AuthenticatedSessionController;

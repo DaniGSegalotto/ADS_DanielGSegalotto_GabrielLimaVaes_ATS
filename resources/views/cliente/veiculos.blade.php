@@ -7,21 +7,30 @@
       LISTA DE VEÍCULOS – PREMIUM
    ============================= */
 
-.section-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #333;
-    margin-bottom: 25px;
-    text-align: center;
+.page-wrapper {
+    background: #fff;
+    padding: 40px;
+    border-radius: 22px;
+    max-width: 1250px;
+    margin: 0 auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
 }
 
-/* Grid fixo com 2 colunas centralizadas */
+/* Título */
+.section-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #222;
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+/* Grid fixo com centralização */
 .vehicle-grid {
     display: grid;
-    grid-template-columns: repeat(2, 320px);
-    justify-content: center; /* Centraliza na tela */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    justify-items: center;
     gap: 35px;
-    margin-top: 25px;
 }
 
 /* Card */
@@ -30,14 +39,14 @@
     padding: 22px;
     border-radius: 18px;
     border: 1px solid #e5e5e5;
+    width: 320px;
     box-shadow: 0 8px 22px rgba(0,0,0,0.10);
     transition: .25s;
-    width: 320px;
 }
 
 .vehicle-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
 }
 
 /* Imagem */
@@ -79,7 +88,7 @@
     font-size: 15px;
     font-weight: 700;
     border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(255, 120, 40, .35);
+    box-shadow: 0 6px 20px rgba(255,120,40,.35);
     text-decoration: none;
     transition: .25s;
 }
@@ -95,7 +104,7 @@
     padding: 35px;
     border-radius: 18px;
     box-shadow: 0 8px 22px rgba(0,0,0,0.10);
-    font-size: 16px;
+    font-size: 17px;
     color: #666;
     text-align: center;
     border: 1px solid #eee;
@@ -103,9 +112,7 @@
 </style>
 
 
-
-
-<div class="card">
+<div class="page-wrapper">
 
     <h2 class="section-title">Veículos Disponíveis</h2>
 
@@ -124,7 +131,7 @@
             @foreach($veiculos as $v)
                 <div class="vehicle-card">
 
-                    <img src="/img/cars/default.jpg" class="vehicle-image" alt="Veículo {{ $v->modelo }}">
+                    <img src="/img/cars/default.jpg" class="vehicle-image" alt="Imagem de {{ $v->modelo }}">
 
                     <div class="vehicle-name">{{ $v->modelo }}</div>
                     <div class="vehicle-brand">{{ $v->marca->nome ?? 'Sem marca' }}</div>
