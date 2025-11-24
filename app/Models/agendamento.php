@@ -7,27 +7,44 @@ use Illuminate\Database\Eloquent\Model;
 
 class Agendamento extends Model
 {
-    // Define o nome da tabela no banco de dados associada a este modelo
+    use HasFactory;
+
     protected $table = 'agendamentos';
 
-    // Define os campos que podem ser atribuídos em massa
-    protected $fillable = ['data', 'horario', 'funcionario_id', 'veiculo_id', 'cliente_id'];
+    /**
+     * Campos permitidos para criação/atualização
+     */
+    protected $fillable = [
+        'cliente_id',
+        'funcionario_id',
+        'veiculo_id',
+        'data',
+        'horario'
+    ];
 
-    // Define a relação "pertence a" com o modelo Funcionario
+    /**
+     * Casts garantem que os tipos sempre venham corretos
+     */
+    protected $casts = [
+        'data' => 'date',
+        'horario' => 'string',
+    ];
+
+    /**
+     * RELACIONAMENTOS
+     */
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class);
+    }
+
     public function funcionario()
     {
         return $this->belongsTo(Funcionario::class);
     }
 
-    // Define a relação "pertence a" com o modelo Veiculo
     public function veiculo()
     {
         return $this->belongsTo(Veiculo::class);
-    }
-
-    // Define a relação "pertence a" com o modelo Cliente
-    public function cliente()
-    {
-        return $this->belongsTo(Cliente::class);
     }
 }

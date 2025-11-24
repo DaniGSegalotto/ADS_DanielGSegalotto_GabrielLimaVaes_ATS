@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Models\Veiculo;
 use App\Models\Agendamento;
 use App\Models\Funcionario;
@@ -18,7 +17,6 @@ class ClientePainelController extends Controller
     {
         $cliente = Auth::guard('cliente')->user();
 
-        // Vitrine com veículos disponíveis
         $veiculos = Veiculo::disponiveis()
             ->limit(6)
             ->get();
@@ -27,47 +25,20 @@ class ClientePainelController extends Controller
     }
 
     /**
-     * Perfil do cliente
+     * Página de perfil
      */
     public function perfil()
     {
         $cliente = Auth::guard('cliente')->user();
-
         return view('cliente.perfil', compact('cliente'));
     }
 
     /**
-     * Atualização de dados do cliente
-     */
-    public function update(Request $request)
-    {
-        $cliente = Auth::guard('cliente')->user();
-
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'telefone' => 'required|string|max:20',
-            'password' => 'nullable|string|min:6|confirmed',
-        ]);
-
-        $cliente->nome = $request->nome;
-        $cliente->telefone = $request->telefone;
-
-        if ($request->filled('password')) {
-            $cliente->password = Hash::make($request->password);
-        }
-
-        $cliente->save();
-
-        return back()->with('success', 'Perfil atualizado com sucesso!');
-    }
-
-    /**
-     * Lista de veículos
+     * Lista de veículos disponíveis
      */
     public function veiculos()
     {
         $veiculos = Veiculo::disponiveis()->get();
-
         return view('cliente.veiculos', compact('veiculos'));
     }
 
@@ -76,46 +47,115 @@ class ClientePainelController extends Controller
      */
     public function agendamento()
     {
-        $cliente = Auth::guard('cliente')->user();
-
-        $funcionarioPadrao = Funcionario::first();
-
-        if (!$funcionarioPadrao) {
-            return redirect()
-                ->route('cliente.home')
-                ->with('error', 'Nenhum funcionário disponível para agendamentos.');
-        }
-
-        $veiculos = Veiculo::disponiveis()->get();
-
-        return view('cliente.agendamento', compact(
-            'cliente',
-            'veiculos',
-            'funcionarioPadrao'
-        ));
+        return view('cliente.agendamento', [
+            'cliente'      => Auth::guard('cliente')->user(),
+            'funcionarios' => Funcionario::orderBy('nome')->get(),
+            'veiculos'     => Veiculo::disponiveis()->get(),
+        ]);
     }
 
     /**
-     * Salva agendamento
+     * Salvar agendamento
      */
     public function storeAgendamento(Request $request)
+{
+    $request->validate([
+        'veiculo_id'     => 'required|exists:veiculos,id',
+        'data'           => 'required|date|after_or_equal:today',
+        'horario'        => 'required',
+        'funcionario_id' => 'required|exists:funcionarios,id',
+    ]);
+
+    // Verifica conflito veículo + funcionário + data + horário
+    $conflito = Agendamento::where('veiculo_id', $request->veiculo_id)
+        ->where('funcionario_id', $request->funcionario_id)
+        ->where('data', $request->data)
+        ->where('horario', $request->horario)
+        ->exists();
+
+    if ($conflito) {
+        return response()->json([
+            'error' => 'Este horário já está reservado para este veículo e funcionário.'
+        ], 422);
+    }
+
+    // Criar agendamento
+    Agendamento::create([
+        'cliente_id'     => Auth::guard('cliente')->id(),
+        'funcionario_id' => $request->funcionario_id,
+        'veiculo_id'     => $request->veiculo_id,
+        'data'           => $request->data,
+        'horario'        => $request->horario,
+    ]);
+
+    return response()->json(['success' => true]);
+}
+
+
+    /**
+     * Listar agendamentos do cliente logado
+     */
+    public function meusAgendamentos()
+    {
+        $agendamentos = Agendamento::where('cliente_id', Auth::guard('cliente')->id())
+            ->with(['veiculo', 'funcionario'])
+            ->orderBy('data')
+            ->orderBy('horario')
+            ->get();
+
+        return view('cliente.meus-agendamentos', compact('agendamentos'));
+    }
+
+    /**
+     * Atualizar agendamento (via SweetAlert) — DATA, HORÁRIO e FUNCIONÁRIO
+     */
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'veiculo_id'     => 'required|exists:veiculos,id',
-            'data_inicio'    => 'required|date|after_or_equal:today',
-            'data_fim'       => 'required|date|after_or_equal:data_inicio',
+            'data'           => 'required|date|after_or_equal:today',
+            'horario'        => 'required',
             'funcionario_id' => 'required|exists:funcionarios,id',
         ]);
 
-        Agendamento::create([
-            'cliente_id'     => Auth::guard('cliente')->id(),
+        $ag = Agendamento::where('id', $id)
+            ->where('cliente_id', Auth::guard('cliente')->id())
+            ->firstOrFail();
+
+        // Verifica conflito para o mesmo veículo com outro agendamento
+        $conflito = Agendamento::where('veiculo_id', $ag->veiculo_id)
+            ->where('funcionario_id', $request->funcionario_id)
+            ->where('data', $request->data)
+            ->where('horario', $request->horario)
+            ->where('id', '!=', $id)
+            ->exists();
+
+        if ($conflito) {
+            return response()->json([
+                'error' => 'Já existe outro agendamento para este funcionário neste horário.'
+            ], 422);
+        }
+
+        // Atualizar
+        $ag->update([
+            'data'           => $request->data,
+            'horario'        => $request->horario,
             'funcionario_id' => $request->funcionario_id,
-            'veiculo_id'     => $request->veiculo_id,
-            'data_inicio'    => $request->data_inicio,
-            'data_fim'       => $request->data_fim,
         ]);
 
-        return redirect()->route('cliente.home')
-            ->with('success', 'Agendamento realizado com sucesso!');
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Excluir agendamento (via SweetAlert)
+     */
+    public function excluir($id)
+    {
+        $ag = Agendamento::where('id', $id)
+            ->where('cliente_id', Auth::guard('cliente')->id())
+            ->firstOrFail();
+
+        $ag->delete();
+
+        return response()->json(['success' => true]);
     }
 }

@@ -3,17 +3,14 @@
 @section('content')
 
 <style>
-/* ============================================
-      PREMIUM ATS – HOME DO CLIENTE
-   (Visual integrando com layout principal)
-============================================ */
 
-/* HERO */
+/* ============================================
+      HERO SECTION
+============================================ */
 .hero {
     background: url('/img/frota.jpg') center/cover no-repeat;
     border-radius: 18px;
     padding: 65px 55px;
-    text-align: left;
     margin-bottom: 45px;
     position: relative;
     overflow: hidden;
@@ -24,11 +21,7 @@
     position: absolute;
     inset: 0;
     backdrop-filter: blur(3px);
-    background: linear-gradient(
-        90deg,
-        rgba(0,0,0,0.60),
-        rgba(0,0,0,0.10)
-    );
+    background: linear-gradient(90deg, rgba(0,0,0,0.60), rgba(0,0,0,0.10));
 }
 
 .hero-content {
@@ -67,7 +60,7 @@
 }
 
 /* ============================================
-      CARDS PRINCIPAIS — PADRÃO ATS
+      CARDS PRINCIPAIS (MENU)
 ============================================ */
 .menu-grid {
     display: grid;
@@ -116,7 +109,7 @@
     text-decoration: none;
     background: linear-gradient(90deg, #ff6a00, #ff8c2b);
     box-shadow: 0 5px 18px rgba(255,120,40,.45);
-    transition: 0.25s ease;
+    transition: .25s;
 }
 
 .menu-btn:hover {
@@ -125,13 +118,28 @@
 }
 
 /* ============================================
-      CARROSSEL — PADRÃO PREMIUM ATS
+      CARDS EXTRA – Meus Agendamentos
+============================================ */
+.menu-card.agendamentos {
+    background: rgba(0,0,0,0.75);
+    color: white;
+}
+
+.menu-card.agendamentos .menu-title {
+    color: #fff;
+}
+
+.menu-card.agendamentos .menu-desc {
+    color: #ddd;
+}
+
+/* ============================================
+      CARROSSEL DE VEÍCULOS
 ============================================ */
 .cars-section-title {
     font-size: 24px;
     font-weight: 900;
     margin-bottom: 18px;
-    margin-top: 10px;
 }
 
 .carrossel {
@@ -140,6 +148,15 @@
     overflow-x: auto;
     padding-bottom: 12px;
     scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+.carrossel::-webkit-scrollbar {
+    height: 8px;
+}
+.carrossel::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 8px;
 }
 
 .car-item {
@@ -186,7 +203,6 @@
     color: white;
     font-weight: 700;
     font-size: 14px;
-    box-shadow: 0 5px 18px rgba(255,120,40,.45);
     text-decoration: none;
     transition: .2s;
 }
@@ -196,7 +212,7 @@
 }
 
 /* ============================================
-      SEÇÃO INFORMATIVA
+      SOBRE / INFORMAÇÕES
 ============================================ */
 .about-box {
     background: rgba(255,255,255,0.65);
@@ -223,19 +239,15 @@
 </style>
 
 
-{{-- ============================================
-        HERO  
-============================================ --}}
+{{-- HERO --}}
 <div class="hero">
     <div class="hero-content">
         <div class="hero-title">
             Olá, {{ Auth::guard('cliente')->user()->nome }}
         </div>
-
         <div class="hero-sub">
             Bem-vindo à sua área exclusiva no Automotive Testing Site.
         </div>
-
         <a href="{{ route('cliente.veiculos') }}" class="hero-btn">
             Ver veículos disponíveis →
         </a>
@@ -243,11 +255,8 @@
 </div>
 
 
-
-{{-- ============================================
-        CARDS PRINCIPAIS
-============================================ --}}
-<h2 style="margin-bottom:18px; font-weight:900;">O que você deseja fazer?</h2>
+{{-- CARDS PRINCIPAIS --}}
+<h2 style="margin-bottom:20px;font-weight:900;">O que você deseja fazer?</h2>
 
 <div class="menu-grid">
 
@@ -265,17 +274,20 @@
 
     <div class="menu-card">
         <div class="menu-title">Editar Perfil</div>
-        <div class="menu-desc">Atualize suas informações pessoais sempre que necessário.</div>
+        <div class="menu-desc">Atualize suas informações pessoais quando precisar.</div>
         <a href="{{ route('cliente.perfil') }}" class="menu-btn">Meu perfil</a>
+    </div>
+
+    <div class="menu-card agendamentos">
+        <div class="menu-title">Meus Agendamentos</div>
+        <div class="menu-desc">Veja todos os seus agendamentos realizados e detalhes.</div>
+        <a href="{{ route('cliente.agendamentos') }}" class="menu-btn">Visualizar</a>
     </div>
 
 </div>
 
 
-
-{{-- ============================================
-        CARROSSEL
-============================================ --}}
+{{-- CARROSSEL --}}
 @if(isset($veiculos) && count($veiculos) > 0)
 
 <h2 class="cars-section-title">Veículos em destaque</h2>
@@ -283,7 +295,7 @@
 <div class="carrossel">
     @foreach($veiculos as $veiculo)
         <div class="car-item">
-            <img src="/img/cars/default.jpg" class="car-img" alt="Veículo">
+            <img src="/img/cars/default.jpg" class="car-img">
 
             <div class="car-info">
                 <div class="car-name">{{ $veiculo->modelo }}</div>
@@ -300,18 +312,15 @@
 @endif
 
 
-{{-- ============================================
-        SEÇÃO FINAL
-============================================ --}}
+{{-- SOBRE --}}
 <div class="about-box">
     <div class="about-title">Por que usar a ATS?</div>
-
     <p class="about-text">
-        Acesso direto aos veículos disponíveis para test-drive. <br>
-        Agendamentos rápidos e simples. <br>
-        Histórico sempre disponível. <br>
-        Ambiente moderno, intuitivo e seguro. <br>
-        Suporte disponível via WhatsApp e Chat.
+        • Acesso direto aos veículos disponíveis para test-drive.<br>
+        • Agendamentos rápidos e simples.<br>
+        • Histórico sempre disponível.<br>
+        • Ambiente moderno, intuitivo e seguro.<br>
+        • Suporte disponível via WhatsApp e Chat.
     </p>
 </div>
 

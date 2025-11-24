@@ -13,28 +13,49 @@ class VerificarPermissaoCliente
      */
     public function handle(Request $request, Closure $next)
     {
-        // Se o usuário logado for um cliente
+        // Se o usuário logado for um CLIENTE
         if (Auth::guard('cliente')->check()) {
-            $rotaAtual = $request->route()->getName();
 
-            // ✅ Rotas que o cliente pode acessar
+            // Nome da rota atual (evita null errors)
+            $rotaAtual = $request->route()?->getName() ?? '';
+
+            /**
+             * Rotas que o cliente TEM permissão para acessar
+             * Essas rotas vêm diretamente do arquivo web.php
+             */
             $rotasPermitidas = [
-                'cliente.home',                // Página inicial do cliente
-                'cliente.logout',              // Logout
-                'cliente.veiculos',            // Visualizar veículos
-                'cliente.agendamento',         // Tela de agendamento
-                'cliente.agendamento.store',   // Salvar agendamento
-                'cliente.perfil',              // Ver perfil
-                'cliente.perfil.update',       // Atualizar dados
+
+                // ====== ÁREA DO CLIENTE ======
+                'cliente.home',
+                'cliente.logout',
+
+                // ====== PERFIL ======
+                'cliente.perfil',
+                'cliente.perfil.update',
+
+                // ====== VEÍCULOS ======
+                'cliente.veiculos',
+
+                // ====== AGENDAMENTOS ======
+                'cliente.agendamento',        // Tela criar
+                'cliente.agendamento.store',  // Salvar
+                'cliente.agendamentos',       // Listar
+
+                // Edição via SweetAlert (PUT)
+                'cliente.agendamento.update',
+
+                // Exclusão via SweetAlert (DELETE)
+                'cliente.agendamento.delete',
             ];
 
-            // ❌ Se tentar acessar rota não permitida
-            if (!in_array($rotaAtual, $rotasPermitidas)) {
-                return redirect()->route('cliente.home')->with('error', 'Acesso negado para clientes.');
+            // Se a rota atual não estiver na lista
+            if (!in_array($rotaAtual, $rotasPermitidas, true)) {
+                return redirect()
+                    ->route('cliente.home')
+                    ->with('error', 'Acesso negado para clientes.');
             }
         }
 
-        // Continua o fluxo normalmente
         return $next($request);
     }
 }
