@@ -101,7 +101,6 @@
                         <th style="padding:14px;">Placa</th>
                         <th style="padding:14px;">Ano</th>
                         <th style="padding:14px;">Marca</th>
-                        <th style="padding:14px;">Status</th>
                         <th style="padding:14px;">Ações</th>
                     </tr>
                 </thead>
@@ -131,19 +130,6 @@
                             <td style="padding:12px;">{{ $veiculo->placa }}</td>
                             <td style="padding:12px;">{{ $veiculo->ano }}</td>
                             <td style="padding:12px;">{{ $veiculo->marca->descricao ?? '-' }}</td>
-
-                            <td style="padding:12px;">
-                                <span style="
-                                    background:{{ $cor }}22;
-                                    border:1px solid {{ $cor }}99;
-                                    color:{{ $cor }};
-                                    padding:4px 10px;
-                                    border-radius:8px;
-                                    font-weight:600;
-                                ">
-                                    {{ $status }}
-                                </span>
-                            </td>
 
                             <td style="padding:12px; display:flex; gap:6px;">
 

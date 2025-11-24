@@ -1,6 +1,5 @@
 <x-app-layout>
 
-    <!-- Cabeçalho -->
     <x-slot name="header">
         <h2 style="font-size:24px; font-weight:600; color:#222;">
             Cadastrar Novo Veículo
@@ -52,98 +51,91 @@
             Informações do Veículo
         </h3>
 
-        <form action="{{ route('veiculos.store') }}" method="POST"
+        <form action="{{ route('veiculos.store') }}" method="POST" enctype="multipart/form-data"
               style="display:flex; flex-direction:column; gap:18px;">
             @csrf
 
             <!-- Modelo -->
             <div>
-                <label for="modelo" style="color:#ff7a00; font-weight:600;">Modelo</label>
-                <input type="text" id="modelo" name="modelo" value="{{ old('modelo') }}"
+                <label style="color:#ff7a00; font-weight:600;">Modelo</label>
+                <input type="text" name="modelo" value="{{ old('modelo') }}"
                        placeholder="Ex: Strada 1.4"
-                       style="width:100%; padding:12px 14px;
-                              border-radius:12px; border:1px solid #d0d0d0;">
+                       style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid #d0d0d0;">
             </div>
 
             <!-- Categoria -->
             <div>
-                <label for="categoria" style="color:#ff7a00; font-weight:600;">Categoria</label>
-                <input type="text" id="categoria" name="categoria" value="{{ old('categoria') }}"
+                <label style="color:#ff7a00; font-weight:600;">Categoria</label>
+                <input type="text" name="categoria" value="{{ old('categoria') }}"
                        placeholder="Ex: Utilitário"
-                       style="width:100%; padding:12px 14px;
-                              border-radius:12px; border:1px solid #d0d0d0;">
+                       style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid #d0d0d0;">
             </div>
 
             <!-- Placa -->
             <div>
-                <label for="placa" style="color:#ff7a00; font-weight:600;">Placa</label>
-                <input type="text" id="placa" name="placa" value="{{ old('placa') }}"
+                <label style="color:#ff7a00; font-weight:600;">Placa</label>
+                <input type="text" name="placa" value="{{ old('placa') }}"
                        placeholder="Ex: ABC-1234"
-                       style="width:100%; padding:12px 14px;
-                              border-radius:12px; border:1px solid #d0d0d0;">
+                       style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid #d0d0d0;">
             </div>
 
             <!-- Ano -->
             <div>
-                <label for="ano" style="color:#ff7a00; font-weight:600;">Ano</label>
-                <input type="number" id="ano" name="ano" value="{{ old('ano') }}"
+                <label style="color:#ff7a00; font-weight:600;">Ano</label>
+                <input type="number" name="ano" value="{{ old('ano') }}"
                        placeholder="Ex: 2020"
-                       style="width:100%; padding:12px 14px;
-                              border-radius:12px; border:1px solid #d0d0d0;">
+                       style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid #d0d0d0;">
             </div>
 
             <!-- Marca -->
             <div>
-                <label for="marca_id" style="color:#ff7a00; font-weight:600;">Marca</label>
-                <select id="marca_id" name="marca_id"
-                        style="width:100%; padding:12px 14px;
-                               border-radius:12px; border:1px solid #d0d0d0;">
+                <label style="color:#ff7a00; font-weight:600;">Marca</label>
+                <select name="marca_id"
+                        style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid #d0d0d0;">
                     <option value="">Selecione</option>
                     @foreach($marcas as $marca)
                         <option value="{{ $marca->id }}"
-                                {{ old('marca_id') == $marca->id ? 'selected' : '' }}>
+                            {{ old('marca_id') == $marca->id ? 'selected' : '' }}>
                             {{ $marca->descricao }}
                         </option>
                     @endforeach
                 </select>
             </div>
 
-            <!-- STATUS BOOLEAN -->
-<div>
-    <label for="status_id" style="color:#ff7a00; font-weight:600;">Status</label>
-    <select id="status_id" name="status_id" required
-            style="width:100%; padding:12px 14px;
-                border-radius:12px; border:1px solid #d0d0d0;">
+            <!-- Status -->
+            <div>
+                <label style="color:#ff7a00; font-weight:600;">Status</label>
+                <select name="status_id" required
+                        style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid #d0d0d0;">
+                    <option value="" disabled selected hidden>Selecione</option>
 
-        <option value="" disabled selected hidden>Selecione</option>
+                    @foreach($statuses as $status)
+                        <option value="{{ $status->id }}"
+                            {{ old('status_id') == $status->id ? 'selected' : '' }}>
+                            {{ $status->descricao }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-        @foreach($statuses as $status)
-            <option value="{{ $status->id }}"
-                {{ old('status_id') == $status->id ? 'selected' : '' }}>
-                {{ $status->descricao }}
-            </option>
-        @endforeach
-    </select>
-</div>
-
-
-
+            <!-- IMAGEM -->
+            <div>
+                <label style="color:#ff7a00; font-weight:600;">Imagem do Veículo</label>
+                <input type="file" name="imagem" accept="image/*"
+                       style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid #d0d0d0;">
+            </div>
 
             <!-- Botões -->
             <div style="display:flex; gap:10px; margin-top:10px;">
                 <button type="submit"
-                        style="padding:12px 20px;
-                               background:linear-gradient(90deg,#ff6a00,#ff9500);
-                               color:white; border:none; border-radius:12px;
-                               font-weight:600; cursor:pointer;">
+                        style="padding:12px 20px; background:linear-gradient(90deg,#ff6a00,#ff9500);
+                               color:white; border:none; border-radius:12px; font-weight:600; cursor:pointer;">
                     Salvar
                 </button>
 
                 <a href="{{ route('veiculos.index') }}"
-                   style="padding:12px 20px;
-                          background:#666; color:white;
-                          border-radius:12px; text-decoration:none;
-                          font-weight:600;">
+                   style="padding:12px 20px; background:#666; color:white; border-radius:12px;
+                          text-decoration:none; font-weight:600;">
                     Cancelar
                 </a>
             </div>

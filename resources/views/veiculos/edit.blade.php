@@ -41,8 +41,11 @@
             Atualizar Informações do Veículo
         </h3>
 
-        <form action="{{ route('veiculos.update', $veiculo->id) }}" method="POST"
+        <form action="{{ route('veiculos.update', $veiculo->id) }}"
+              method="POST" 
+              enctype="multipart/form-data"
               style="display:flex; flex-direction:column; gap:18px;">
+              
             @csrf
             @method('PUT')
 
@@ -102,13 +105,12 @@
                 </select>
             </div>
 
-            <!-- STATUS BOOLEAN -->
+            <!-- Status -->
             <div>
                 <label for="status_id" style="color:#ff7a00; font-weight:600;">Status</label>
                 <select id="status_id" name="status_id" required
                         style="width:100%; padding:12px 14px;
                             border-radius:12px; border:1px solid #d0d0d0;">
-
                     <option value="" disabled hidden>Selecione</option>
 
                     @foreach($statuses as $status)
@@ -120,6 +122,22 @@
                 </select>
             </div>
 
+            <!-- Imagem atual -->
+            @if($veiculo->imagem)
+                <div>
+                    <label style="color:#ff7a00; font-weight:600;">Imagem Atual</label><br>
+                    <img src="{{ asset('storage/'.$veiculo->imagem) }}"
+                         style="width:180px; border-radius:12px; margin-top:8px;">
+                </div>
+            @endif
+
+            <!-- Upload nova imagem -->
+            <div>
+                <label for="imagem" style="color:#ff7a00; font-weight:600;">Alterar Imagem</label>
+                <input type="file" id="imagem" name="imagem" accept="image/*"
+                       style="width:100%; padding:12px 14px;
+                              border-radius:12px; border:1px solid #d0d0d0;">
+            </div>
 
             <!-- Botões -->
             <div style="display:flex; gap:10px; margin-top:10px;">

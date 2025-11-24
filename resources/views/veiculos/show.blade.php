@@ -50,19 +50,12 @@
             <span style="font-weight:600; color:#ff7a00;">Placa:</span>
             <span>{{ $veiculo->placa }}</span>
 
-            <!-- STATUS -->
             <span style="font-weight:600; color:#ff7a00;">Status:</span>
 
             @php
-                /** 
-                 * STATUS BOOLEANO:
-                 * 1 = Disponível
-                 * 0 = Indisponível
-                 */
-                $disponivel = (int) $veiculo->status === 1;
-
-                $cor   = $disponivel ? '#00c853' : '#e53935';
-                $texto = $disponivel ? 'Disponível' : 'Indisponível';
+                $ativo = (int) $veiculo->status_id === 1;
+                $cor   = $ativo ? '#00c853' : '#e53935';
+                $texto = $ativo ? 'Disponível' : 'Indisponível';
             @endphp
 
             <span style="
@@ -78,6 +71,33 @@
                 {{ $texto }}
             </span>
 
+        </div>
+
+        <!-- IMAGEM DO VEÍCULO (AGORA ABAIXO) -->
+        <div style="text-align:center; margin-top:35px;">
+            @if ($veiculo->imagem)
+                <img src="{{ asset('storage/' . $veiculo->imagem) }}"
+                     alt="Imagem de {{ $veiculo->modelo }}"
+                     style="
+                        width:100%;
+                        max-width:400px;
+                        max-height:260px;
+                        object-fit:cover;
+                        border-radius:14px;
+                        border:1px solid #ddd;
+                     ">
+            @else
+                <img src="/img/cars/default.jpg"
+                     alt="Sem imagem"
+                     style="
+                        width:100%;
+                        max-width:400px;
+                        max-height:260px;
+                        object-fit:cover;
+                        border-radius:14px;
+                        border:1px solid #ddd;
+                     ">
+            @endif
         </div>
 
         <!-- Botão voltar -->
